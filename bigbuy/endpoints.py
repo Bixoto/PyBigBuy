@@ -1,0 +1,458 @@
+# -*- coding: utf-8 -*-
+
+"""
+bigbuy.endpoints
+~~~~~~~~~~~~~~~~~
+
+This module provides a mixin for a :class:`Bigbuy <Bigbuy>` instance.
+Parameters that need to be embedded in the API url just need to be passed
+as a keyword argument.
+
+
+Official documentation for Bigbuy API endpoints can be found at:
+https://api.bigbuy.eu/doc
+"""
+
+import json
+import os
+import warnings
+from io import BytesIO
+from time import sleep
+#try:
+    #from StringIO import StringIO
+#except ImportError:
+    #from io import StringIO
+
+from .advisory import BigbuyDeprecationWarning
+
+#Catalog
+class EndpointsMixin(object):
+    def get_attribute(self, id, **params):
+        """Get a single attribute.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-attribute-{id}.{_format}
+
+        """
+        return self.get('catalog/attribute/%s' % id, params=params)
+
+    def get_attribute_all_languages(self, id, **params):
+        """Get a single attribute.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-attributealllanguages-{id}.{_format}
+
+        """
+        return self.get('catalog/attributealllanguages/%s' % id, params=params)
+
+
+    def get_attribute_group(self, id, **params):
+        """Get a single attribute group.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-attributegroup-{id}.{_format}
+
+        """
+        return self.get('catalog/attributegroup/%s' % id, params=params)
+
+
+    def get_attribute_group_all_languages(self, id, **params):
+        """Get a single attribute group.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-attributegroupalllanguages-{id}.{_format}
+
+        """
+        return self.get('catalog/attributegroupalllanguages/%s' % id, params=params)
+
+
+    def get_attribute_groups(self, **params):
+        """Lists all attribute groups.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-attributegroups.{_format}
+
+        """
+        return self.get('catalog/attributegroups', params=params)
+
+
+
+    def get_attributes(self, **params):
+        """Lists all attributes.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-attributes.{_format}
+
+        """
+        return self.get('catalog/attributes', params=params)
+
+
+    def get_cateogories(self, **params):
+        """Lists all categories.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-categories.{_format}
+
+        """
+        return self.get('catalog/categories', params=params)
+
+
+
+    def get_category(self, id, **params):
+        """Returns the selected category.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-category-{id}.{_format}
+
+        """
+        return self.get('catalog/category/%s' % id, params=params)
+
+
+
+    def get_category_all_languages(self, id, **params):
+        """Returns the selected category.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-categoryalllanguages-{id}.{_format}
+
+        """
+        return self.get('catalog/categoryalllanguages/%s' % id, params=params)
+
+
+    def get_languages(self, **params):
+        """Returns all languages
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-languages.{_format}
+
+        """
+        return self.get('catalog/languages', params=params)
+
+
+
+    def get_cateogories(self, **params):
+        """Lists all categories.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-categories.{_format}
+
+        """
+        return self.get('catalog/categories', params=params)
+
+
+
+    def get_manufacturer(self, id, **params):
+        """Get a single manufacturer.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-manufacturer-{id}.{_format}
+
+        """
+        return self.get('catalog/manufacturer/%s' % id, params=params)
+
+
+    def get_manufacturers(self, **params):
+        """Lists all manufacturers.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-manufacturers.{_format}
+
+        """
+        return self.get('catalog/manufacturers', params=params)
+
+
+    def get_product(self, id, **params):
+        """Get a single product.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-product-{id}.{_format}
+
+        """
+        return self.get('catalog/product/%s' % id, params=params)
+
+
+    def get_product_categories(self, id, **params):
+        """Get product categories.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productcategories-{id}.{_format}
+
+        """
+        return self.get('catalog/productcategories/%s' % id, params=params)
+
+
+    def get_product_images(self, id, **params):
+        """Get a single product images.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productimages-{id}.{_format}
+
+        """
+        return self.get('catalog/productimages/%s' % id, params=params)
+
+
+    def get_product_information(self, id, **params):
+        """Get a single product information.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productinformation-{id}.{_format}
+
+        """
+        return self.get('catalog/productinformation/%s' % id, params=params)
+
+
+    def get_product_information_all_languages(self, id, **params):
+        """Get a single product.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productinformationalllanguages-{id}.{_format}
+
+        """
+        return self.get('catalog/productinformationalllanguages/%s' % id, params=params)
+
+
+    def get_product_information_by_sku(self, sku, **params):
+        """Get a single product by sku.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productinformationbysku-{sku}.{_format}
+
+        """
+        return self.get('catalog/productinformationbysku/%s' % sku, params=params)
+
+
+    def get_products(self, **params):
+        """Returns all products.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-products.{_format}
+
+        """
+        return self.get('catalog/products', params=params)
+
+
+    def get_products_categories(self, **params):
+        """Returns all products categories.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productscategories.{_format}
+
+        """
+        return self.get('catalog/productscategories', params=params)
+
+
+    def get_products_images(self, **params):
+        """Returns all products images.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productsimages.{_format}
+
+        """
+        return self.get('catalog/productsimages', params=params)
+
+
+    def get_products_information(self, **params):
+        """Returns all products products information.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productsproductsinformation.{_format}
+
+        """
+        return self.get('catalog/productsproductsinformation', params=params)
+
+
+
+    def get_products_stock(self, **params):
+        """Returns all products stock.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productsstock.{_format}
+
+        """
+        return self.get('catalog/productsstock', params=params)
+
+
+    def get_products_stock_available(self, **params):
+        """Returns all products with available stock.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productsstockavailable.{_format}
+
+        """
+        return self.get('catalog/productsstockavailable', params=params)
+
+
+
+    def get_products_stock_by_reference(self, **params):
+        """TODO"""
+        print("Not implemented")
+        return False
+
+
+    def get_products_tags(self, **params):
+        """Lists all product tags.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productstags.{_format}
+
+        """
+        return self.get('catalog/productstags', params=params)
+
+
+    def get_product_stock(self, id, **params):
+        """Get a single product stock.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productstock-{id}.{_format}
+
+        """
+        return self.get('catalog/productstock/%s' % id, params=params)
+
+
+    def get_products_variations(self, **params):
+        """Returns all products variations.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productsvariations.{_format}
+
+        """
+        return self.get('catalog/productsvariations', params=params)
+
+
+    def get_products_variations_stock(self, **params):
+        """Returns all products variations stock.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productsvariationsstock.{_format}
+
+        """
+        return self.get('catalog/productsvariationsstock', params=params)
+
+
+
+    def get_products_variations_stock_available(self, **params):
+        """Returns all products variations stock available.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productsvariationsstockavailable.{_format}
+
+        """
+        return self.get('catalog/productsvariationsstockavailable', params=params)
+
+
+
+    def get_product_tags(self, id, **params):
+        """Get a single ProductTag.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-producttags-{id}.{_format}
+
+        """
+        return self.get('catalog/producttags/%s' % id, params=params)
+
+
+    def get_product_variations(self, id, **params):
+        """Get a single Product variations.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productvariations-{id}.{_format}
+
+        """
+        return self.get('catalog/productvariations/%s' % id, params=params)
+
+
+    def get_product_variations_stock(self, id, **params):
+        """Get a single product variation stock.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-productvariationsstock-{id}.{_format}
+
+        """
+        return self.get('catalog/productvariationsstock/%s' % id, params=params)
+
+
+    def get_tag(self, id, **params):
+        """Get a single Tag.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-tag-{id}.{_format}
+
+        """
+        return self.get('catalog/tag/%s' % id, params=params)
+
+
+
+    def get_tag_all_languages(self, id, **params):
+        """Get a single Tag.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-tagalllanguages-{id}.{_format}
+
+        """
+        return self.get('catalog/tagalllanguages/%s' % id, params=params)
+
+
+
+    def get_tags(self, **params):
+        """Lists all tags.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-tags.{_format}
+
+        """
+        return self.get('catalog/tags', params=params)
+
+
+    def get_variation(self, id, **params):
+        """Get a single variation.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-variation-{id}.{_format}
+
+        """
+        return self.get('catalog/variation/%s' % id, params=params)
+
+
+    def get_variations(self, **params):
+        """Lists all variations.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-variations.{_format}
+
+        """
+        return self.get('catalog/variations', params=params)
+
+
+# from https://developer.twitter.com/en/docs/ads/general/guides/response-codes
+HTTP_STATUS_CODE = {
+    200: ('OK', 'Success!'),
+    304: ('Not Modified', 'There was no new data to return.'),
+    400: ('Bad Request', 'The request was invalid. An accompanying \
+          error message will explain why. This is the status code \
+          will be returned during rate limiting.'),
+    401: ('Unauthorized', 'Authentication credentials were missing \
+          or incorrect.'),
+    403: ('Forbidden', 'The request is understood, but it has been \
+          refused. An accompanying error message will explain why. \
+          This code is used when requests are being denied due to \
+          update limits.'),
+    404: ('Not Found', 'The URI requested is invalid or the resource \
+          requested, such as a user, does not exists.'),
+    406: ('Not Acceptable', 'Returned by the Search API when an \
+          invalid format is specified in the request.'),
+    410: ('Gone', 'This resource is gone. Used to indicate that an \
+          API endpoint has been turned off.'),
+    422: ('Unprocessable Entity', 'Returned when an image uploaded to \
+          POST account/update_profile_banner is unable to be processed.'),
+    429: ('Too Many Requests', 'Returned in API v1.1 when a request cannot \
+          be served due to the application\'s rate limit having been \
+          exhausted for the resource.'),
+    500: ('Internal Server Error', 'Something is broken. Please post to the \
+          group so the Twitter team can investigate.'),
+    502: ('Bad Gateway', 'Twitter is down or being upgraded.'),
+    503: ('Service Unavailable', 'The Twitter servers are up, but overloaded \
+          with requests. Try again later.'),
+    504: ('Gateway Timeout', 'The Twitter servers are up, but the request \
+          couldn\'t be serviced due to some failure within our stack. Try \
+          again later.'),
+}
