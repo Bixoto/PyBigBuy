@@ -8,7 +8,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-__author__ = 'Ryan McGrath <ryan@venodesigns.net>'
+__author__ = 'Lugh <jbc@mozaart.com>'
 __version__ = '3.7.0'
 
 packages = [
@@ -20,10 +20,10 @@ if sys.argv[-1] == 'publish':
     sys.exit()
 
 setup(
-    name='bigbuy',
+    name='pybigbuy',
     version=__version__,
-    install_requires=['requests>=2.1.0', 'requests_oauthlib>=0.4.0'],
-    author='Ryan McGrath',
+    install_requires=['requests>=2.1.0', 'requests_oauthlib>=0.4.0', 'ujson>=1.35'],
+    author='Lugh',
     author_email='jbc@mozaart.com',
     license=open('LICENSE').read(),
     url='TODO',

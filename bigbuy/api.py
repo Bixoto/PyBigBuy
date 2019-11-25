@@ -9,7 +9,7 @@ Twitter Authentication, and miscellaneous methods that are useful when
 dealing with the Twitter API
 """
 import re
-
+import ujson
 import requests
 from requests.auth import HTTPBasicAuth
 from requests_oauthlib import OAuth1, OAuth2
@@ -25,7 +25,7 @@ from .helpers import _transparent_params
 
 
 class BigBuy(EndpointsMixin, object):
-    def __init__(self, app_key=None, client_args=None):
+    def __init__(self, app_key=None, mode="sandbox", client_args=None):
         """Instantiates an instance of BigBuy. Takes optional parameters for
         authentication and such (see below).
 
@@ -58,8 +58,10 @@ class BigBuy(EndpointsMixin, object):
 
 
         self.app_key = app_key
-        self.api_url = 'https://api.bigbuy.eu/rest'
-
+        if mode == "sandbox":
+            self.api_url = 'https://api.sandbox.bigbuy.eu/rest'
+        elif mode == "production":
+            self.api_url = 'https://api.bigbuy.eu/rest'
         self.client_args = client_args or {}
         default_headers = {'User-Agent': 'pyBigBuy v' + __version__}
         if 'headers' not in self.client_args:
@@ -95,35 +97,18 @@ class BigBuy(EndpointsMixin, object):
     def __repr__(self):
         return '<Bigbuy: %s>' % (self.app_key)
 
-    def _request(self, url, method='GET', params=None, api_call=None, json_encoded=False):
+    def _request(self, url, method='GET', params=None, api_call=None):
         """Internal request method"""
         method = method.lower()
         params = params or {}
 
         func = getattr(self.client, method)
-        if isinstance(params, dict) and json_encoded is False:
-            params, files = _transparent_params(params)
-        else:
-            params = params
-            files = list()
-
         requests_args = {}
-        for k, v in self.client_args.items():
-            # Maybe this should be set as a class variable and only done once?
-            if k in ('timeout', 'allow_redirects', 'stream', 'verify'):
-                requests_args[k] = v
-
         if method == 'get' or method == 'delete':
             requests_args['params'] = params
         else:
-            # Check for json_encoded so we will sent params as "data" or "json"
-            if json_encoded:
-                data_key = 'json'
-            else:
-                data_key = 'data'
             requests_args.update({
-                data_key: params,
-                'files': files,
+                "data": ujson.dumps(params),
             })
         try:
             response = func(url, **requests_args)
@@ -140,7 +125,6 @@ class BigBuy(EndpointsMixin, object):
             'url': response.url,
             'content': response.text,
         }
-
         # greater than 304 (not modified) is an error
         if response.status_code > 304:
             error_message = self._get_error_message(response)
@@ -149,7 +133,9 @@ class BigBuy(EndpointsMixin, object):
             raise ExceptionType(
                 error_message,
                 error_code=response.status_code,
-                retry_after=response.headers.get('X-Rate-Limit-Reset'))
+                retry_after=response.headers.get('X-Rate-Limit-Reset'),
+                post_mortem = self._last_call
+                )
         content = ''
         try:
             if response.status_code == 204:
@@ -183,7 +169,7 @@ class BigBuy(EndpointsMixin, object):
 
         return error_message
 
-    def request(self, endpoint, method='GET', params=None, version='1.1', json_encoded=False):
+    def request(self, endpoint, method='GET', params=None, version='1.1'):
         """Return dict of response received from Twitter's API
 
         :param endpoint: (required) Full url or Twitter API endpoint
@@ -199,25 +185,18 @@ class BigBuy(EndpointsMixin, object):
         :param version: (optional) Twitter API version to access
                         (default 1.1)
         :type version: string
-        :param json_encoded: (optional) Flag to indicate if this method should send data encoded as json
-                        (default False)
-        :type json_encoded: bool
-
         :rtype: dict
         """
 
         if endpoint.startswith('http://'):
             raise BBError('api.bigbuy.com is restricted to SSL/TLS traffic.')
-
-        # In case they want to pass a full Twitter URL
-        # i.e. https://api.twitter.com/1.1/search/tweets.json
         if endpoint.startswith('https://'):
             url = endpoint
         else:
             url = '%s/%s.json' % (self.api_url, endpoint)
 
         content = self._request(url, method=method, params=params,
-                                api_call=url, json_encoded=json_encoded)
+                                api_call=url)
 
         return content
 
@@ -225,10 +204,10 @@ class BigBuy(EndpointsMixin, object):
         """Shortcut for GET requests via :class:`request`"""
         return self.request(endpoint, params=params, version=version)
 
-    def post(self, endpoint, params=None, version='1.1', json_encoded=False):
+    def post(self, endpoint, params=None, version='1.1'):
         """Shortcut for POST requests via :class:`request`"""
-        return self.request(endpoint, 'POST', params=params, version=version, json_encoded=json_encoded)
+        return self.request(endpoint, 'POST', params=params, version=version)
 
-    def delete(self, endpoint, params=None, version='1.1', json_encoded=False):
+    def delete(self, endpoint, params=None, version='1.1'):
         """Shortcut for delete requests via :class:`request`"""
-        return self.request(endpoint, 'DELETE', params=params, version=version, json_encoded=json_encoded)
+        return self.request(endpoint, 'DELETE', params=params, version=version)

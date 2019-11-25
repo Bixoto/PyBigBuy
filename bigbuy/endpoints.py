@@ -13,7 +13,7 @@ Official documentation for Bigbuy API endpoints can be found at:
 https://api.bigbuy.eu/doc
 """
 
-import json
+import ujson
 import os
 import warnings
 from io import BytesIO
@@ -25,8 +25,9 @@ from time import sleep
 
 from .advisory import BigbuyDeprecationWarning
 
-#Catalog
+
 class EndpointsMixin(object):
+    #catalog
     def get_attribute(self, id, **params):
         """Get a single attribute.
 
@@ -87,7 +88,7 @@ class EndpointsMixin(object):
         return self.get('catalog/attributes', params=params)
 
 
-    def get_cateogories(self, **params):
+    def get_categories(self, **params):
         """Lists all categories.
 
         Docs:
@@ -258,7 +259,7 @@ class EndpointsMixin(object):
         https://api.bigbuy.eu/doc#get--rest-catalog-productsproductsinformation.{_format}
 
         """
-        return self.get('catalog/productsproductsinformation', params=params)
+        return self.get('catalog/productsinformation', params=params)
 
 
 
@@ -421,6 +422,198 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/variations', params=params)
+
+
+    #shipping
+    def get_carriers(self, **params):
+        """Get a single variation.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-catalog-variation-{id}.{_format}
+
+        """
+        return self.get('shipping/carriers', params=params)
+
+
+    def get_shipping_order(self, order, **params):
+        """Get the list of available shipping options with the calculated weight and cost in Kg and € respectively, for the given order.
+
+        Docs:
+        https://api.bigbuy.eu/doc#post--rest-shipping-orders.{_format}
+        Example order = {"order":{"delivery":{"isoCountry":"ES","postcode":"46005"},"products":[{"reference":"V1300179","quantity":1}]}}
+        """
+        #
+        return self.post('shipping/orders', order, **params)
+
+
+
+
+    #order
+    def get_order_addresses(self, **params):
+        """Get order shipping address structure.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-order-addresses-new.{_format}
+        """
+        return self.get('order/addresses/new', **params)
+
+
+    def get_order_carriers(self, **params):
+        """Get order shipping address structure.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-order-carriers-new.{_format}
+        """
+        return self.get('order/carriers/new', **params)
+
+
+
+    def check_order(self, order, **params):
+        """Check/simulate an order and return the total order to paid.
+
+        Docs:
+        https://api.bigbuy.eu/doc#post--rest-order-check.{_format}
+        Example order
+        order = {
+          "order": {
+            "internalReference": "123456",
+            "language": "es",
+            "paymentMethod": "moneybox",
+            "carriers": [
+              {
+                "name": "correos"
+              },
+              {
+                "name": "chrono"
+              }
+            ],
+            "shippingAddress": {
+              "firstName": "John",
+              "lastName": "Doe",
+              "country": "ES",
+              "postcode": "46005",
+              "town": "Valencia",
+              "address": "C/ Altea",
+              "phone": "664869570",
+              "email": "john@email.com",
+              "comment": ""
+            },
+            "products": [
+              {
+                "reference": "F1505138",
+                "quantity": 4
+              }
+            ]
+          }
+        }
+        """
+        return self.post('order/check', order, **params)
+
+
+
+    def create_order(self, order, **params):
+        """
+        Submit an order.
+
+        Docs:
+        https://api.bigbuy.eu/doc#post--rest-order-create.{_format}
+        Example order
+        order = {
+          "order": {
+            "internalReference": "123456",
+            "language": "es",
+            "paymentMethod": "moneybox",
+            "carriers": [
+              {
+                "name": "correos"
+              },
+              {
+                "name": "chrono"
+              }
+            ],
+            "shippingAddress": {
+              "firstName": "John",
+              "lastName": "Doe",
+              "country": "ES",
+              "postcode": "46005",
+              "town": "Valencia",
+              "address": "C/ Altea",
+              "phone": "664869570",
+              "email": "john@email.com",
+              "comment": ""
+            },
+            "products": [
+              {
+                "reference": "F1505138",
+                "quantity": 4
+              }
+            ]
+          }
+        }
+        """
+        return self.post('order/create', order, **params)
+
+
+    def get_order_by_custref(self, reference, **params):
+        """Get order information by customer reference.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-order-carriers-new.{_format}
+        """
+        return self.get(f'order/reference/{reference}', **params)
+
+
+    def get_order_by_id(self, idOrder, **params):
+        """Get order information.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-order-{idOrder}.{_format}
+        """
+        return self.get(f'order/{idOrder}', **params)
+
+
+
+    #tracking
+    def get_tracking_carriers(self, **params):
+        """Get the list of available carriers.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-order-{idOrder}.{_format}
+        """
+        return self.get('tracking/carriers', **params)
+
+
+    def get_tracking_order(self, idOrder, **params):
+        """Get the list of available trackings.
+
+        Docs:
+        https://api.bigbuy.eu/doc#get--rest-tracking-order-{idOrder}.{_format}
+        """
+        return self.get(f'tracking/order/{idOrder}', **params)
+
+
+
+    def get_trackins_orders(self, orders, **params):
+        """
+        Get the list of available trackings for the passed orders.
+
+        Docs:
+        https://api.bigbuy.eu/doc#post--rest-tracking-orders.{_format}
+        Example order
+        order = {
+          "track":{
+            "orders":[
+              {
+                "id":"66666"
+              },
+              {
+                "id":"66667"
+              }
+            ]
+          }
+        }
+        """
+        return self.post('tracking/orders', order, **params)
 
 
 # from https://developer.twitter.com/en/docs/ads/general/guides/response-codes
