@@ -131,7 +131,7 @@ class EndpointsMixin(object):
 
 
 
-    def get_cateogories(self, **params):
+    def get_categories(self, **params):
         """Lists all categories.
 
         Docs:
@@ -593,7 +593,7 @@ class EndpointsMixin(object):
 
 
 
-    def get_trackins_orders(self, orders, **params):
+    def get_trackings_orders(self, orders, **params):
         """
         Get the list of available trackings for the passed orders.
 

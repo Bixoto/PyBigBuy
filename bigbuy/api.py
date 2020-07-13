@@ -140,6 +140,8 @@ class BigBuy(EndpointsMixin, object):
         try:
             if response.status_code == 204:
                 content = response.content
+            elif response.status_code == 201:
+                content = response
             else:
                 content = response.json()
         except ValueError:
