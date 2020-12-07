@@ -24,8 +24,12 @@ class BBError(Exception):
         self.BBCode = None
         self.BBMessage = None
         self.msg = msg
-        if post_mortem["content"]:
+        try:
             data = ujson.loads(post_mortem["content"])
+        except ValueError:
+            # The response is not always valid JSON, e.g. "You exceeded the rate limit"
+            self.BBMessage = post_mortem["content"]
+        else:
             self.BBCode = data["code"]
             self.BBMessage = data["message"]
 
