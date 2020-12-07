@@ -125,8 +125,11 @@ class BigBuy(EndpointsMixin, object):
         }
         # greater than 304 (not modified) is an error
         if response.status_code > 304:
+            print(response)
+            print(response.text)
             error_message = self._get_error_message(response)
             self._last_call['api_error'] = error_message
+            print(error_message)
             raise BBError(
                 error_message,
                 error_code=response.status_code,
