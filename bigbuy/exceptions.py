@@ -17,12 +17,18 @@ class BBError(Exception):
     from bigbuy import BigBuyError
 
     """
-    def __init__(self, msg, error_code=None, retry_after=None, post_mortem = None):
+
+    def __init__(self, msg, error_code=None, retry_after=None, post_mortem=None):
         self.error_code = error_code
         self.post_mortem = post_mortem
-        data = ujson.loads(post_mortem["content"])
-        self.BBCode = data["code"]
-        self.BBMessage = data["message"]
+        self.BBCode = None
+        self.BBMessage = None
+        self.msg = msg
+        if post_mortem["content"]:
+            data = ujson.loads(post_mortem["content"])
+            self.BBCode = data["code"]
+            self.BBMessage = data["message"]
+
         if error_code is not None and error_code in HTTP_STATUS_CODE:
             msg = 'BiguBuy API returned a %s (%s), %s' % \
                   (error_code,
@@ -31,7 +37,3 @@ class BBError(Exception):
             print(msg)
 
         super(BBError, self).__init__(msg)
-
-    @property
-    def msg(self):  # pragma: no cover
-        return self.args[0]

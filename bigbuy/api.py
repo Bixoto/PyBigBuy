@@ -23,7 +23,6 @@ from .exceptions import BBError
 from .helpers import _transparent_params
 
 
-
 class BigBuy(EndpointsMixin, object):
     def __init__(self, app_key=None, mode="sandbox", client_args=None):
         """Instantiates an instance of BigBuy. Takes optional parameters for
@@ -55,7 +54,6 @@ class BigBuy(EndpointsMixin, object):
               if the endpoint is 'authorize'.
                 Default: authenticate.
         """
-
 
         self.app_key = app_key
         if mode == "sandbox":
@@ -129,13 +127,12 @@ class BigBuy(EndpointsMixin, object):
         if response.status_code > 304:
             error_message = self._get_error_message(response)
             self._last_call['api_error'] = error_message
-            ExceptionType = BBError
-            raise ExceptionType(
+            raise BBError(
                 error_message,
                 error_code=response.status_code,
                 retry_after=response.headers.get('X-Rate-Limit-Reset'),
-                post_mortem = self._last_call
-                )
+                post_mortem=self._last_call
+            )
         content = ''
         try:
             if response.status_code == 204:
