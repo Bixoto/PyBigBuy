@@ -14,8 +14,7 @@ import ujson
 class BBError(Exception):
     """Generic error class, catch-all for most BigBuy issues.
 
-    from bigbuy import BigBuyError
-
+    >>> from bigbuy import BBError
     """
 
     def __init__(self, msg, error_code=None, retry_after=None, post_mortem=None):
