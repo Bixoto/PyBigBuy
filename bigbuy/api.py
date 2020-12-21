@@ -8,19 +8,12 @@ This module contains functionality for access to core Twitter API calls,
 Twitter Authentication, and miscellaneous methods that are useful when
 dealing with the Twitter API
 """
-import re
-import ujson
 import requests
-from requests.auth import HTTPBasicAuth
-from requests_oauthlib import OAuth1, OAuth2
 
 from . import __version__
-from .advisory import BigbuyDeprecationWarning
-from .compat import json, urlencode, parse_qsl, quote_plus, str, is_py2
-from .compat import urlsplit
+from .compat import str
 from .endpoints import EndpointsMixin
 from .exceptions import BBError
-from .helpers import _transparent_params
 
 
 class BigBuy(EndpointsMixin, object):
@@ -29,30 +22,12 @@ class BigBuy(EndpointsMixin, object):
         authentication and such (see below).
 
         :param app_key: (optional) Your applications key
-        :param app_secret: (optional) Your applications secret key
-        :param oauth_token: (optional) When using **OAuth 1**, combined with
-        oauth_token_secret to make authenticated calls
-        :param oauth_token_secret: (optional) When using **OAuth 1** combined
-        with oauth_token to make authenticated calls
-        :param access_token: (optional) When using **OAuth 2**, provide a
-        valid access token if you have one
-        :param token_type: (optional) When using **OAuth 2**, provide your
-        token type. Default: bearer
-        :param oauth_version: (optional) Choose which OAuth version to use.
-        Default: 1
-        :param api_version: (optional) Choose which Twitter API version to
-        use. Default: 1.1
-
+        :param mode: "sandbox" or "production"
         :param client_args: (optional) Accepts some requests Session parameters
         and some requests Request parameters.
               See http://docs.python-requests.org/en/latest/api/#sessionapi
               and requests section below it for details.
               [ex. headers, proxies, verify(SSL verification)]
-        :param auth_endpoint: (optional) Lets you select which authentication
-        endpoint will use your application.
-              This will allow the application to have DM access
-              if the endpoint is 'authorize'.
-                Default: authenticate.
         """
 
         self.app_key = app_key
@@ -62,20 +37,13 @@ class BigBuy(EndpointsMixin, object):
             self.api_url = 'https://api.bigbuy.eu/rest'
         self.client_args = client_args or {}
         default_headers = {'User-Agent': 'pyBigBuy v' + __version__}
-        if 'headers' not in self.client_args:
-            # If they didn't set any headers, set our defaults for them
-            self.client_args['headers'] = default_headers
-        elif 'User-Agent' not in self.client_args['headers']:
-            # If they set headers, but didn't include User-Agent.. set
-            # it for them
+        self.client_args.setdefault('headers', default_headers)
+        if 'User-Agent' not in self.client_args['headers']:
+            # If they set headers, but didn't include User-Agent set it for them
             self.client_args['headers'].update(default_headers)
         if 'Authorization' not in self.client_args['headers']:
             self.client_args['headers']['Authorization'] = 'Bearer %s' % app_key
 
-        # Generate OAuth authentication object for the request
-        # If no keys/tokens are passed to __init__, auth=None allows for
-        # unauthenticated requests, although I think all v1.1 requests
-        # need auth
         self.client = requests.Session()
 
         # Make a copy of the client args and iterate over them
@@ -93,7 +61,7 @@ class BigBuy(EndpointsMixin, object):
         self._last_call = None
 
     def __repr__(self):
-        return '<Bigbuy: %s>' % (self.app_key)
+        return '<Bigbuy: %s>' % self.app_key
 
     def _request(self, url, method='GET', params=None, api_call=None):
         """Internal request method"""
@@ -105,9 +73,7 @@ class BigBuy(EndpointsMixin, object):
         if method == 'get' or method == 'delete':
             requests_args['params'] = params
         else:
-            requests_args.update({
-                "data": ujson.dumps(params),
-            })
+            requests_args["json"] = params
         try:
             response = func(url, **requests_args)
         except requests.RequestException as e:

@@ -18,16 +18,19 @@ import os
 import warnings
 from io import BytesIO
 from time import sleep
-#try:
-    #from StringIO import StringIO
-#except ImportError:
-    #from io import StringIO
+# try:
+# from StringIO import StringIO
+# except ImportError:
+# from io import StringIO
 
 from .advisory import BigbuyDeprecationWarning
 
 
 class EndpointsMixin(object):
-    #catalog
+    def get(self, *args, **kwargs):
+        raise NotImplementedError()
+
+    # catalog
     def get_attribute(self, id, **params):
         """Get a single attribute.
 
@@ -46,7 +49,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/attributealllanguages/%s' % id, params=params)
 
-
     def get_attribute_group(self, id, **params):
         """Get a single attribute group.
 
@@ -55,7 +57,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/attributegroup/%s' % id, params=params)
-
 
     def get_attribute_group_all_languages(self, id, **params):
         """Get a single attribute group.
@@ -66,7 +67,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/attributegroupalllanguages/%s' % id, params=params)
 
-
     def get_attribute_groups(self, **params):
         """Lists all attribute groups.
 
@@ -75,8 +75,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/attributegroups', params=params)
-
-
 
     def get_attributes(self, **params):
         """Lists all attributes.
@@ -87,7 +85,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/attributes', params=params)
 
-
     def get_categories(self, **params):
         """Lists all categories.
 
@@ -96,8 +93,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/categories', params=params)
-
-
 
     def get_category(self, id, **params):
         """Returns the selected category.
@@ -108,8 +103,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/category/%s' % id, params=params)
 
-
-
     def get_category_all_languages(self, id, **params):
         """Returns the selected category.
 
@@ -118,7 +111,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/categoryalllanguages/%s' % id, params=params)
-
 
     def get_languages(self, **params):
         """Returns all languages
@@ -129,8 +121,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/languages', params=params)
 
-
-
     def get_categories(self, **params):
         """Lists all categories.
 
@@ -139,8 +129,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/categories', params=params)
-
-
 
     def get_manufacturer(self, id, **params):
         """Get a single manufacturer.
@@ -151,7 +139,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/manufacturer/%s' % id, params=params)
 
-
     def get_manufacturers(self, **params):
         """Lists all manufacturers.
 
@@ -160,7 +147,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/manufacturers', params=params)
-
 
     def get_product(self, id, **params):
         """Get a single product.
@@ -171,7 +157,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/product/%s' % id, params=params)
 
-
     def get_product_categories(self, id, **params):
         """Get product categories.
 
@@ -180,7 +165,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/productcategories/%s' % id, params=params)
-
 
     def get_product_images(self, id, **params):
         """Get a single product images.
@@ -191,7 +175,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/productimages/%s' % id, params=params)
 
-
     def get_product_information(self, id, **params):
         """Get a single product information.
 
@@ -200,7 +183,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/productinformation/%s' % id, params=params)
-
 
     def get_product_information_all_languages(self, id, **params):
         """Get a single product.
@@ -211,7 +193,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/productinformationalllanguages/%s' % id, params=params)
 
-
     def get_product_information_by_sku(self, sku, **params):
         """Get a single product by sku.
 
@@ -220,7 +201,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/productinformationbysku/%s' % sku, params=params)
-
 
     def get_products(self, **params):
         """Returns all products.
@@ -231,7 +211,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/products', params=params)
 
-
     def get_products_categories(self, **params):
         """Returns all products categories.
 
@@ -240,7 +219,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/productscategories', params=params)
-
 
     def get_products_images(self, **params):
         """Returns all products images.
@@ -251,7 +229,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/productsimages', params=params)
 
-
     def get_products_information(self, **params):
         """Returns all products products information.
 
@@ -260,8 +237,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/productsinformation', params=params)
-
-
 
     def get_products_stock(self, **params):
         """Returns all products stock.
@@ -272,7 +247,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/productsstock', params=params)
 
-
     def get_products_stock_available(self, **params):
         """Returns all products with available stock.
 
@@ -282,13 +256,10 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/productsstockavailable', params=params)
 
-
-
     def get_products_stock_by_reference(self, **params):
         """TODO"""
         print("Not implemented")
         return False
-
 
     def get_products_tags(self, **params):
         """Lists all product tags.
@@ -299,7 +270,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/productstags', params=params)
 
-
     def get_product_stock(self, id, **params):
         """Get a single product stock.
 
@@ -308,7 +278,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/productstock/%s' % id, params=params)
-
 
     def get_products_variations(self, **params):
         """Returns all products variations.
@@ -319,7 +288,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/productsvariations', params=params)
 
-
     def get_products_variations_stock(self, **params):
         """Returns all products variations stock.
 
@@ -328,8 +296,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/productsvariationsstock', params=params)
-
-
 
     def get_products_variations_stock_available(self, **params):
         """Returns all products variations stock available.
@@ -340,8 +306,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/productsvariationsstockavailable', params=params)
 
-
-
     def get_product_tags(self, id, **params):
         """Get a single ProductTag.
 
@@ -350,7 +314,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/producttags/%s' % id, params=params)
-
 
     def get_product_variations(self, id, **params):
         """Get a single Product variations.
@@ -361,7 +324,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/productvariations/%s' % id, params=params)
 
-
     def get_product_variations_stock(self, id, **params):
         """Get a single product variation stock.
 
@@ -370,7 +332,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/productvariationsstock/%s' % id, params=params)
-
 
     def get_tag(self, id, **params):
         """Get a single Tag.
@@ -381,8 +342,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/tag/%s' % id, params=params)
 
-
-
     def get_tag_all_languages(self, id, **params):
         """Get a single Tag.
 
@@ -391,8 +350,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/tagalllanguages/%s' % id, params=params)
-
-
 
     def get_tags(self, **params):
         """Lists all tags.
@@ -403,7 +360,6 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/tags', params=params)
 
-
     def get_variation(self, id, **params):
         """Get a single variation.
 
@@ -412,7 +368,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('catalog/variation/%s' % id, params=params)
-
 
     def get_variations(self, **params):
         """Lists all variations.
@@ -423,8 +378,7 @@ class EndpointsMixin(object):
         """
         return self.get('catalog/variations', params=params)
 
-
-    #shipping
+    # shipping
     def get_carriers(self, **params):
         """Get a single variation.
 
@@ -433,7 +387,6 @@ class EndpointsMixin(object):
 
         """
         return self.get('shipping/carriers', params=params)
-
 
     def get_shipping_order(self, order, **params):
         """Get the list of available shipping options with the calculated weight and cost in Kg and € respectively, for the given order.
@@ -445,10 +398,7 @@ class EndpointsMixin(object):
         #
         return self.post('shipping/orders', order, **params)
 
-
-
-
-    #order
+    # order
     def get_order_addresses(self, **params):
         """Get order shipping address structure.
 
@@ -457,7 +407,6 @@ class EndpointsMixin(object):
         """
         return self.get('order/addresses/new', **params)
 
-
     def get_order_carriers(self, **params):
         """Get order shipping address structure.
 
@@ -465,8 +414,6 @@ class EndpointsMixin(object):
         https://api.bigbuy.eu/doc#get--rest-order-carriers-new.{_format}
         """
         return self.get('order/carriers/new', **params)
-
-
 
     def check_order(self, order, **params):
         """Check/simulate an order and return the total order to paid.
@@ -508,8 +455,6 @@ class EndpointsMixin(object):
         }
         """
         return self.post('order/check', order, **params)
-
-
 
     def create_order(self, order, **params):
         """
@@ -553,7 +498,6 @@ class EndpointsMixin(object):
         """
         return self.post('order/create', order, **params)
 
-
     def get_order_by_custref(self, reference, **params):
         """Get order information by customer reference.
 
@@ -561,7 +505,6 @@ class EndpointsMixin(object):
         https://api.bigbuy.eu/doc#get--rest-order-carriers-new.{_format}
         """
         return self.get(f'order/reference/{reference}', **params)
-
 
     def get_order_by_id(self, idOrder, **params):
         """Get order information.
@@ -571,9 +514,7 @@ class EndpointsMixin(object):
         """
         return self.get(f'order/{idOrder}', **params)
 
-
-
-    #tracking
+    # tracking
     def get_tracking_carriers(self, **params):
         """Get the list of available carriers.
 
@@ -582,7 +523,6 @@ class EndpointsMixin(object):
         """
         return self.get('tracking/carriers', **params)
 
-
     def get_tracking_order(self, idOrder, **params):
         """Get the list of available trackings.
 
@@ -590,8 +530,6 @@ class EndpointsMixin(object):
         https://api.bigbuy.eu/doc#get--rest-tracking-order-{idOrder}.{_format}
         """
         return self.get(f'tracking/order/{idOrder}', **params)
-
-
 
     def get_trackings_orders(self, orders, **params):
         """
@@ -613,7 +551,7 @@ class EndpointsMixin(object):
           }
         }
         """
-        return self.post('tracking/orders', order, **params)
+        return self.post('tracking/orders', orders, **params)
 
 
 # from https://developer.twitter.com/en/docs/ads/general/guides/response-codes

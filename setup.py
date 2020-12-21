@@ -31,7 +31,7 @@ setup(
     description='Actively maintained, pure Python wrapper for the \
     BigBuy API.',
     long_description=open('README.rst').read() + '\n\n' +
-        open('HISTORY.rst').read(),
+                     open('HISTORY.rst').read(),
     include_package_data=True,
     packages=packages,
     classifiers=[

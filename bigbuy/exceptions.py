@@ -21,6 +21,7 @@ class BBError(Exception):
     def __init__(self, msg, error_code=None, retry_after=None, post_mortem=None):
         self.error_code = error_code
         self.post_mortem = post_mortem
+        self.retry_after = retry_after
         self.BBCode = None
         self.BBMessage = None
         self.msg = msg
