@@ -29,11 +29,14 @@ def _get_error_message(response):
         # bad JSON data
         return error_message
 
-    errors = content.get("errors")
-    if not errors:
-        return error_message
+    try:
+        errors = content.get("errors")
+        if errors:
+            return errors[0].get("message", error_message)
+    except (KeyError, IndexError, TypeError):
+        pass
 
-    return errors[0].get("message", error_message)
+    return error_message
 
 
 class BigBuy(EndpointsMixin, object):
