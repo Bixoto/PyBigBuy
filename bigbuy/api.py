@@ -15,6 +15,26 @@ from .compat import str
 from .endpoints import EndpointsMixin
 from .exceptions import BBError
 
+__all__ = ['BigBuy']
+
+
+def _get_error_message(response):
+    """Parse and return the first error message"""
+
+    error_message = f'An error occurred processing your request: {response.text}'
+    try:
+        # {"errors":[{"code":34,"message":"Sorry, that page does not exist"}]}
+        content = response.json()
+    except ValueError:
+        # bad JSON data
+        return error_message
+
+    errors = content.get("errors")
+    if not errors:
+        return error_message
+
+    return errors[0].get("message", error_message)
+
 
 class BigBuy(EndpointsMixin, object):
     def __init__(self, app_key=None, mode="sandbox", client_args=None):
@@ -89,13 +109,9 @@ class BigBuy(EndpointsMixin, object):
             'url': response.url,
             'content': response.text,
         }
-        # greater than 304 (not modified) is an error
-        if response.status_code > 304:
-            print(response)
-            print(response.text)
-            error_message = self._get_error_message(response)
+        if not response.ok:
+            error_message = _get_error_message(response)
             self._last_call['api_error'] = error_message
-            print(error_message)
             raise BBError(
                 error_message,
                 error_code=response.status_code,
@@ -116,26 +132,6 @@ class BigBuy(EndpointsMixin, object):
                                    Unable to decode.')
 
         return content
-
-    def _get_error_message(self, response):
-        """Parse and return the first error message"""
-
-        error_message = 'An error occurred processing your request.'
-        try:
-            content = response.json()
-            # {"errors":[{"code":34,"message":"Sorry,
-            # that page does not exist"}]}
-            error_message = content['errors'][0]['message']
-        except TypeError:
-            error_message = content['errors']
-        except ValueError:
-            # bad json data
-            pass
-        except (KeyError, IndexError):
-            # missing data so fallback to default message
-            pass
-
-        return error_message
 
     def request(self, endpoint, method='GET', params=None, version='1.1'):
         """Return dict of response received from Twitter's API
