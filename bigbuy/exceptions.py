@@ -158,11 +158,18 @@ def raise_for_response(response):
     if "errors" in content and content["errors"]:
         errors = content["errors"]
 
-        if errors and not isinstance(errors, dict):
-            error = errors[0]
-            if "code" in error:
-                bb_code = error["code"]
-            message = error.get("message", message)
+        if errors:
+            if isinstance(errors, dict) and "code" in content and "message" in content:
+                # {"code":400,"message":"Validation Failed",
+                #  "errors":{"children":{"delivery":{"children":{"postcode":{"errors":["Invalid postcode format..."]}}},
+                #                        "products":{...}}}}
+                bb_code = str(content["code"])
+                message = "%s: %s" % (content["message"], str(errors))
+            else:
+                error = errors[0]
+                if "code" in error:
+                    bb_code = error["code"]
+                message = error.get("message", message)
 
     # {"code": "ER003", "message": "..."}
     elif "code" in content and "message" in content:
