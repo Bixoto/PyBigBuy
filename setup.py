@@ -22,7 +22,7 @@ if sys.argv[-1] == 'publish':
 setup(
     name='pybigbuy',
     version=__version__,
-    install_requires=['requests>=2.1.0', 'ujson>=1.35'],
+    install_requires=['requests>=2.1.0'],
     author='Lugh',
     author_email='jbc@bixoto.com',
     license=open('LICENSE').read(),

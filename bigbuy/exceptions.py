@@ -8,7 +8,7 @@ This module contains Bigbuy-specific Exception classes.
 """
 from typing import Optional, Collection, Union
 
-import ujson
+import json
 
 
 class BBError(Exception):
@@ -130,7 +130,7 @@ def json_or_none(text) -> Optional[dict]:
         return None
 
     try:
-        return ujson.loads(text)
+        return json.loads(text)
     except ValueError:
         return None
 

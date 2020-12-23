@@ -1,6 +1,1 @@
-coverage==3.6.0
 requests>=2.1.0
-python-coveralls==2.1.0
-nose-cov==1.6
-ujson==1.35
-responses==0.3.0
