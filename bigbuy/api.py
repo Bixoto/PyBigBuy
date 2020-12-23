@@ -11,7 +11,6 @@ dealing with the Twitter API
 import requests
 
 from . import __version__
-from .compat import str
 from .endpoints import EndpointsMixin
 from .exceptions import BBError
 
