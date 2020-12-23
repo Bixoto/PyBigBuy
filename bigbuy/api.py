@@ -4,6 +4,7 @@
 Official documentation for Bigbuy API endpoints can be found at:
 https://api.bigbuy.eu/doc
 """
+from typing import Optional, Dict, Any
 
 import requests
 
@@ -14,7 +15,7 @@ __all__ = ['BigBuy']
 
 
 class BigBuy:
-    def __init__(self, app_key=None, mode="sandbox", client_args=None):
+    def __init__(self, app_key: Optional[str] = None, mode="sandbox", client_args: Optional[dict] = None):
         """Instantiates an instance of BigBuy. Takes optional parameters for
         authentication and such (see below).
 
@@ -50,7 +51,7 @@ class BigBuy:
         for k, v in client_args_copy.items():
             if k in ('cert', 'hooks', 'max_redirects', 'proxies'):
                 setattr(self.client, k, v)
-                self.client_args.pop(k)  # Pop, pop!
+                self.client_args.pop(k)
 
         # Headers are always present, so we unconditionally pop them and merge
         # them into the session headers.
@@ -59,7 +60,7 @@ class BigBuy:
     def __repr__(self):
         return '<Bigbuy: %s>' % self.app_key
 
-    def request(self, endpoint, method='get', params=None):
+    def request(self, endpoint: str, method='get', params: Optional[dict] = None):
         """Return dict of response received from BigBuy's API
 
         :param endpoint: (required) Full url or API endpoint
@@ -112,17 +113,13 @@ class BigBuy:
 
         return content
 
-    def get(self, endpoint, params=None):
+    def get(self, endpoint: str, params=None):
         """Shortcut for GET requests via :class:`request`"""
         return self.request(endpoint, params=params)
 
-    def post(self, endpoint, params=None):
+    def post(self, endpoint: str, params=None):
         """Shortcut for POST requests via :class:`request`"""
         return self.request(endpoint, 'post', params=params)
-
-    def delete(self, endpoint, params=None):
-        """Shortcut for delete requests via :class:`request`"""
-        return self.request(endpoint, 'delete', params=params)
 
     # catalog
     def get_attribute(self, attribute_id, **params):
@@ -261,7 +258,7 @@ class BigBuy:
         """
         return self.get('catalog/productinformationalllanguages/%s' % product_id, params=params)
 
-    def get_product_information_by_sku(self, sku, **params):
+    def get_product_information_by_sku(self, sku: str, **params):
         """Get a single product by sku.
 
         Docs:
@@ -465,7 +462,7 @@ class BigBuy:
         """
         return self.get('order/carriers/new', **params)
 
-    def check_order(self, order):
+    def check_order(self, order: Dict[str, Any]):
         """Check/simulate an order and return the total order to paid.
 
         Docs:
@@ -506,7 +503,7 @@ class BigBuy:
         """
         return self.post('order/check', order)
 
-    def create_order(self, order):
+    def create_order(self, order: Dict[str, Any]):
         """
         Submit an order.
 
@@ -583,7 +580,7 @@ class BigBuy:
 
     def get_trackings_orders(self, orders):
         """
-        Get the list of available trackings for the passed orders.
+        Get the list of available trackings for the given orders.
 
         Docs:
         https://api.bigbuy.eu/doc#post--rest-tracking-orders.{_format}
