@@ -12,30 +12,9 @@ import requests
 
 from . import __version__
 from .endpoints import EndpointsMixin
-from .exceptions import BBError
+from .exceptions import BBError, BBResponseError, BBSSLEndpointError, raise_for_response
 
 __all__ = ['BigBuy']
-
-
-def _get_error_message(response):
-    """Parse and return the first error message"""
-
-    error_message = f'An error occurred processing your request: {response.text}'
-    try:
-        # {"errors":[{"code":34,"message":"Sorry, that page does not exist"}]}
-        content = response.json()
-    except ValueError:
-        # bad JSON data
-        return error_message
-
-    try:
-        errors = content.get("errors")
-        if errors:
-            return errors[0].get("message", error_message)
-    except (KeyError, IndexError, TypeError):
-        pass
-
-    return error_message
 
 
 class BigBuy(EndpointsMixin, object):
@@ -100,7 +79,7 @@ class BigBuy(EndpointsMixin, object):
         """
 
         if endpoint.startswith('http://'):
-            raise BBError('api.bigbuy.com is restricted to SSL/TLS traffic.')
+            raise BBSSLEndpointError(endpoint)
         if endpoint.startswith('https://'):
             url = endpoint
         else:
