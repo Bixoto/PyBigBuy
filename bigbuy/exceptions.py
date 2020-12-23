@@ -151,18 +151,23 @@ def raise_for_response(response):
 
     content = response.json()
 
+    bb_code = "unknown"
+    message = str(content)
+
     # {"errors":[{"code":34,"message":"Sorry, that page does not exist"}]}
     if "errors" in content and content["errors"]:
-        error = content["errors"][0]
+        errors = content["errors"]
+
+        if errors and not isinstance(errors, dict):
+            error = errors[0]
+            if "code" in error:
+                bb_code = error["code"]
+            message = error.get("message", message)
+
     # {"code": "ER003", "message": "..."}
     elif "code" in content and "message" in content:
-        error = content
-    else:
-        # safe default
-        error = {"code": "?", "message": str(content)}
-
-    bb_code = error["code"]
-    message = error["message"]
+        bb_code = content["code"]
+        message = content["message"]
 
     # Yes, nested JSON
     message_content = json_or_none(message)
