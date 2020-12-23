@@ -58,7 +58,7 @@ class BigBuy(EndpointsMixin, object):
         elif mode == "production":
             self.api_url = 'https://api.bigbuy.eu/rest'
         self.client_args = client_args or {}
-        default_headers = {'User-Agent': 'pyBigBuy v' + __version__}
+        default_headers = {'User-Agent': f'pyBigBuy v{__version__}'}
         self.client_args.setdefault('headers', default_headers)
         if 'User-Agent' not in self.client_args['headers']:
             # If they set headers, but didn't include User-Agent set it for them
@@ -80,14 +80,32 @@ class BigBuy(EndpointsMixin, object):
         # Headers are always present, so we unconditionally pop them and merge
         # them into the session headers.
         self.client.headers.update(self.client_args.pop('headers'))
-        self._last_call = None
 
     def __repr__(self):
         return '<Bigbuy: %s>' % self.app_key
 
-    def _request(self, url, method='GET', params=None, api_call=None):
-        """Internal request method"""
-        method = method.lower()
+    def request(self, endpoint, method='get', params=None):
+        """Return dict of response received from BigBuy's API
+
+        :param endpoint: (required) Full url or API endpoint
+        :type endpoint: string
+        :param method: (optional) Method of accessing data, either
+                       GET, POST or DELETE. (default GET)
+        :type method: string
+        :param params: (optional) Dict of parameters (if any) accepted
+                       by the BigBuy API endpoint you are trying to
+                       access (default None)
+        :type params: dict or None
+        :rtype: dict
+        """
+
+        if endpoint.startswith('http://'):
+            raise BBError('api.bigbuy.com is restricted to SSL/TLS traffic.')
+        if endpoint.startswith('https://'):
+            url = endpoint
+        else:
+            url = '%s/%s.json' % (self.api_url, endpoint)
+
         params = params or {}
 
         func = getattr(self.client, method)
@@ -99,81 +117,34 @@ class BigBuy(EndpointsMixin, object):
         try:
             response = func(url, **requests_args)
         except requests.RequestException as e:
-            raise BBError(str(e))
+            raise BBResponseError(str(e), e.response)
 
-        # create stash for last function intel
-        self._last_call = {
-            'api_call': api_call,
-            'api_error': None,
-            'cookies': response.cookies,
-            'headers': response.headers,
-            'status_code': response.status_code,
-            'url': response.url,
-            'content': response.text,
-        }
-        if not response.ok:
-            error_message = _get_error_message(response)
-            self._last_call['api_error'] = error_message
-            raise BBError(
-                error_message,
-                error_code=response.status_code,
-                retry_after=response.headers.get('X-Rate-Limit-Reset'),
-                post_mortem=self._last_call
-            )
-        content = ''
-        try:
-            if response.status_code == 204:
-                content = response.content
-            elif response.status_code == 201:
-                content = response
-            else:
+        raise_for_response(response)
+
+        # TODO(BF): challenge this part -- why does the return type differ based on the response code?
+        #  As a caller I don't know what to expect when I call this function.
+        if response.status_code == 204:
+            content = response.content
+        elif response.status_code == 201:
+            content = response
+        elif response.content != '':
+            try:
                 content = response.json()
-        except ValueError:
-            if response.content != '':
-                raise BBError('Response was not valid JSON. \
-                                   Unable to decode.')
-
-        return content
-
-    def request(self, endpoint, method='GET', params=None, version='1.1'):
-        """Return dict of response received from Twitter's API
-
-        :param endpoint: (required) Full url or Twitter API endpoint
-                         (e.g. search/tweets)
-        :type endpoint: string
-        :param method: (optional) Method of accessing data, either
-                       GET, POST or DELETE. (default GET)
-        :type method: string
-        :param params: (optional) Dict of parameters (if any) accepted
-                       the by Twitter API endpoint you are trying to
-                       access (default None)
-        :type params: dict or None
-        :param version: (optional) Twitter API version to access
-                        (default 1.1)
-        :type version: string
-        :rtype: dict
-        """
-
-        if endpoint.startswith('http://'):
-            raise BBError('api.bigbuy.com is restricted to SSL/TLS traffic.')
-        if endpoint.startswith('https://'):
-            url = endpoint
+            except ValueError:
+                raise BBError('Response is not valid JSON. Unable to decode.')
         else:
-            url = '%s/%s.json' % (self.api_url, endpoint)
-
-        content = self._request(url, method=method, params=params,
-                                api_call=url)
+            content = ''
 
         return content
 
-    def get(self, endpoint, params=None, version='1.1'):
+    def get(self, endpoint, params=None):
         """Shortcut for GET requests via :class:`request`"""
-        return self.request(endpoint, params=params, version=version)
+        return self.request(endpoint, params=params)
 
-    def post(self, endpoint, params=None, version='1.1'):
+    def post(self, endpoint, params=None):
         """Shortcut for POST requests via :class:`request`"""
-        return self.request(endpoint, 'POST', params=params, version=version)
+        return self.request(endpoint, 'post', params=params)
 
-    def delete(self, endpoint, params=None, version='1.1'):
+    def delete(self, endpoint, params=None):
         """Shortcut for delete requests via :class:`request`"""
-        return self.request(endpoint, 'DELETE', params=params, version=version)
+        return self.request(endpoint, 'delete', params=params)
