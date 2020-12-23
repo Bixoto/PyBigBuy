@@ -8,7 +8,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-__author__ = 'Lugh <jbc@mozaart.com>'
+__author__ = 'Lugh <jbc@bixoto.com>'
 __version__ = '3.7.0'
 
 packages = [
@@ -24,7 +24,7 @@ setup(
     version=__version__,
     install_requires=['requests>=2.1.0', 'ujson>=1.35'],
     author='Lugh',
-    author_email='jbc@mozaart.com',
+    author_email='jbc@bixoto.com',
     license=open('LICENSE').read(),
     url='TODO',
     keywords='bigbuy search api dropshipping stream',
@@ -40,7 +40,6 @@ setup(
         'Topic :: Internet',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.9',
     ]
