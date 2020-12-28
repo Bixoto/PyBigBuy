@@ -8,30 +8,32 @@ try:
 except ImportError:
     from distutils.core import setup
 
-__author__ = 'Lugh <jbc@bixoto.com>'
-__version__ = '3.7.0'
+# http://stackoverflow.com/a/7071358/735926
+import re
 
-packages = [
-    'bigbuy',
-]
-
-if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
-    sys.exit()
+VERSIONFILE = 'bigbuy/__init__.py'
+verstrline = open(VERSIONFILE, 'rt').read()
+VSRE = r'^__version__\s+=\s+[\'"]([^\'"]+)[\'"]'
+mo = re.search(VSRE, verstrline, re.M)
+if mo:
+    verstr = mo.group(1)
+else:
+    raise RuntimeError("Unable to find version string in %s." % VERSIONFILE)
 
 setup(
     name='pybigbuy',
-    version=__version__,
+    version=verstr,
     install_requires=['requests>=2.1.0'],
     author='Lugh',
     author_email='jbc@bixoto.com',
-    license=open('LICENSE').read(),
+    license='MIT',
     url='TODO',
     keywords='bigbuy search api dropshipping stream',
     description='Python wrapper for the BigBuy API.',
-    long_description=open('README.rst').read() + '\n\n' + open('HISTORY.rst').read(),
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     include_package_data=True,
-    packages=packages,
+    packages=['bigbuy'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
