@@ -11,7 +11,7 @@ from typing import Optional, Collection, Union, Dict, Any
 import json
 
 
-class BBError(Exception):
+class BBError(BaseException):
     """Generic error class."""
 
 
