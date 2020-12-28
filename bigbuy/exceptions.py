@@ -6,7 +6,7 @@ bigbuy.exceptions
 
 This module contains Bigbuy-specific Exception classes.
 """
-from typing import Optional, Collection, Union
+from typing import Optional, Collection, Union, Dict, Any
 
 import json
 
@@ -135,6 +135,41 @@ def json_or_none(text) -> Optional[dict]:
         return None
 
 
+def flat_children_errors(children: Dict[str, Any], prefix=""):
+    """
+    Simplify children errors:
+
+    Before:
+      {'internalReference': [], 'cashOnDelivery': [], 'language': [],
+       'shippingAddress': {'children': {'firstName': [], 'lastName': {'errors': ['This value is too long.']}}}
+
+    After:
+      {'shippingAddress.lastName': ['This value is too long.']}
+
+
+    """
+    trimmed = {}
+
+    for field, value in children.items():
+        if not value:
+            continue
+
+        if prefix:
+            field = f"{prefix}.{field}"
+
+        if isinstance(value, dict) and len(value) == 1:
+            if "errors" in value:
+                trimmed[field] = value["errors"]
+            elif "children" in value:
+                trimmed.update(flat_children_errors(value["children"], prefix=field))
+            else:
+                trimmed[field] = value
+        else:
+            trimmed[field] = value
+
+    return trimmed
+
+
 def raise_for_response(response):
     """
     Equivalent of request.Response#raise_for_status() that raises an exception based on the response's status.
@@ -163,8 +198,13 @@ def raise_for_response(response):
                 # {"code":400,"message":"Validation Failed",
                 #  "errors":{"children":{"delivery":{"children":{"postcode":{"errors":["Invalid postcode format..."]}}},
                 #                        "products":{...}}}}
+                if len(errors) == 1 and "children" in errors:
+                    errors_message = flat_children_errors(errors["children"])
+                else:
+                    errors_message = str(errors)
+
                 bb_code = str(content["code"])
-                message = "%s: %s" % (content["message"], str(errors))
+                message = "%s: %s" % (content["message"], errors_message)
             else:
                 error = errors[0]
                 if "code" in error:
