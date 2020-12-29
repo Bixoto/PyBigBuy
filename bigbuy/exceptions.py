@@ -28,6 +28,10 @@ class BBResponseError(BBError):
         super(BBError, self).__init__(text)
 
 
+class BBRateLimitError(BBResponseError):
+    pass
+
+
 class BBProductError(BBResponseError):
     def __init__(self, text, response, bb_code, bb_data):
         self.skus: Collection[str] = bb_data["skus"]
@@ -181,7 +185,10 @@ def raise_for_response(response):
     content = json_or_none(text)
 
     if content is None:
-        # e.g.: "You exceeded the rate limit"
+        if text == "You exceeded the rate limit":
+            # TODO extract metadata from the headers if possible
+            raise BBRateLimitError(text, response)
+
         raise BBResponseError(text, response)
 
     content = response.json()
