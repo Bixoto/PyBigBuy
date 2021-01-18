@@ -7,7 +7,7 @@ bigbuy.exceptions
 This module contains Bigbuy-specific Exception classes.
 """
 from datetime import datetime, timedelta
-from typing import Optional, Collection, Union, Dict, Any
+from typing import Optional, Collection, Union, Dict, Any, List
 
 import json
 
@@ -164,7 +164,7 @@ def json_or_none(text) -> Optional[dict]:
         return None
 
 
-def flat_children_errors(children: Dict[str, Any], prefix=""):
+def flat_children_errors(children: Union[List, Dict[str, Any]], prefix=""):
     """
     Simplify children errors:
 
@@ -174,9 +174,10 @@ def flat_children_errors(children: Dict[str, Any], prefix=""):
 
     After:
       {'shippingAddress.lastName': ['This value is too long.']}
-
-
     """
+    if isinstance(children, list):
+        return children
+
     trimmed = {}
 
     for field, value in children.items():
