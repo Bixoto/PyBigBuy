@@ -231,7 +231,10 @@ def raise_for_response(response):
                 #  "errors":{"children":{"delivery":{"children":{"postcode":{"errors":["Invalid postcode format..."]}}},
                 #                        "products":{...}}}}
                 if len(errors) == 1 and "children" in errors:
-                    errors_message = flat_children_errors(errors["children"])
+                    try:
+                        errors_message = flat_children_errors(errors["children"])
+                    except ValueError:  # TODO(BF) fix them
+                        errors_message = str(errors)
                 else:
                     errors_message = str(errors)
 
