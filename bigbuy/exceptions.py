@@ -165,6 +165,10 @@ def json_or_none(text) -> Optional[dict]:
 
 
 def _trim_empty_collections(obj: Any):
+    """
+    Given a dict or list whose children are only dicts or lists with either truthy values or empty collections, remove
+    the latter. This is an internal utility.
+    """
     if isinstance(obj, list):
         trimmed_elements = (_trim_empty_collections(el) for el in obj)
         return [el for el in trimmed_elements if el]
