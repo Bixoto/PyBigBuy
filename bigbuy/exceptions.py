@@ -164,6 +164,25 @@ def json_or_none(text) -> Optional[dict]:
         return None
 
 
+def _trim_empty_collections(obj: Any):
+    if isinstance(obj, list):
+        trimmed_elements = (_trim_empty_collections(el) for el in obj)
+        return [el for el in trimmed_elements if el]
+
+    if isinstance(obj, dict):
+        d = {}
+        for k, v in obj.items():
+            trimmed_value = _trim_empty_collections(v)
+            if not trimmed_value:
+                continue
+
+            d[k] = trimmed_value
+
+        return d
+
+    return obj
+
+
 def flat_children_errors(children: Union[List, Dict[str, Any]], prefix=""):
     """
     Simplify children errors:
@@ -175,15 +194,14 @@ def flat_children_errors(children: Union[List, Dict[str, Any]], prefix=""):
     After:
       {'shippingAddress.lastName': ['This value is too long.']}
     """
+    children = _trim_empty_collections(children)
+
     if isinstance(children, list):
         return children
 
     trimmed = {}
 
     for field, value in children.items():
-        if not value:
-            continue
-
         if prefix:
             field = f"{prefix}.{field}"
 
@@ -231,10 +249,7 @@ def raise_for_response(response):
                 #  "errors":{"children":{"delivery":{"children":{"postcode":{"errors":["Invalid postcode format..."]}}},
                 #                        "products":{...}}}}
                 if len(errors) == 1 and "children" in errors:
-                    try:
-                        errors_message = flat_children_errors(errors["children"])
-                    except ValueError:  # TODO(BF) fix them
-                        errors_message = str(errors)
+                    errors_message = flat_children_errors(errors["children"])
                 else:
                     errors_message = str(errors)
 
