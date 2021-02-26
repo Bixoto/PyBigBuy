@@ -558,7 +558,7 @@ class BigBuy(requests.Session):
         be shorter as some orders may not have available tracking.
         """
         payload = {
-            "tracking": {
+            "track": {
                 "orders": [{"id": order_id} for order_id in order_ids],
             }
         }
