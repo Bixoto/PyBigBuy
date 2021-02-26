@@ -60,6 +60,7 @@ class BigBuy(requests.Session):
         if response.status_code == 201:
             return response  # FIXME(BF): this needed because on create_order we need the headers to parse 'Location'
         if response.status_code == 204:
+            # NOTE(BF): there’s no endpoint in BB’s swagger that return a 204
             return response.content
         elif response.content:
             try:
