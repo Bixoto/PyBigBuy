@@ -9,7 +9,7 @@ from typing import Optional, Dict, Any, Union, Iterable
 import requests
 
 from . import __version__
-from .exceptions import BBError, BBResponseError, BBSSLEndpointError, raise_for_response
+from .exceptions import BBError, BBResponseError, raise_for_response
 
 __all__ = ['BigBuy']
 
@@ -75,12 +75,7 @@ class BigBuy:
         :rtype: dict
         """
 
-        if endpoint.startswith('http://'):
-            raise BBSSLEndpointError(endpoint)
-        if endpoint.startswith('https://'):
-            url = endpoint
-        else:
-            url = '%s/%s.json' % (self.api_url, endpoint)
+        url = '%s/%s.json' % (self.api_url, endpoint)
 
         params = params or {}
 
@@ -90,6 +85,7 @@ class BigBuy:
             requests_args['params'] = params
         else:
             requests_args["json"] = params
+        func = getattr(self, method)
         try:
             response = func(url, **requests_args)
         except requests.RequestException as e:

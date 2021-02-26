@@ -10,7 +10,7 @@ __version__ = '3.7.0'
 
 from .api import BigBuy
 from .exceptions import (
-    BBError, BBResponseError, BBSSLEndpointError, BBPackError, BBExportError, BBProductError, BBStockError,
+    BBError, BBResponseError, BBPackError, BBExportError, BBProductError, BBStockError,
     BBNoCarrierError, BBBankWireTooLowError, BBMoneyBoxTooLowError, BBTemporaryOrderError, BBOrderAlreadyExistsError,
     BBOrderTooLowError, BBIncorrectRefError, BBInvalidPaymentError, BBZipcodeFormatError, BBProductNotFoundError,
 )

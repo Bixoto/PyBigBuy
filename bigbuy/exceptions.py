@@ -125,16 +125,6 @@ class BBPackError(BBResponseError):
     pass
 
 
-class BBSSLEndpointError(BBError):
-    """
-    Exception raised if one uses a non-HTTPS URL for a BigBuy endpoint.
-    """
-
-    def __init__(self, endpoint):
-        self.endpoint = endpoint
-        super().__init__('api.bigbuy.com is restricted to SSL/TLS traffic.')
-
-
 error_classes = {
     # https://api.bigbuy.eu/doc#post--rest-order-check.{_format}
     "ER001": BBProductNotFoundError,
@@ -260,7 +250,7 @@ def raise_for_response(response):
                 bb_code = str(content["code"])
                 message = "%s: %s" % (content["message"], errors_message)
             else:
-                error = errors[0]
+                error= errors[0]
                 if "code" in error:
                     bb_code = error["code"]
                 message = error.get("message", message)
