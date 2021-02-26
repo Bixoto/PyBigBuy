@@ -4,7 +4,7 @@
 Official documentation for Bigbuy API endpoints can be found at:
 https://api.bigbuy.eu/doc
 """
-from typing import Optional, Dict, Any, Union, Iterable
+from typing import Optional, Dict, Any, Union, Iterable, List, cast
 
 import requests
 
@@ -545,12 +545,16 @@ class BigBuy(requests.Session):
         """
         return self.get_api(f'tracking/order/{order_id}', **params)
 
-    def get_trackings_orders(self, order_ids: Iterable[Union[int, str]]):
+    def get_tracking_orders(self, order_ids: Iterable[Union[int, str]], match_ids=True):
         """
         Get the list of available trackings for the given orders.
 
         Docs:
         https://api.bigbuy.eu/doc#post--rest-tracking-orders.{_format}
+
+        If ``match_ids`` is true (the default), the returned sequence is guaranteed to have the same length
+        as ``order_ids``, filled with ``None`` when appropriate. Otherwise it should be in the same order but may
+        be shorter as some orders may not have available tracking.
         """
         payload = {
             "tracking": {
@@ -558,4 +562,14 @@ class BigBuy(requests.Session):
             }
         }
 
-        return self.post_api('tracking/orders', json=payload)
+        trackings = cast(List[dict], self.post_api('tracking/orders', json=payload))
+
+        if not match_ids:
+            return trackings
+
+        tracking_by_id: Dict[str, dict] = {}
+        for tracking in trackings:
+            tracking_by_id[tracking["id"]] = tracking
+
+        filled_trackings: List[Optional[dict]] = [tracking_by_id.get(order_id) for order_id in order_ids]
+        return filled_trackings
