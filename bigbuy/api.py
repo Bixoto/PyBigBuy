@@ -4,7 +4,7 @@
 Official documentation for Bigbuy API endpoints can be found at:
 https://api.bigbuy.eu/doc
 """
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Union, Iterable
 
 import requests
 
@@ -570,7 +570,7 @@ class BigBuy:
         """
         return self.get('tracking/carriers', **params)
 
-    def get_tracking_order(self, order_id, **params):
+    def get_tracking_order(self, order_id: Union[int, str], **params):
         """Get the list of available trackings.
 
         Docs:
@@ -578,24 +578,17 @@ class BigBuy:
         """
         return self.get(f'tracking/order/{order_id}', **params)
 
-    def get_trackings_orders(self, orders):
+    def get_trackings_orders(self, order_ids: Iterable[Union[int, str]]):
         """
         Get the list of available trackings for the given orders.
 
         Docs:
         https://api.bigbuy.eu/doc#post--rest-tracking-orders.{_format}
-        Example order
-        order = {
-          "track":{
-            "orders":[
-              {
-                "id":"66666"
-              },
-              {
-                "id":"66667"
-              }
-            ]
-          }
-        }
         """
-        return self.post('tracking/orders', orders)
+        payload = {
+            "tracking": {
+                "orders": [{"id": order_id} for order_id in order_ids],
+            }
+        }
+
+        return self.post('tracking/orders', payload)
