@@ -57,17 +57,17 @@ class BigBuy(requests.Session):
 
         # TODO(BF): challenge this part -- why does the return type differ based on the response code?
         #  As a caller I don't know what to expect when I call this function.
-        if response.status_code in {201, 204}:
-            content = response.content
+        if response.status_code == 201:
+            return response  # FIXME(BF): this needed because on create_order we need the headers to parse 'Location'
+        if response.status_code == 204:
+            return response.content
         elif response.content:
             try:
-                content = response.json()
+                return response.json()
             except ValueError:
                 raise BBError('Response is not valid JSON. Unable to decode.')
         else:
-            content = ''
-
-        return content
+            return ''
 
     def get_api(self, endpoint: str, *, params=None):
         """Shortcut for GET requests via :class:`request`"""
