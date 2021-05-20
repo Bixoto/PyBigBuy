@@ -250,7 +250,7 @@ def raise_for_response(response):
                 bb_code = str(content["code"])
                 message = "%s: %s" % (content["message"], errors_message)
             else:
-                error= errors[0]
+                error = errors[0]
                 if "code" in error:
                     bb_code = error["code"]
                 message = error.get("message", message)
