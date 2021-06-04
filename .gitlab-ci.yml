@@ -26,11 +26,10 @@ test:
 build_package:
   stage: deploy
   script:
-    - cat $PYPIRC > "$CI_PROJECT_DIR/.pypirc"
     - pip install twine
     - rm -rf dist/*
-    - python setup.py bdist_wheel
+    - python setup.py sdist bdist_wheel
     - python -m twine check dist/*
-    - python -m twine upload --repository gitlab dist/* --config-file "$CI_PROJECT_DIR/.pypirc"
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/groups/10192953/packages/pypi dist/*
   only:
     - tags
