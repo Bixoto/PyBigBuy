@@ -21,3 +21,16 @@ test:
   script:
     - python tests/test.py
     - 'mypy --ignore-missing-imports --allow-untyped-globals *.py'
+
+# https://medium.com/maisonsdumonde/gitlab-ci-cd-and-gitlab-pypi-repository-4916a51d22eb
+build_package:
+  stage: deploy
+  script:
+    - cat $PYPIRC > "$CI_PROJECT_DIR/.pypirc"
+    - pip install twine
+    - rm -rf dist/*
+    - python setup.py bdist_wheel
+    - python -m twine check dist/*
+    - python -m twine upload --repository gitlab dist/* --config-file "$CI_PROJECT_DIR/.pypirc"
+  only:
+    - tags
