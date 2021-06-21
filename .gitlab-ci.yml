@@ -30,8 +30,6 @@ build_package:
     - rm -rf dist/*
     - python setup.py sdist bdist_wheel
     - python -m twine check dist/*
-    # TODO change the repository URL to ${CI_API_V4_URL}/groups/10192953/-/packages/pypi once Gitlab 14.0 is out
-    #   This would allow us to install all package from the same group-level repository.
-    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/projects/22715116/packages/pypi dist/*
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/groups/10192953/-/packages/pypi dist/*
   only:
     - tags
