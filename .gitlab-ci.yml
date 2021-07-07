@@ -3,24 +3,23 @@ image: python:latest
 
 variables:
   PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
+  POETRY_CACHE_DIR: "$CI_PROJECT_DIR/.cache/poetry"
 
 cache:
   paths:
     - .cache/pip
+    - .cache/poetry
     - venv/
 
 before_script:
   - python -V  # Print out python version for debugging
-  - pip install virtualenv
-  - virtualenv venv
-  - source venv/bin/activate
-  - pip install -r requirements.txt
-  - pip install -r requirements-dev.txt
+  - python -m pip install poetry
+  - poetry install
 
 test:
   script:
-    - python tests/test.py
-    - 'mypy --ignore-missing-imports --allow-untyped-globals *.py'
+    - poetry run python tests/test.py
+    - 'poetry run mypy --ignore-missing-imports --allow-untyped-globals *.py'
 
 # https://medium.com/maisonsdumonde/gitlab-ci-cd-and-gitlab-pypi-repository-4916a51d22eb
 build_package:
@@ -30,6 +29,9 @@ build_package:
     - rm -rf dist/*
     - python setup.py sdist bdist_wheel
     - python -m twine check dist/*
-    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/groups/10192953/packages/pypi dist/*
+    # https://docs.gitlab.com/ee/user/packages/pypi_repository/#authenticate-to-access-packages-within-a-group
+    # TODO(BF): test with curl https://docs.gitlab.com/ee/api/packages/pypi.html#upload-a-package
+    #   right now we get a 404 with and without /-/
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --repository-url ${CI_API_V4_URL}/groups/10192953/-/packages/pypi dist/*
   only:
     - tags
