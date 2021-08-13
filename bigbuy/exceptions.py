@@ -203,7 +203,11 @@ def flat_children_errors(children: Union[List, Dict[str, Any]], prefix=""):
             if "errors" in value:
                 trimmed[field] = value["errors"]
             elif "children" in value:
-                trimmed.update(flat_children_errors(value["children"], prefix=field))
+                flattened = flat_children_errors(value["children"], prefix=field)
+                if isinstance(flattened, dict):
+                    trimmed.update(flattened)
+                else:
+                    trimmed[field] = value
             else:
                 trimmed[field] = value
         else:
