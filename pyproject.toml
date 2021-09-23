@@ -4,6 +4,10 @@ version = "3.8.1"
 description = ""
 authors = []
 license = "MIT"
+# https://github.com/python-poetry/poetry/issues/705#issuecomment-444742697
+packages = [
+    {include = "bigbuy"}
+]
 
 [tool.poetry.dependencies]
 python = "^3.9"
