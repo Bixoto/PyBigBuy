@@ -125,6 +125,10 @@ class BBPackError(BBResponseError):
     pass
 
 
+class BBServerError(BBResponseError):
+    pass
+
+
 error_classes = {
     # https://api.bigbuy.eu/doc#post--rest-order-check.{_format}
     "ER001": BBProductNotFoundError,
@@ -229,6 +233,9 @@ def raise_for_response(response):
     if content is None:
         if text == "You exceeded the rate limit":
             raise BBRateLimitError(text, response)
+
+        if text == "Bad Gateway" or text.startswith("<html><body><h1>504 Gateway Time-out</h1>"):
+            raise BBServerError(text, response)
 
         raise BBResponseError(text, response)
 
