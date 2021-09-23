@@ -1,5 +1,9 @@
 # PyBigBuy Changelog
 
+## 3.8.1 (2021-09-23)
+
+* Add `BBServerError` as a subclass of `BBResponseError` for `503`/`504` errors
+
 ## 3.8.0 (2021-06-04)
 
 * Make BigBuy an HTTP client

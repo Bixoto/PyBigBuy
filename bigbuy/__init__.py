@@ -5,12 +5,13 @@ Bigbuy
 Bigbuy is a library for Python that wraps the BigBuy API.
 """
 
-__author__ = 'Lugh <jbc@bixoto.com>'
-__version__ = '3.8.0'
+__author__ = 'Bixoto <info@bixoto.com>'
+__version__ = '3.8.1'
 
 from .api import BigBuy
 from .exceptions import (
     BBError, BBResponseError, BBPackError, BBExportError, BBProductError, BBStockError,
     BBNoCarrierError, BBBankWireTooLowError, BBMoneyBoxTooLowError, BBTemporaryOrderError, BBOrderAlreadyExistsError,
     BBOrderTooLowError, BBIncorrectRefError, BBInvalidPaymentError, BBZipcodeFormatError, BBProductNotFoundError,
+    BBServerError, BBRateLimitError,
 )

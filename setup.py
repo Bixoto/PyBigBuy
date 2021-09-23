@@ -21,8 +21,8 @@ setup(
     name='pybigbuy',
     version=verstr,
     install_requires=['requests>=2.1.0'],
-    author='Lugh',
-    author_email='jbc@bixoto.com',
+    author='Bixoto',
+    author_email='info@bixoto.com',
     license='MIT',
     url='TODO',
     keywords='bigbuy search api dropshipping stream',
@@ -39,6 +39,7 @@ setup(
         'Topic :: Internet',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
     ]
 )
