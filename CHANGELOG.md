@@ -1,8 +1,10 @@
 # PyBigBuy Changelog
 
-## 3.8.1 (2021-09-23)
+## 3.8.2 (2021-09-23)
 
 * Add `BBServerError` as a subclass of `BBResponseError` for `503`/`504` errors
+
+Note: 3.8.1 is the same as this version.
 
 ## 3.8.0 (2021-06-04)
 
