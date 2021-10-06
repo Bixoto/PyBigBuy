@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pybigbuy"
-version = "3.8.2"
+version = "3.8.3"
 description = ""
 authors = []
 license = "MIT"
