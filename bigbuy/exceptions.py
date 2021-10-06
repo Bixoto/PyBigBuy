@@ -232,12 +232,14 @@ def raise_for_response(response):
 
     if content is None:
         if text == "You exceeded the rate limit":
-            raise BBRateLimitError(text, response)
+            cls = BBRateLimitError
+        elif text.startswith("<html><body><h1>504 Gateway Time-out</h1>") or \
+                text in {"Bad Gateway", "Internal Server Error"}:
+            cls = BBServerError
+        else:
+            cls = BBResponseError
 
-        if text == "Bad Gateway" or text.startswith("<html><body><h1>504 Gateway Time-out</h1>"):
-            raise BBServerError(text, response)
-
-        raise BBResponseError(text, response)
+        raise cls(text, response)
 
     content = response.json()
 
