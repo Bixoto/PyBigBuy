@@ -1,5 +1,9 @@
 # PyBigBuy Changelog
 
+## 3.8.5 (2021-10-06)
+
+* Fix the previous release’s addition
+
 ## 3.8.4 (2021-10-06)
 
 * Raise `BBServerError` on another format of internal server error responses
