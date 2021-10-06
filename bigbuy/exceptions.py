@@ -273,6 +273,9 @@ def raise_for_response(response):
         bb_code = content["code"]
         message = content["message"]
 
+    if bb_code // 100 == 5:
+        raise BBServerError(message, response, bb_code=bb_code)
+
     # Yes, nested JSON
     message_content = json_or_none(message)
     if message_content is None:
