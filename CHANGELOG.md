@@ -1,5 +1,9 @@
 # PyBigBuy Changelog
 
+## 3.8.6 (2021-10-07)
+
+* Fix the 3.8.4 release
+
 ## 3.8.5 (2021-10-06)
 
 * Fix the previous release’s addition
