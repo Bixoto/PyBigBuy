@@ -7,33 +7,36 @@ https://api.bigbuy.eu/doc
 from typing import Optional, Dict, Any, Union, Iterable, List, cast
 
 import requests
+from api_session import APISession
 
 from . import __version__
-from .exceptions import BBError, BBResponseError, raise_for_response
+from .exceptions import BBResponseError, raise_for_response
 
 __all__ = ['BigBuy']
 
 
-class BigBuy(requests.Session):
+class BigBuy(APISession):
     def __init__(self, app_key: Optional[str] = None, mode="sandbox"):
         """Instantiates an instance of BigBuy.
 
         :param app_key: Your applications key
         :param mode: "sandbox" or "production"
         """
-        super().__init__()
+        if mode == "sandbox":
+            base_url = 'https://api.sandbox.bigbuy.eu/rest'
+        else:  # if mode == "production":
+            base_url = 'https://api.bigbuy.eu/rest'
+
+        super().__init__(base_url, user_agent=f'pyBigBuy v{__version__}')
 
         self.app_key = app_key
-        if mode == "sandbox":
-            self.api_url = 'https://api.sandbox.bigbuy.eu/rest'
-        elif mode == "production":
-            self.api_url = 'https://api.bigbuy.eu/rest'
-
-        self.headers.setdefault('User-Agent', f'pyBigBuy v{__version__}')
         self.headers.setdefault('Authorization', f'Bearer {app_key}')
 
     def __repr__(self):
         return '<Bigbuy: %s>' % self.app_key
+
+    def raise_for_response(self, response: requests.Response):
+        return raise_for_response(response)
 
     def request_api(self, endpoint: str, method='get', **kwargs):
         """Return dict of response received from BigBuy's API
@@ -45,38 +48,24 @@ class BigBuy(requests.Session):
         :type method: string
         :rtype: dict
         """
-        url = '%s/%s.json' % (self.api_url, endpoint)
+        path = '/%s.json' % endpoint
 
-        func = getattr(self, method)
+        super().request_api(method, path)
+
         try:
-            response = func(url, **kwargs)
+            response = super().request_api(method, path, throw=True, **kwargs)
         except requests.RequestException as e:
             raise BBResponseError(str(e), e.response)
-
-        raise_for_response(response)
 
         # TODO(BF): challenge this part -- why does the return type differ based on the response code?
         #  As a caller I don't know what to expect when I call this function.
         if response.status_code == 201:
-            return response  # FIXME(BF): this needed because on create_order we need the headers to parse 'Location'
-        if response.status_code == 204:
-            # NOTE(BF): there’s no endpoint in BB’s swagger that return a 204
-            return response.content
+            # NOTE(BF): this is needed because on create_order we need the headers to parse 'Location'
+            return response
         elif response.content:
-            try:
-                return response.json()
-            except ValueError:
-                raise BBError('Response is not valid JSON. Unable to decode.')
+            return response.json()
         else:
             return ''
-
-    def get_api(self, endpoint: str, *, params=None):
-        """Shortcut for GET requests via :class:`request`"""
-        return self.request_api(endpoint, params=params)
-
-    def post_api(self, endpoint: str, *, json=None):
-        """Shortcut for POST requests via :class:`request`"""
-        return self.request_api(endpoint, 'post', json=json)
 
     # catalog
     def get_attribute(self, attribute_id, **params):
