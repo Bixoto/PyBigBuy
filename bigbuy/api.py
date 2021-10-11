@@ -38,7 +38,7 @@ class BigBuy(APISession):
     def raise_for_response(self, response: requests.Response):
         return raise_for_response(response)
 
-    def request_api(self, endpoint: str, method='get', **kwargs):
+    def request_api(self, method: str, endpoint: str, raw_response: Optional[bool] = None, **kwargs):
         """Return dict of response received from BigBuy's API
 
         :param endpoint: (required) API endpoint
@@ -46,26 +46,25 @@ class BigBuy(APISession):
         :param method: (optional) Method of accessing data, either
                        GET, POST or DELETE. (default GET)
         :type method: string
+        :type raw_response: bool
         :rtype: dict
         """
         path = '/%s.json' % endpoint
 
-        super().request_api(method, path)
+        kwargs.setdefault("throw", True)
 
         try:
-            response = super().request_api(method, path, throw=True, **kwargs)
+            response = super().request_api(method, path, **kwargs)
         except requests.RequestException as e:
             raise BBResponseError(str(e), e.response)
 
-        # TODO(BF): challenge this part -- why does the return type differ based on the response code?
-        #  As a caller I don't know what to expect when I call this function.
-        if response.status_code == 201:
-            # NOTE(BF): this is needed because on create_order we need the headers to parse 'Location'
+        if raw_response:
             return response
-        elif response.content:
-            return response.json()
-        else:
+
+        if not response.content:
             return ''
+
+        return response.json()
 
     # catalog
     def get_attribute(self, attribute_id, **params):
@@ -500,7 +499,8 @@ class BigBuy(APISession):
         # stay compatible with caller that use .method({"order": order})
         if "order" not in order:
             order = {"order": order}
-        return self.post_api('order/create', json=order)
+        # NOTE(BF): this is needed because we need the headers to parse 'Location'
+        return self.post_api('order/create', json=order, raw_response=True)
 
     def get_order_by_customer_reference(self, reference):
         """Get order information by customer reference.
