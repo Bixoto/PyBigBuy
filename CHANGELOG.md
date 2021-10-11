@@ -1,5 +1,10 @@
 # PyBigBuy Changelog
 
+## 3.9.0 (Unreleased)
+
+* Use `api-session` as a base class. This changes `BigBuy#request_api`’s signature: `request_api(path, method)`
+  becomes `request_api(method, path)`.
+
 ## 3.8.6 (2021-10-07)
 
 * Fix the 3.8.4 release
