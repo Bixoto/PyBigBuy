@@ -2,8 +2,10 @@
 
 ## 3.9.0 (Unreleased)
 
-* Use `api-session` as a base class. This changes `BigBuy#request_api`’s signature: `request_api(path, method)`
-  becomes `request_api(method, path)`.
+* Use `api-session` as a base class. This changes `BigBuy#request_api`’s signature: `request_api(endpoint, method)`
+  becomes `request_api(method, endpoint)`.
+* Add `BBValidationError`
+* `requests.RequestError` exceptions are no longer wrapped in `BBResponseError`
 
 ## 3.8.6 (2021-10-07)
 
