@@ -129,6 +129,13 @@ class BBServerError(BBResponseError):
     pass
 
 
+class BBValidationError(BBResponseError):
+    def __init__(self, error_fields, response, **kwargs):
+        text = "Validation failed: %s" % str(error_fields)
+        super().__init__(text, response, **kwargs)
+        self.error_fields = error_fields
+
+
 error_classes = {
     # https://api.bigbuy.eu/doc#post--rest-order-check.{_format}
     "ER001": BBProductNotFoundError,
@@ -255,8 +262,18 @@ def raise_for_response(response):
                 # {"code":400,"message":"Validation Failed",
                 #  "errors":{"children":{"delivery":{"children":{"postcode":{"errors":["Invalid postcode format..."]}}},
                 #                        "products":{...}}}}
-                if len(errors) == 1 and "children" in errors:
+                if tuple(errors.keys()) == ("children",):
                     errors_message = flat_children_errors(errors["children"])
+
+                    if content["message"] == "Validation Failed":
+                        raise BBValidationError(
+                            # {'delivery.postcode': [
+                            #     "Invalid postcode format. Valid format for the selected country is 'NNNNN'.",
+                            #     'This value is not valid.']}
+                            error_fields=errors_message,
+                            response=response,
+                            bb_code=bb_code,
+                        )
                 else:
                     errors_message = str(errors)
 
