@@ -13,5 +13,5 @@ from .exceptions import (
     BBError, BBResponseError, BBPackError, BBExportError, BBProductError, BBStockError,
     BBNoCarrierError, BBBankWireTooLowError, BBMoneyBoxTooLowError, BBTemporaryOrderError, BBOrderAlreadyExistsError,
     BBOrderTooLowError, BBIncorrectRefError, BBInvalidPaymentError, BBZipcodeFormatError, BBProductNotFoundError,
-    BBServerError, BBRateLimitError,
+    BBServerError, BBRateLimitError, BBValidationError,
 )
