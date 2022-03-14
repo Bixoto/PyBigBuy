@@ -1,10 +1,11 @@
 [tool.poetry]
 name = "pybigbuy"
 version = "3.9.0"
-description = ""
-authors = []
+description = "BigBuy API client in Python"
+authors = ["Bixoto <info@bixoto.com>"]
 license = "MIT"
 include = ["bigbuy/py.typed"]
+readme = "README.md"
 # https://github.com/python-poetry/poetry/issues/705#issuecomment-444742697
 packages = [
     {include = "bigbuy"}
@@ -13,7 +14,7 @@ packages = [
 [tool.poetry.dependencies]
 python = "^3.9"
 requests = "^2.25.1"
-api-session = "^0.1.0"
+api-session = "^1.2.0"
 
 [tool.poetry.dev-dependencies]
 mypy = "^0.910"
