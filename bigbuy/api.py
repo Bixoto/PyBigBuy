@@ -10,7 +10,7 @@ import requests
 from api_session import APISession
 
 from . import __version__
-from .exceptions import BBResponseError, raise_for_response
+from .exceptions import raise_for_response
 
 __all__ = ['BigBuy']
 
@@ -36,27 +36,19 @@ class BigBuy(APISession):
         return '<Bigbuy: %s>' % self.app_key
 
     def raise_for_response(self, response: requests.Response):
+        # Implement upstream's method
         return raise_for_response(response)
 
-    def request_api(self, method: str, endpoint: str, raw_response: Optional[bool] = None, **kwargs):
-        """Return dict of response received from BigBuy's API
-
-        :param endpoint: (required) API endpoint
-        :type endpoint: string
-        :param method: (optional) Method of accessing data, either
-                       GET, POST or DELETE. (default GET)
-        :type method: string
-        :type raw_response: bool
-        :rtype: dict
+    def request_api(self, method: str, endpoint: str, raw_response=False, **kwargs) \
+            -> Union[requests.Response, str, dict, list]:
+        """
+        Request BigBuy’s API.
         """
         path = '/%s.json' % endpoint
 
         kwargs.setdefault("throw", True)
 
-        try:
-            response = super().request_api(method, path, **kwargs)
-        except requests.RequestException as e:
-            raise BBResponseError(str(e), e.response)
+        response = super().request_api(method, path, **kwargs)
 
         if raw_response:
             return response
@@ -421,8 +413,9 @@ class BigBuy(APISession):
 
         Docs:
         https://api.bigbuy.eu/doc#post--rest-order-check.{_format}
-        Example order
-        order = {
+        Example order:
+
+        {
           "internalReference": "123456",
           "language": "es",
           "paymentMethod": "moneybox",
