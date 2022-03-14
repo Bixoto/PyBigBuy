@@ -4,6 +4,7 @@ version = "3.9.0"
 description = ""
 authors = []
 license = "MIT"
+include = ["bigbuy/py.typed"]
 # https://github.com/python-poetry/poetry/issues/705#issuecomment-444742697
 packages = [
     {include = "bigbuy"}
