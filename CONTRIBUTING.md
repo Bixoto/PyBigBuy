@@ -2,4 +2,4 @@
 
 ## Run tests
 
-    python3 tests/test.py
+    poetry run pytest
