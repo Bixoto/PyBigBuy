@@ -20,7 +20,7 @@ else:
 setup(
     name='pybigbuy',
     version=verstr,
-    install_requires=['requests>=2.1.0'],
+    install_requires=['requests>=2.1.0', 'api-sessions>=1.2.0'],
     author='Bixoto',
     author_email='info@bixoto.com',
     license='MIT',

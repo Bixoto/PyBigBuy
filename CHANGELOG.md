@@ -1,5 +1,11 @@
 # PyBigBuy Changelog
 
+## 3.10.0 (2022/03/31)
+
+* The client now raises if a response has an error body, even if its HTTP status code doesn’t
+    indicate an error. On March 30 BigBuy started returning some error responses with success HTTP
+    statuses.
+
 ## 3.9.0 (2022/03/14)
 
 * Use `api-session` as a base class. This changes `BigBuy#request_api`’s signature: `request_api(endpoint, method)`
