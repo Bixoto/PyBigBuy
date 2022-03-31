@@ -1,10 +1,14 @@
 # PyBigBuy Changelog
 
+## 3.11.0 (2022/03/31)
+
+This release revert the main change of 3.10.0.
+
+* All `POST` calls now raise by default
+
 ## 3.10.0 (2022/03/31)
 
-* The client now raises if a response has an error body, even if its HTTP status code doesn’t
-    indicate an error. On March 30 BigBuy started returning some error responses with success HTTP
-    statuses.
+* The client now raises if a response has an error body, even if its HTTP status code doesn’t indicate an error.
 
 ## 3.9.0 (2022/03/14)
 

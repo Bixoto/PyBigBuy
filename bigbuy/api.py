@@ -58,6 +58,10 @@ class BigBuy(APISession):
 
         return response.json()
 
+    def post_api(self, path: str, *args, throw=True, **kwargs):
+        # default on throw=True
+        return super().post_api(path, *args, throw=throw, **kwargs)
+
     # catalog
     def get_attribute(self, attribute_id, **params):
         """Get a single attribute.
