@@ -6,7 +6,7 @@ Bigbuy is a library for Python that wraps the BigBuy API.
 """
 
 __author__ = 'Bixoto <info@bixoto.com>'
-__version__ = '3.10.0'
+__version__ = '3.11.0'
 
 from .api import BigBuy
 from .exceptions import (
