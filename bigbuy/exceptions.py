@@ -231,23 +231,24 @@ def raise_for_response(response):
     """
     Equivalent of request.Response#raise_for_status() that raises an exception based on the response's status.
     """
-    if response.ok:
-        return
+    # Note we still look for error content in OK responses. On March 31 BigBuy started returning exception even
+    # with HTTP status 200 OK.
+    should_raise = not response.ok
 
     text = response.text
     content = json_or_none(text)
 
     if content is None:
         if text == "You exceeded the rate limit":
-            cls = BBRateLimitError
+            raise BBRateLimitError(text, response)
         elif text.startswith("<html><body><h1>504 Gateway Time-out</h1>") or \
                 text in {"Bad Gateway", "Internal Server Error"}:
-            cls = BBServerError
-        else:
-            cls = BBResponseError
+            raise BBServerError(text, response)
+        elif should_raise:
+            # If we can't determine the response type but we know it's an error, return a generic exception
+            raise BBResponseError(text, response)
 
-        raise cls(text, response)
-
+    # At this point we know this is JSON
     content = response.json()
 
     bb_code = "unknown"
@@ -286,19 +287,21 @@ def raise_for_response(response):
                 message = error.get("message", message)
 
     # {"code": "ER003", "message": "..."}
+    # {"code": 404, "message": "..."}
     elif "code" in content and "message" in content:
         bb_code = content["code"]
         message = content["message"]
 
     try:
         if int(bb_code) // 100 == 5:
+            # HTTP 5xx
             raise BBServerError(message, response, bb_code=bb_code)
     except ValueError:
         pass
 
     # Yes, nested JSON
     message_content = json_or_none(message)
-    if message_content is None:
+    if should_raise and message_content is None:
         raise BBResponseError(message, response, bb_code=bb_code)
 
     text = message_content["info"]
@@ -308,4 +311,5 @@ def raise_for_response(response):
         error_class = error_classes[bb_code]
         raise error_class(text, response, bb_code, bb_data)
 
-    raise BBResponseError(text, response, bb_code=bb_code, bb_data=bb_data)
+    if should_raise:
+        raise BBResponseError(text, response, bb_code=bb_code, bb_data=bb_data)
