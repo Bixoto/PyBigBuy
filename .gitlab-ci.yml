@@ -25,10 +25,9 @@ test:
 build_package:
   stage: deploy
   script:
-    - pip install twine
+    - pip install -U twine poetry
     - rm -rf dist/*
-    - python setup.py sdist bdist_wheel
-    - python -m twine check dist/*
+    - poetry build
     - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --verbose --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
   only:
     - tags
