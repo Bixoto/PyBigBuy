@@ -46,21 +46,15 @@ class BigBuy(APISession):
         """
         path = '/%s.json' % endpoint
 
-        kwargs.setdefault("throw", True)
+        # Default throw= to True unless 'False' was explicitly passed
+        kwargs["throw"] = kwargs.get("throw") is not False
 
         response = super().request_api(method, path, **kwargs)
 
         if raw_response:
             return response
 
-        if not response.content:
-            return ''
-
         return response.json()
-
-    def post_api(self, path: str, *args, throw=True, **kwargs):
-        # default on throw=True
-        return super().post_api(path, *args, throw=throw, **kwargs)
 
     # catalog
     def get_attribute(self, attribute_id, **params):
