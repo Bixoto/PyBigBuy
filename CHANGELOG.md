@@ -1,5 +1,9 @@
 # PyBigBuy Changelog
 
+## 3.12.0 (2022/04/01)
+
+* All calls now raise by default
+
 ## 3.11.0 (2022/03/31)
 
 This release revert the main change of 3.10.0.
