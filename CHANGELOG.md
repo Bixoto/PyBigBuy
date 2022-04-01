@@ -1,5 +1,9 @@
 # PyBigBuy Changelog
 
+## 3.12.1 (2022/04/01)
+
+* Fix typo in `setup.py` by generating it with Poetry (it used `api-sessions` instead of `api-session`)
+
 ## 3.12.0 (2022/04/01)
 
 * All calls now raise by default
