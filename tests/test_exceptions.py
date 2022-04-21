@@ -2,6 +2,9 @@ import math
 from datetime import datetime, timedelta
 from unittest import mock
 
+import pytest
+from requests import Response
+
 from bigbuy import exceptions as ex
 
 
@@ -45,6 +48,21 @@ def test_flat_children_errors():
                 ]
             }
         })
+
+
+def test_raise_for_response():
+    response = Response()
+    response.encoding = "utf-8"
+    response._content = b"""
+        {"code":400,"message":"ERROR: This value is not valid.\\n","errors":{"errors":["This value is not valid."],
+        "children":{"internalReference":[],"cashOnDelivery":[],"language":[],"paymentMethod":[],"shippingAddress":
+        {"children":{"firstName":[],"lastName":[],"country":[],"postcode":[],"town":[],"address":[],"phone":[],"email":
+        [],"comment":[],"vatNumber":[],"companyName":[]}},"carriers":[],"products":[],"dateAdd":[]}}}
+    """.strip()
+    response.status_code = 400
+
+    with pytest.raises(ex.BBValidationError):
+        ex.raise_for_response(response)
 
 
 def make_exception(rate_limit_datetime):

@@ -262,10 +262,10 @@ def raise_for_response(response):
                 # {"code":400,"message":"Validation Failed",
                 #  "errors":{"children":{"delivery":{"children":{"postcode":{"errors":["Invalid postcode format..."]}}},
                 #                        "products":{...}}}}
-                if tuple(errors.keys()) == ("children",):
+                if "children" in errors:
                     errors_message = flat_children_errors(errors["children"])
 
-                    if content["message"] == "Validation Failed":
+                    if content["message"].strip() in {"Validation Failed", "ERROR: This value is not valid."}:
                         raise BBValidationError(
                             # {'delivery.postcode': [
                             #     "Invalid postcode format. Valid format for the selected country is 'NNNNN'.",
