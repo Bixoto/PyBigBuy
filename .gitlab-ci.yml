@@ -19,7 +19,7 @@ before_script:
 test:
   script:
     - poetry run pytest
-    - 'poetry run mypy --ignore-missing-imports --allow-untyped-globals *.py'
+    - 'poetry run mypy *.py bigbuy/*.py'
 
 # https://medium.com/maisonsdumonde/gitlab-ci-cd-and-gitlab-pypi-repository-4916a51d22eb
 build_package:
