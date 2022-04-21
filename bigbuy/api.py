@@ -27,7 +27,7 @@ class BigBuy(APISession):
         else:  # if mode == "production":
             base_url = 'https://api.bigbuy.eu/rest'
 
-        super().__init__(base_url, user_agent=f'pyBigBuy v{__version__}')
+        super().__init__(base_url, user_agent=f'pyBigBuy v{__version__}', none_on_404=False)
 
         self.app_key = app_key
         self.headers.setdefault('Authorization', f'Bearer {app_key}')
@@ -39,22 +39,16 @@ class BigBuy(APISession):
         # Implement upstream's method
         return raise_for_response(response)
 
-    def request_api(self, method: str, endpoint: str, raw_response=False, **kwargs) \
-            -> Union[requests.Response, str, dict, list]:
+    def request_api(self, method: str, path: str, *args, throw: Optional[bool] = None, **kwargs) \
+            -> requests.Response:
         """
         Request BigBuy’s API.
         """
-        path = '/%s.json' % endpoint
-
-        # Default throw= to True unless 'False' was explicitly passed
-        kwargs["throw"] = kwargs.get("throw") is not False
-
-        response = super().request_api(method, path, **kwargs)
-
-        if raw_response:
-            return response
-
-        return response.json()
+        return super().request_api(method,
+                                   '/%s.json' % path, *args,
+                                   # Default throw= to True unless 'False' was explicitly passed
+                                   throw=throw is not False,
+                                   **kwargs)
 
     # catalog
     def get_attribute(self, attribute_id, **params):
@@ -63,7 +57,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-attribute-{id}.{_format}
         """
-        return self.get_api('catalog/attribute/%s' % attribute_id, params=params)
+        return self.get_json_api('catalog/attribute/%s' % attribute_id, params=params)
 
     def get_attribute_all_languages(self, attribute_id, **params):
         """Get a single attribute.
@@ -71,7 +65,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-attributealllanguages-{id}.{_format}
         """
-        return self.get_api('catalog/attributealllanguages/%s' % attribute_id, params=params)
+        return self.get_json_api('catalog/attributealllanguages/%s' % attribute_id, params=params)
 
     def get_attribute_group(self, attribute_group_id, **params):
         """Get a single attribute group.
@@ -79,7 +73,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-attributegroup-{id}.{_format}
         """
-        return self.get_api('catalog/attributegroup/%s' % attribute_group_id, params=params)
+        return self.get_json_api('catalog/attributegroup/%s' % attribute_group_id, params=params)
 
     def get_attribute_group_all_languages(self, attribute_group_id, **params):
         """Get a single attribute group.
@@ -87,7 +81,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-attributegroupalllanguages-{id}.{_format}
         """
-        return self.get_api('catalog/attributegroupalllanguages/%s' % attribute_group_id, params=params)
+        return self.get_json_api('catalog/attributegroupalllanguages/%s' % attribute_group_id, params=params)
 
     def get_attribute_groups(self, **params):
         """Lists all attribute groups.
@@ -95,7 +89,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-attributegroups.{_format}
         """
-        return self.get_api('catalog/attributegroups', params=params)
+        return self.get_json_api('catalog/attributegroups', params=params)
 
     def get_attributes(self, **params):
         """Lists all attributes.
@@ -103,7 +97,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-attributes.{_format}
         """
-        return self.get_api('catalog/attributes', params=params)
+        return self.get_json_api('catalog/attributes', params=params)
 
     def get_categories(self, **params):
         """Lists all categories.
@@ -111,7 +105,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-categories.{_format}
         """
-        return self.get_api('catalog/categories', params=params)
+        return self.get_json_api('catalog/categories', params=params)
 
     def get_category(self, category_id, **params):
         """Returns the selected category.
@@ -119,7 +113,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-category-{id}.{_format}
         """
-        return self.get_api('catalog/category/%s' % category_id, params=params)
+        return self.get_json_api('catalog/category/%s' % category_id, params=params)
 
     def get_category_all_languages(self, category_id, **params):
         """Returns the selected category.
@@ -127,7 +121,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-categoryalllanguages-{id}.{_format}
         """
-        return self.get_api('catalog/categoryalllanguages/%s' % category_id, params=params)
+        return self.get_json_api('catalog/categoryalllanguages/%s' % category_id, params=params)
 
     def get_languages(self, **params):
         """Returns all languages
@@ -135,7 +129,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-languages.{_format}
         """
-        return self.get_api('catalog/languages', params=params)
+        return self.get_json_api('catalog/languages', params=params)
 
     def get_manufacturer(self, manufacturer_id, **params):
         """Get a single manufacturer.
@@ -143,7 +137,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-manufacturer-{id}.{_format}
         """
-        return self.get_api('catalog/manufacturer/%s' % manufacturer_id, params=params)
+        return self.get_json_api('catalog/manufacturer/%s' % manufacturer_id, params=params)
 
     def get_manufacturers(self, **params):
         """Lists all manufacturers.
@@ -151,7 +145,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-manufacturers.{_format}
         """
-        return self.get_api('catalog/manufacturers', params=params)
+        return self.get_json_api('catalog/manufacturers', params=params)
 
     def get_product(self, product_id, **params):
         """Get a single product.
@@ -159,7 +153,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-product-{id}.{_format}
         """
-        return self.get_api('catalog/product/%s' % product_id, params=params)
+        return self.get_json_api('catalog/product/%s' % product_id, params=params)
 
     def get_product_categories(self, product_id, **params):
         """Get product categories.
@@ -167,7 +161,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productcategories-{id}.{_format}
         """
-        return self.get_api('catalog/productcategories/%s' % product_id, params=params)
+        return self.get_json_api('catalog/productcategories/%s' % product_id, params=params)
 
     def get_product_images(self, product_id, **params):
         """Get a single product images.
@@ -175,7 +169,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productimages-{id}.{_format}
         """
-        return self.get_api('catalog/productimages/%s' % product_id, params=params)
+        return self.get_json_api('catalog/productimages/%s' % product_id, params=params)
 
     def get_product_information(self, product_id, **params):
         """Get a single product information.
@@ -183,7 +177,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productinformation-{id}.{_format}
         """
-        return self.get_api('catalog/productinformation/%s' % product_id, params=params)
+        return self.get_json_api('catalog/productinformation/%s' % product_id, params=params)
 
     def get_product_information_all_languages(self, product_id, **params):
         """Get a single product.
@@ -191,7 +185,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productinformationalllanguages-{id}.{_format}
         """
-        return self.get_api('catalog/productinformationalllanguages/%s' % product_id, params=params)
+        return self.get_json_api('catalog/productinformationalllanguages/%s' % product_id, params=params)
 
     def get_product_information_by_sku(self, sku: str, **params):
         """Get a single product by sku.
@@ -199,7 +193,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productinformationbysku-{sku}.{_format}
         """
-        return self.get_api('catalog/productinformationbysku/%s' % sku, params=params)
+        return self.get_json_api('catalog/productinformationbysku/%s' % sku, params=params)
 
     def get_products(self, **params):
         """Returns all products.
@@ -207,7 +201,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-products.{_format}
         """
-        return self.get_api('catalog/products', params=params)
+        return self.get_json_api('catalog/products', params=params)
 
     def get_products_categories(self, **params):
         """Returns all products categories.
@@ -215,7 +209,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productscategories.{_format}
         """
-        return self.get_api('catalog/productscategories', params=params)
+        return self.get_json_api('catalog/productscategories', params=params)
 
     def get_products_images(self, **params):
         """Returns all products images.
@@ -223,7 +217,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productsimages.{_format}
         """
-        return self.get_api('catalog/productsimages', params=params)
+        return self.get_json_api('catalog/productsimages', params=params)
 
     def get_products_information(self, **params):
         """Returns all products products information.
@@ -231,7 +225,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productsproductsinformation.{_format}
         """
-        return self.get_api('catalog/productsinformation', params=params)
+        return self.get_json_api('catalog/productsinformation', params=params)
 
     def get_products_stock(self, **params):
         """Returns all products stock.
@@ -239,7 +233,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productsstock.{_format}
         """
-        return self.get_api('catalog/productsstock', params=params)
+        return self.get_json_api('catalog/productsstock', params=params)
 
     def get_products_stock_available(self, **params):
         """Returns all products with available stock.
@@ -247,7 +241,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productsstockavailable.{_format}
         """
-        return self.get_api('catalog/productsstockavailable', params=params)
+        return self.get_json_api('catalog/productsstockavailable', params=params)
 
     def get_products_stock_by_reference(self, skus: Iterable[str]):
         """Get all selected products stock.
@@ -260,7 +254,7 @@ class BigBuy(APISession):
                 "products": [{"sku": sku} for sku in skus],
             }
         }
-        return self.post_api('catalog/productsstockbyreference', json=payload)
+        return self.post_api('catalog/productsstockbyreference', json=payload).json()
 
     def get_products_tags(self, **params):
         """Lists all product tags.
@@ -268,7 +262,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productstags.{_format}
         """
-        return self.get_api('catalog/productstags', params=params)
+        return self.get_json_api('catalog/productstags', params=params)
 
     def get_product_stock(self, product_id, **params):
         """Get a single product stock.
@@ -276,7 +270,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productstock-{id}.{_format}
         """
-        return self.get_api('catalog/productstock/%s' % product_id, params=params)
+        return self.get_json_api('catalog/productstock/%s' % product_id, params=params)
 
     def get_products_variations(self, **params):
         """Returns all products variations.
@@ -284,7 +278,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productsvariations.{_format}
         """
-        return self.get_api('catalog/productsvariations', params=params)
+        return self.get_json_api('catalog/productsvariations', params=params)
 
     def get_products_variations_stock(self, **params):
         """Returns all products variations stock.
@@ -292,7 +286,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productsvariationsstock.{_format}
         """
-        return self.get_api('catalog/productsvariationsstock', params=params)
+        return self.get_json_api('catalog/productsvariationsstock', params=params)
 
     def get_products_variations_stock_available(self, **params):
         """Returns all products variations stock available.
@@ -300,7 +294,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productsvariationsstockavailable.{_format}
         """
-        return self.get_api('catalog/productsvariationsstockavailable', params=params)
+        return self.get_json_api('catalog/productsvariationsstockavailable', params=params)
 
     def get_product_tags(self, product_id, **params):
         """Get a single ProductTag.
@@ -308,7 +302,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-producttags-{id}.{_format}
         """
-        return self.get_api('catalog/producttags/%s' % product_id, params=params)
+        return self.get_json_api('catalog/producttags/%s' % product_id, params=params)
 
     def get_product_variations(self, product_id, **params):
         """Get a single Product variations.
@@ -316,7 +310,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productvariations-{id}.{_format}
         """
-        return self.get_api('catalog/productvariations/%s' % product_id, params=params)
+        return self.get_json_api('catalog/productvariations/%s' % product_id, params=params)
 
     def get_product_variations_stock(self, product_id, **params):
         """Get a single product variation stock.
@@ -324,7 +318,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-productvariationsstock-{id}.{_format}
         """
-        return self.get_api('catalog/productvariationsstock/%s' % product_id, params=params)
+        return self.get_json_api('catalog/productvariationsstock/%s' % product_id, params=params)
 
     def get_tag(self, tag_id, **params):
         """Get a single Tag.
@@ -332,7 +326,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-tag-{id}.{_format}
         """
-        return self.get_api('catalog/tag/%s' % tag_id, params=params)
+        return self.get_json_api('catalog/tag/%s' % tag_id, params=params)
 
     def get_tag_all_languages(self, tag_id, **params):
         """Get a single Tag.
@@ -340,7 +334,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-tagalllanguages-{id}.{_format}
         """
-        return self.get_api('catalog/tagalllanguages/%s' % tag_id, params=params)
+        return self.get_json_api('catalog/tagalllanguages/%s' % tag_id, params=params)
 
     def get_tags(self, **params):
         """Lists all tags.
@@ -348,7 +342,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-tags.{_format}
         """
-        return self.get_api('catalog/tags', params=params)
+        return self.get_json_api('catalog/tags', params=params)
 
     def get_variation(self, variation_id, **params):
         """Get a single variation.
@@ -356,7 +350,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-variation-{id}.{_format}
         """
-        return self.get_api('catalog/variation/%s' % variation_id, params=params)
+        return self.get_json_api('catalog/variation/%s' % variation_id, params=params)
 
     def get_variations(self, **params):
         """Lists all variations.
@@ -364,7 +358,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-variations.{_format}
         """
-        return self.get_api('catalog/variations', params=params)
+        return self.get_json_api('catalog/variations', params=params)
 
     # shipping
     def get_carriers(self, **params):
@@ -373,7 +367,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-catalog-variation-{id}.{_format}
         """
-        return self.get_api('shipping/carriers', params=params)
+        return self.get_json_api('shipping/carriers', params=params)
 
     def get_shipping_order(self, order: Dict[str, Any]):
         """Get the list of available shipping options with the calculated weight and cost in Kg and € respectively,
@@ -387,7 +381,7 @@ class BigBuy(APISession):
         # stay compatible with caller that use .method({"order": order})
         if "order" not in order:
             order = {"order": order}
-        return self.post_api('shipping/orders', json=order)
+        return self.post_api('shipping/orders', json=order).json()
 
     # order
     def get_order_addresses(self, **params):
@@ -396,7 +390,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-order-addresses-new.{_format}
         """
-        return self.get_api('order/addresses/new', **params)
+        return self.get_json_api('order/addresses/new', **params)
 
     def get_order_carriers(self, **params):
         """Get order shipping address structure.
@@ -404,7 +398,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-order-carriers-new.{_format}
         """
-        return self.get_api('order/carriers/new', **params)
+        return self.get_json_api('order/carriers/new', **params)
 
     def check_order(self, order: Dict[str, Any]):
         """Check/simulate an order and return the total order to paid.
@@ -447,7 +441,7 @@ class BigBuy(APISession):
         # stay compatible with caller that use .method({"order": order})
         if "order" not in order:
             order = {"order": order}
-        return self.post_api('order/check', json=order)
+        return self.post_api('order/check', json=order).json()
 
     def create_order(self, order: Dict[str, Any]):
         """
@@ -490,8 +484,8 @@ class BigBuy(APISession):
         # stay compatible with caller that use .method({"order": order})
         if "order" not in order:
             order = {"order": order}
-        # NOTE(BF): this is needed because we need the headers to parse 'Location'
-        return self.post_api('order/create', json=order, raw_response=True)
+        # NOTE(BF): we must return the raw response because we need the headers to parse 'Location'
+        return self.post_api('order/create', json=order)
 
     def get_order_by_customer_reference(self, reference):
         """Get order information by customer reference.
@@ -499,7 +493,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-order-carriers-new.{_format}
         """
-        return self.get_api(f'order/reference/{reference}')
+        return self.get_json_api(f'order/reference/{reference}')
 
     def get_order_by_id(self, order_id, **params):
         """Get order information.
@@ -507,7 +501,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-order-{idOrder}.{_format}
         """
-        return self.get_api(f'order/{order_id}', **params)
+        return self.get_json_api(f'order/{order_id}', **params)
 
     # tracking
     def get_tracking_carriers(self, **params):
@@ -516,7 +510,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-order-{idOrder}.{_format}
         """
-        return self.get_api('tracking/carriers', **params)
+        return self.get_json_api('tracking/carriers', **params)
 
     def get_tracking_order(self, order_id: Union[int, str], **params):
         """Get the list of available trackings.
@@ -524,7 +518,7 @@ class BigBuy(APISession):
         Docs:
         https://api.bigbuy.eu/doc#get--rest-tracking-order-{idOrder}.{_format}
         """
-        return self.get_api(f'tracking/order/{order_id}', **params)
+        return self.get_json_api(f'tracking/order/{order_id}', **params)
 
     def get_tracking_orders(self, order_ids: Iterable[Union[int, str]], match_ids=True):
         """
@@ -543,7 +537,7 @@ class BigBuy(APISession):
             }
         }
 
-        trackings = cast(List[dict], self.post_api('tracking/orders', json=payload))
+        trackings = cast(List[dict], self.post_api('tracking/orders', json=payload).json())
 
         if not match_ids:
             return trackings
@@ -552,5 +546,5 @@ class BigBuy(APISession):
         for tracking in trackings:
             tracking_by_id[tracking["id"]] = tracking
 
-        filled_trackings: List[Optional[dict]] = [tracking_by_id.get(order_id) for order_id in order_ids]
+        filled_trackings: List[Optional[dict]] = [tracking_by_id.get(str(order_id)) for order_id in order_ids]
         return filled_trackings
