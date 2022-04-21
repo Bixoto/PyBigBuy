@@ -1,5 +1,9 @@
 # PyBigBuy Changelog
 
+## 3.13.1 (2022/04/21)
+
+* Add `get_lowest_shipping_cost_by_country` and `get_lowest_shipping_costs_by_country`
+
 ## 3.13.0 (2022/04/21)
 
 * `.request_api` now always return a `requests.Response` object and don’t accept a `raw_response` parameter anymore.
