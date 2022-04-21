@@ -540,7 +540,8 @@ class BigBuy(APISession):
         trackings = cast(List[dict], self.post_api('tracking/orders', json=payload).json())
 
         if not match_ids:
-            return trackings
+            # make mypy happy
+            return cast(List[Optional[dict]], trackings)
 
         tracking_by_id: Dict[str, dict] = {}
         for tracking in trackings:
