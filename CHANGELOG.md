@@ -1,5 +1,13 @@
 # PyBigBuy Changelog
 
+## 3.13.0 (2022/04/21)
+
+* `.request_api` now always return a `requests.Response` object and don’t accept a `raw_response` parameter anymore.
+  This is a breaking change only if you rely on a direct call to this method.
+* Raise `BBValidationError` instead of a generic `BBResponseError` on more validation errors. This is not breaking
+  since the former inherit from the latter.
+* `get_tracking_orders` now accepts both `int` and `str` order ids.
+
 ## 3.12.1 (2022/04/01)
 
 * Fix typo in `setup.py` by generating it with Poetry (it used `api-sessions` instead of `api-session`)
