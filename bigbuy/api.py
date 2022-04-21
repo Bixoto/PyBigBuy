@@ -487,7 +487,7 @@ class BigBuy(APISession):
         # NOTE(BF): we must return the raw response because we need the headers to parse 'Location'
         return self.post_api('order/create', json=order)
 
-    def get_order_by_customer_reference(self, reference):
+    def get_order_by_customer_reference(self, reference: str):
         """Get order information by customer reference.
 
         Docs:
@@ -495,7 +495,7 @@ class BigBuy(APISession):
         """
         return self.get_json_api(f'order/reference/{reference}')
 
-    def get_order_by_id(self, order_id, **params):
+    def get_order_by_id(self, order_id: Union[str, int], **params):
         """Get order information.
 
         Docs:
@@ -520,7 +520,7 @@ class BigBuy(APISession):
         """
         return self.get_json_api(f'tracking/order/{order_id}', **params)
 
-    def get_tracking_orders(self, order_ids: Iterable[Union[int, str]], match_ids=True):
+    def get_tracking_orders(self, order_ids: Iterable[Union[int, str]], match_ids=True) -> List[Optional[dict]]:
         """
         Get the list of available trackings for the given orders.
 
@@ -546,5 +546,36 @@ class BigBuy(APISession):
         for tracking in trackings:
             tracking_by_id[str(tracking["id"])] = tracking
 
-        filled_trackings: List[Optional[dict]] = [tracking_by_id.get(str(order_id)) for order_id in order_ids]
-        return filled_trackings
+        return [tracking_by_id.get(str(order_id)) for order_id in order_ids]
+
+    def get_lowest_shipping_cost_by_country(self, reference: str, country_code: str) -> dict:
+        """
+        Equivalent of ``get_lowest_shipping_costs_by_country`` for a single product. Returns the lowest shipping cost
+        for a product reference when sent to the provided country.
+
+        Example response:
+
+            {
+                "shippingCost": "4.3",
+                "carrier": {
+                    "id": "43",
+                    "name": "Chrono"
+                }
+            }
+
+        Docs: https://api.bigbuy.eu/doc#post--rest-shipping-lowest-shipping-cost-by-country.{_format}
+        """
+        return self.post_api("shipping/lowest-shipping-cost-by-country",
+                             json={"product_country": {"reference": reference, "countryIsoCode": country_code}}).json()
+
+    def get_lowest_shipping_costs_by_country(self, country_code: str) -> List[dict]:
+        """
+        Returns the lowest shipping cost for a product reference when sent to the provided country.
+
+        As of 2022/04/21 the information is available for the following countries:
+           FR, DK, CY, HU, GB, LT, MT, ES, LV, SK, RO, US, FI, GR, CZ, HR, SE, IE, LU, NL, AU, BG, NO, IT, DE, SI, PL,
+           BE, CH, EE, PT, AT.
+
+        Docs: https://api.bigbuy.eu/doc#get--rest-shipping-lowest-shipping-costs-by-country-{countryIsoCode}.{_format}
+        """
+        return self.get_json_api(f"shipping/lowest-shipping-costs-by-country/{country_code}")
