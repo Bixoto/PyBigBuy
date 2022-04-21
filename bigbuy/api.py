@@ -544,7 +544,7 @@ class BigBuy(APISession):
 
         tracking_by_id: Dict[str, dict] = {}
         for tracking in trackings:
-            tracking_by_id[tracking["id"]] = tracking
+            tracking_by_id[str(tracking["id"])] = tracking
 
         filled_trackings: List[Optional[dict]] = [tracking_by_id.get(str(order_id)) for order_id in order_ids]
         return filled_trackings
