@@ -1,5 +1,9 @@
 # PyBigBuy Changelog
 
+## 3.13.2 (2022/04/22)
+
+* Add `create_order_id` and `get_purse_amount`
+
 ## 3.13.1 (2022/04/21)
 
 * Add `get_lowest_shipping_cost_by_country` and `get_lowest_shipping_costs_by_country`
