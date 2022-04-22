@@ -487,6 +487,21 @@ class BigBuy(APISession):
         # NOTE(BF): we must return the raw response because we need the headers to parse 'Location'
         return self.post_api('order/create', json=order)
 
+    def create_order_id(self, order: dict) -> str:
+        """Like create_order(), but return the order id."""
+        response = self.create_order(order)
+        # Format:
+        # {
+        #     'Content-Length': '0',
+        #     'Content-Type': 'application/json',
+        #     'Date': 'Thu, 09 Apr 2020 07:24:56 GMT',
+        #     'Location': '/rest/order/119...',
+        #     'Set-Cookie': 'secure_key=16...065; expires=Thu, 16-Apr-2020 07:24:56 GMT; Max-Age=604800; path=/',
+        # }
+        # the id of the bigbuy order is only known in the location url in the headers
+        order_id = response.headers["Location"].replace("/rest/order/", "")
+        return order_id
+
     def get_order_by_customer_reference(self, reference: str):
         """Get order information by customer reference.
 
@@ -580,3 +595,11 @@ class BigBuy(APISession):
         Docs: https://api.bigbuy.eu/doc#get--rest-shipping-lowest-shipping-costs-by-country-{countryIsoCode}.{_format}
         """
         return self.get_json_api(f"shipping/lowest-shipping-costs-by-country/{country_code}")
+
+    def get_purse_amount(self):
+        """
+        Get the amount of money available in the purse.
+
+        Docs: https://api.bigbuy.eu/doc#get--rest-user-purse.{_format}
+        """
+        return float(self.get_api("user/purse").json())
