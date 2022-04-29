@@ -602,4 +602,20 @@ class BigBuy(APISession):
 
         Docs: https://api.bigbuy.eu/doc#get--rest-user-purse.{_format}
         """
-        return float(self.get_api("user/purse").json())
+        return float(self.get_json_api("user/purse"))
+
+    def get_modules(self):
+        """
+        Get all modules.
+
+        Docs: https://api.bigbuy.eu/doc#get--rest-module-.{_format}
+        """
+        return self.get_json_api("module/")
+
+    def get_module_platforms(self):
+        """
+        Get all module platforms.
+
+        Docs: https://api.bigbuy.eu/doc#get--rest-module-platforms.{_format}
+        """
+        return self.get_json_api("module/platforms")
