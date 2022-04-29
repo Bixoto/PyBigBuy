@@ -1,3 +1,4 @@
+import json
 import math
 from datetime import datetime, timedelta
 from unittest import mock
@@ -50,15 +51,46 @@ def test_flat_children_errors():
         })
 
 
-def test_raise_for_response():
+@pytest.fixture()
+def error_payload():
+    return {
+        "code": 400,
+        "message": "ERROR: This value is not valid.\\n",
+        "errors": {
+            "errors": ["This value is not valid."],
+            "children": {
+                "internalReference": [], "cashOnDelivery": [],
+                "language": [], "paymentMethod": [],
+                "shippingAddress": {"children": {"firstName": [], "lastName": [],
+                                                 "country": [], "postcode": [], "town": [],
+                                                 "address": [], "phone": [], "email": [], "comment": [],
+                                                 "vatNumber": [],
+                                                 "companyName": []}},
+                "carriers": [], "products": [], "dateAdd": [],
+            }
+        }
+    }
+
+
+def test_raise_for_response_invalid_value_error(error_payload):
     response = Response()
     response.encoding = "utf-8"
-    response._content = b"""
-        {"code":400,"message":"ERROR: This value is not valid.\\n","errors":{"errors":["This value is not valid."],
-        "children":{"internalReference":[],"cashOnDelivery":[],"language":[],"paymentMethod":[],"shippingAddress":
-        {"children":{"firstName":[],"lastName":[],"country":[],"postcode":[],"town":[],"address":[],"phone":[],"email":
-        [],"comment":[],"vatNumber":[],"companyName":[]}},"carriers":[],"products":[],"dateAdd":[]}}}
-    """.strip()
+    response._content = json.dumps(error_payload).encode("utf-8")
+    response.status_code = 400
+
+    with pytest.raises(ex.BBValidationError):
+        ex.raise_for_response(response)
+
+
+def test_raise_for_response_too_long_value_error(error_payload):
+    response = Response()
+    response.encoding = "utf-8"
+    error_payload["message"] = ("shippingAddress:\\n    address:\\n        ERROR: This value is too long."
+                                " It should have 70 characters or less.\\n")
+    error_payload["errors"]["children"]["shippingAddress"]["children"]["address"] = \
+        {"errors": ["This value is too long. It should have 70 characters or less."]}
+
+    response._content = json.dumps(error_payload).encode("utf-8")
     response.status_code = 400
 
     with pytest.raises(ex.BBValidationError):

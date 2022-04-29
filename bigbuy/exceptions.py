@@ -265,7 +265,7 @@ def raise_for_response(response):
                 if "children" in errors:
                     errors_message = flat_children_errors(errors["children"])
 
-                    if content["message"].strip() in {"Validation Failed", "ERROR: This value is not valid."}:
+                    if content["message"].strip() == "Validation Failed" or "ERROR:" in content["message"]:
                         raise BBValidationError(
                             # {'delivery.postcode': [
                             #     "Invalid postcode format. Valid format for the selected country is 'NNNNN'.",
