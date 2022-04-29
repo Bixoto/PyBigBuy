@@ -1,5 +1,10 @@
 # PyBigBuy Changelog
 
+## 3.13.3 (2022/04/29)
+
+* Add `get_modules` and `get_module_platforms`
+* Raise `BBValidationError` instead of a generic `BBResponseError` on even more validation errors.
+
 ## 3.13.2 (2022/04/22)
 
 * Add `create_order_id` and `get_purse_amount`
