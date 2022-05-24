@@ -7,7 +7,7 @@ bigbuy.exceptions
 This module contains Bigbuy-specific Exception classes.
 """
 from datetime import datetime, timedelta
-from typing import Optional, Collection, Union, Dict, Any, List
+from typing import Optional, Collection, Union, Dict, Any, List, Type, cast
 
 import json
 
@@ -250,7 +250,7 @@ def raise_for_response(response: requests.Response):
 
     if content is None:
         if text == "You exceeded the rate limit":
-            cls = BBRateLimitError
+            cls: Type[BBResponseError] = BBRateLimitError
         elif text.startswith("<html><body><h1>504 Gateway Time-out</h1>") or \
                 text in {"Bad Gateway", "Internal Server Error"}:
             cls = BBServerError
@@ -259,7 +259,7 @@ def raise_for_response(response: requests.Response):
 
         raise cls(text, response)
 
-    content = response.json()
+    content = cast(dict, response.json())
 
     bb_code = "unknown"
     message = str(content)
