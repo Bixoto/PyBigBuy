@@ -254,10 +254,12 @@ def raise_for_response(response: requests.Response):
         if text.startswith("HTTP/1."):
             if match := re.match(r"HTTP/1\.[01] (\d{3})", text):
                 response.status_code = int(match.group(1))
-                _headers, body = text.split("\n\n", 1)
-                response.encoding = "utf-8"
-                response._content = body.encode(response.encoding)
-                return raise_for_response(response)
+                parts = text.split("\r\n\r\n", 1)
+                if len(parts) == 2:
+                    _headers, body = parts
+                    response.encoding = "utf-8"
+                    response._content = body.encode(response.encoding)
+                    return raise_for_response(response)
 
         return
 

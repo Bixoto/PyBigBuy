@@ -132,13 +132,11 @@ def test_raise_for_response_soft_error_headers_in_body():
     response = Response()
     response.status_code = 200
     response.encoding = "utf-8"
-    response._content = """HTTP/1.0 500 Internal Server Error
-Cache-Control: no-cache, private
-Content-Type:  application/json
-Date:          Tue, 24 May 2022 15:01:07 GMT
-
-{"error":"Information is not available right now. Try it again later"}
-""".encode("utf-8")
+    response._content = (
+        'HTTP/1.0 500 Internal Server Error\r\nCache-Control: no-cache, private\r\nContent-Type:  application/json\r\n'
+        'Date:          Tue, 24 May 2022 15:41:45 GMT\r\n\r\n{"error":"Information is not available right now. Try it '
+        'again later"}'
+    ).encode("utf-8")
 
     with pytest.raises(ex.BBServerError, match="not available right now"):
         ex.raise_for_response(response)
