@@ -108,6 +108,42 @@ def test_raise_for_response_soft_409():
         ex.raise_for_response(response)
 
 
+def test_raise_for_response_soft_error_headers_in_body():
+    """
+    This test reproduces this real-world error we got on 2022/05/24:
+
+        $ curl -iH 'Authorization: Bearer OWZ...Nw' \
+            https://api.bigbuy.eu/rest/shipping/lowest-shipping-costs-by-country/ES
+
+        HTTP/2 200
+        ...
+        content-length: 221
+
+        HTTP/1.0 500 Internal Server Error
+        Cache-Control: no-cache, private
+        Content-Type:  application/json
+        Date:          Tue, 24 May 2022 15:01:07 GMT
+
+        {"error":"Information is not available right now. Try it again later"}
+
+    Note how this is a 200 response but whose body contains headers for a 500 error.
+    """
+
+    response = Response()
+    response.status_code = 200
+    response.encoding = "utf-8"
+    response._content = """HTTP/1.0 500 Internal Server Error
+Cache-Control: no-cache, private
+Content-Type:  application/json
+Date:          Tue, 24 May 2022 15:01:07 GMT
+
+{"error":"Information is not available right now. Try it again later"}
+""".encode("utf-8")
+
+    with pytest.raises(ex.BBServerError, match="not available right now"):
+        ex.raise_for_response(response)
+
+
 def make_exception(rate_limit_datetime):
     headers = {}
     if rate_limit_datetime is not None:

@@ -6,6 +6,7 @@ bigbuy.exceptions
 
 This module contains Bigbuy-specific Exception classes.
 """
+import re
 from datetime import datetime, timedelta
 from typing import Optional, Collection, Union, Dict, Any, List, Type, cast
 
@@ -236,6 +237,7 @@ def raise_for_response(response: requests.Response):
     """
     text = response.text
     content = json_or_none(text)
+    is_5xx = response.status_code // 100 == 5
 
     if response.ok:
         # BigBuy may return soft errors (with a '200 OK' code)
@@ -246,18 +248,30 @@ def raise_for_response(response: requests.Response):
                     isinstance(message, str) and "Something went wrong" in message:
                 response.status_code = code
                 return raise_for_response(response)
+
+        # It may also return whole HTTP responses embedded in the body of a 200 OK response
+        # See test_raise_for_response_soft_error_headers_in_body for a real-world example.
+        if text.startswith("HTTP/1."):
+            if match := re.match(r"HTTP/1\.[01] (\d{3})", text):
+                response.status_code = int(match.group(1))
+                _headers, body = text.split("\n\n", 1)
+                response.encoding = "utf-8"
+                response._content = body.encode(response.encoding)
+                return raise_for_response(response)
+
         return
 
     if content is None:
         if text == "You exceeded the rate limit":
-            cls: Type[BBResponseError] = BBRateLimitError
+            error_class: Type[BBResponseError] = BBRateLimitError
         elif text.startswith("<html><body><h1>504 Gateway Time-out</h1>") or \
-                text in {"Bad Gateway", "Internal Server Error"}:
-            cls = BBServerError
+                text in {"Bad Gateway", "Internal Server Error"} or \
+                is_5xx:
+            error_class = BBServerError
         else:
-            cls = BBResponseError
+            error_class = BBResponseError
 
-        raise cls(text, response)
+        raise error_class(text, response)
 
     content = cast(dict, response.json())
 
@@ -307,10 +321,12 @@ def raise_for_response(response: requests.Response):
     except ValueError:
         pass
 
+    error_class = BBServerError if is_5xx else BBResponseError
+
     # Yes, nested JSON
     message_content = json_or_none(message)
     if message_content is None:
-        raise BBResponseError(message, response, bb_code=bb_code)
+        raise error_class(message, response, bb_code=bb_code)
 
     text = message_content["info"]
     bb_data = message_content.get("data", {})
@@ -319,4 +335,4 @@ def raise_for_response(response: requests.Response):
         error_class = error_classes[bb_code]
         raise error_class(text, response, bb_code, bb_data)
 
-    raise BBResponseError(text, response, bb_code=bb_code, bb_data=bb_data)
+    raise error_class(text, response, bb_code=bb_code, bb_data=bb_data)
