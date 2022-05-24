@@ -1,5 +1,10 @@
 # PyBigBuy Changelog
 
+## 3.13.4 (2022/05/24)
+
+* `raise_for_response` now supports soft errors; for example BigBuy may return a `200 OK` response whose body is
+  `{"code": 409, "message": "Something went wrong"}`. This is now treated as an error instead of a success.
+
 ## 3.13.3 (2022/04/29)
 
 * Add `get_modules` and `get_module_platforms`
