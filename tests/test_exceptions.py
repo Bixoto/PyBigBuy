@@ -97,6 +97,17 @@ def test_raise_for_response_too_long_value_error(error_payload):
         ex.raise_for_response(response)
 
 
+def test_raise_for_response_soft_409():
+    response = Response()
+    response.status_code = 200
+    response.encoding = "utf-8"
+    payload = {'code': 409, 'message': 'Something went wrong 56783360c34fff84fe56880fbf62179b'}
+    response._content = json.dumps(payload).encode("utf-8")
+
+    with pytest.raises(ex.BBResponseError, match="Something went wrong"):
+        ex.raise_for_response(response)
+
+
 def make_exception(rate_limit_datetime):
     headers = {}
     if rate_limit_datetime is not None:

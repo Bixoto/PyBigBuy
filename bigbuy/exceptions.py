@@ -11,6 +11,8 @@ from typing import Optional, Collection, Union, Dict, Any, List
 
 import json
 
+import requests
+
 
 class BBError(Exception):
     """Generic error class."""
@@ -227,15 +229,24 @@ def flat_children_errors(children: Union[List, Dict[str, Any]], prefix=""):
     return trimmed
 
 
-def raise_for_response(response):
+def raise_for_response(response: requests.Response):
     """
     Equivalent of request.Response#raise_for_status() that raises an exception based on the response's status.
+    This may modify its argument to fix the status code if the response is a soft error.
     """
-    if response.ok:
-        return
-
     text = response.text
     content = json_or_none(text)
+
+    if response.ok:
+        # BigBuy may return soft errors (with a '200 OK' code)
+        if isinstance(content, dict) and set(content) == {"code", "message"}:
+            code = content["code"]
+            message = content["message"]
+            if isinstance(code, int) and 400 <= code < 600 and \
+                    isinstance(message, str) and "Something went wrong" in message:
+                response.status_code = code
+                return raise_for_response(response)
+        return
 
     if content is None:
         if text == "You exceeded the rate limit":
