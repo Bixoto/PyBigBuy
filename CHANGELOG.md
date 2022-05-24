@@ -1,5 +1,9 @@
 # PyBigBuy Changelog
 
+## 3.13.5 (2022/05/24)
+
+* `raise_for_response` now support soft errors where a full error response is embedded in a `200 OK` response body
+
 ## 3.13.4 (2022/05/24)
 
 * `raise_for_response` now supports soft errors; for example BigBuy may return a `200 OK` response whose body is
