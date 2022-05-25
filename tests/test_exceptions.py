@@ -9,6 +9,11 @@ from requests import Response
 from bigbuy import exceptions as ex
 
 
+def test_json_or_none():
+    assert ex.json_or_none("") is None
+    assert ex.json_or_none("null") is None
+
+
 def test_trim_empty_collections():
     assert not ex._trim_empty_collections({
         'a': {'b': [{'c': {'d': []}}, {}, []]},

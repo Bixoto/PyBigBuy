@@ -158,6 +158,9 @@ error_classes = {
 
 
 def json_or_none(text) -> Optional[dict]:
+    if not text:
+        return None
+
     # don't even try to decode it if it doesn't look like a dict
     if text[0] != '{':
         return None
