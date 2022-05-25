@@ -1,5 +1,14 @@
 # PyBigBuy Changelog
 
+## 3.13.8 (2022/05/25)
+
+* `get_*`: return `None` when we get an empty response from BigBuy instead of crashing when trying to decode it as JSON.
+  The API has been returning a lot of `200 OK` with empty bodies lately instead of proper 404s.
+* Add methods to get taxonomies
+* All methods now accept additional keyword parameters to pass to the underlying `requests` call
+* Additional typing hints
+* Remove dead doc links in docstrings
+
 ## 3.13.7 (2022/05/25)
 
 * `raise_for_response`: don’t crash on empty response bodies
