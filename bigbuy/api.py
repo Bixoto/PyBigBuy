@@ -434,3 +434,32 @@ class BigBuy(APISession):
         Get all module platforms.
         """
         return self.get_json_api("module/platforms", **params)
+
+    def get_taxonomies(self, **params) -> List[dict]:
+        """
+        List all taxonomies.
+        """
+        return self.get_json_api("catalog/taxonomies", **params)
+
+    def get_taxonomy_all_languages(self, taxonomy_id: Id, **params):
+        """
+        Get a single taxonomy in all languages.
+        """
+        return self.get_json_api(f"catalog/taxonomyalllanguages/{taxonomy_id}", **params)
+
+    def get_product_taxonomies(self, product_id: Id, **params) -> Optional[List[dict]]:
+        """
+        Return all taxonomies associated with a product.
+
+        Example:
+
+            [{'id': 5906, 'taxonomy': 5906, 'product': 334497}, {'id': 5908, 'taxonomy': 5908, 'product': 334497}]
+        """
+        return self.get_json_api(f"catalog/producttaxonomies/{product_id}", **params)
+
+    def get_products_taxonomies(self, **params) -> List[dict]:
+        """
+        Return all taxonomies of all products.
+        The format is the same as ``get_product_taxonomies``
+        """
+        return self.get_json_api(f"catalog/productstaxonomies", **params)
