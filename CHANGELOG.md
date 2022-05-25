@@ -1,5 +1,9 @@
 # PyBigBuy Changelog
 
+## 3.13.7 (2022/05/25)
+
+* `raise_for_response`: don’t crash on empty response bodies
+
 ## 3.13.6 (2022/05/24)
 
 * Fix the parsing of soft errors introduced in the latest release
