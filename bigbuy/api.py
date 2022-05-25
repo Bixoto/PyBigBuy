@@ -27,7 +27,10 @@ class BigBuy(APISession):
         else:  # if mode == "production":
             base_url = 'https://api.bigbuy.eu/rest'
 
-        super().__init__(base_url, user_agent=f'pyBigBuy v{__version__}', none_on_404=False)
+        super().__init__(base_url, user_agent=f'pyBigBuy v{__version__}',
+                         none_on_404=False,
+                         # BigBuy likes returning '200 OK' responses with empty bodies instead of 404s.
+                         none_on_empty=True)
 
         self.app_key = app_key
         self.headers.setdefault('Authorization', f'Bearer {app_key}')
