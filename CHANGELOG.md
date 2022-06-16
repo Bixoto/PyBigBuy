@@ -1,5 +1,10 @@
 # PyBigBuy Changelog
 
+## 3.13.9 (2022/06/16)
+
+* `raise_for_response`: raise a `BBProductError` with a more useful error message when BigBuy returns the error `Products error.`
+* Additional typing hints
+
 ## 3.13.8 (2022/05/25)
 
 * `get_*`: return `None` when we get an empty response from BigBuy instead of crashing when trying to decode it as JSON.
