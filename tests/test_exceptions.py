@@ -77,6 +77,21 @@ def error_payload():
     }
 
 
+def test_raise_for_response_products_error():
+    response = Response()
+    response.encoding = "utf-8"
+    response.status_code = 409
+    # Sentry BIXOTO-PZ
+    payload = {
+        "code": 409,
+        "message": '{"info":"Products error.","data":[{"sku":"S5001344","message":"Inactive product."}]}'
+    }
+    response._content = json.dumps(payload).encode("utf-8")
+
+    with pytest.raises(ex.BBProductError, match="Products error:"):
+        ex.raise_for_response(response)
+
+
 def test_raise_for_response_invalid_value_error(error_payload):
     response = Response()
     response.encoding = "utf-8"

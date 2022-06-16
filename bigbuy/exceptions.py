@@ -8,11 +8,12 @@ This module contains Bigbuy-specific Exception classes.
 """
 import re
 from datetime import datetime, timedelta
-from typing import Optional, Collection, Union, Dict, Any, List, Type, cast
+from typing import Optional, Union, Dict, Any, List, Type, cast
 
 import json
 
 import requests
+from requests import Response
 
 
 class BBError(Exception):
@@ -21,9 +22,9 @@ class BBError(Exception):
 
 class BBResponseError(BBError):
     def __init__(self, text: str,
-                 response,
+                 response: Response,
                  bb_code: Optional[Union[str, int]] = None,
-                 bb_data: Optional[dict] = None):
+                 bb_data: Optional[Union[dict, list]] = None):
         self.response = response
         self.text = text
         self.bb_code = bb_code
@@ -61,8 +62,11 @@ class BBRateLimitError(BBResponseError):
 
 
 class BBProductError(BBResponseError):
-    def __init__(self, text, response, bb_code, bb_data):
-        self.skus: Collection[str] = bb_data["skus"]
+    def __init__(self, text: str, response, bb_code, bb_data, *, skus: Optional[List[str]] = None):
+        if skus is None:
+            skus = bb_data["skus"]
+
+        self.skus = skus
         super().__init__(text, response, bb_code, bb_data)
 
 
@@ -339,5 +343,18 @@ def raise_for_response(response: requests.Response):
     if bb_code in error_classes:
         error_class = error_classes[bb_code]
         raise error_class(text, response, bb_code, bb_data)
+
+    if not is_5xx:
+        if text == "Products error." and bb_data and isinstance(bb_data, list) \
+                and all(isinstance(d, dict) and "sku" in d and "message" in d
+                        for d in bb_data):
+
+            skus = [d["sku"] for d in bb_data]
+
+            # If there's only one error message, use it to clarify the unhelpful 'Products error'.
+            if len(bb_data) == 1:
+                text = f"Products error: {bb_data[0]['message']}"
+
+            raise BBProductError(text, response, bb_code, bb_data, skus=skus)
 
     raise error_class(text, response, bb_code=bb_code, bb_data=bb_data)
