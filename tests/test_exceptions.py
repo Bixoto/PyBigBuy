@@ -181,6 +181,13 @@ def test_reset_time():
         assert dt == e.reset_time
 
 
+def test_bbratelimiterror_no_header():
+    response = Response()
+    e = ex.BBRateLimitError("some text", response)
+    assert e.reset_time is None
+    assert e.reset_timedelta() is None
+
+
 def test_bbratelimiterror_reset_timedelta():
     one_day = timedelta(days=1)
     day_2 = datetime.utcnow()
