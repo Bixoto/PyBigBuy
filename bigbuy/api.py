@@ -228,7 +228,7 @@ class BigBuy(APISession):
         Example order:
             {"delivery":{"isoCountry":"ES","postcode":"46005"},"products":[{"reference":"V1300179","quantity":1}]}
         """
-        if "order" in order:
+        if "order" in order:  # pragma: nocover
             warnings.warn("Calling get_shipping_order({\"order\": order}) is deprecated;"
                           " use get_shipping_order(order) instead.",
                           DeprecationWarning)
@@ -288,7 +288,7 @@ class BigBuy(APISession):
           ]
         }
         """
-        if "order" in order:
+        if "order" in order:  # pragma: nocover
             warnings.warn("Calling check_order({\"order\": order}) is deprecated; use check_order(order) instead.",
                           DeprecationWarning)
             order_payload = order
@@ -332,7 +332,7 @@ class BigBuy(APISession):
           ]
         }
         """
-        if "order" in order:
+        if "order" in order:  # pragma: nocover
             warnings.warn("Calling create_order({\"order\": order}) is deprecated; use create_order(order) instead.",
                           DeprecationWarning)
             order_payload = order

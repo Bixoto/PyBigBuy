@@ -22,6 +22,14 @@ types-requests = "^2.25.0"
 pytest = "^7.1.0"
 pytest-coverage = "^0.0"
 
+[tool.coverage.report]
+omit = ["tests/*", "conftest.py"]
+exclude_lines = [
+    "pragma: nocover",
+    "raise NotImplementedError",
+    "except ImportError:",
+]
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
