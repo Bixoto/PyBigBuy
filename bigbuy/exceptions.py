@@ -7,6 +7,7 @@ bigbuy.exceptions
 This module contains Bigbuy-specific Exception classes.
 """
 import re
+import time
 from datetime import datetime, timedelta
 from typing import Optional, Union, Dict, Any, List, Type, cast
 
@@ -43,7 +44,7 @@ class BBRateLimitError(BBResponseError):
 
     def reset_timedelta(self, utcnow: Optional[datetime] = None):
         """
-        Return a timedelta object representing the delta between the current time and the reset time.
+        Return a timedelta object representing the delta between the current UTC time and the reset time.
         Return None if it would be negative (i.e. the rest time is in the past).
 
         :param utcnow: if passed, this is used instead of datetime.utcnow()
@@ -358,3 +359,19 @@ def raise_for_response(response: requests.Response):
             raise BBProductError(text, response, bb_code, bb_data, skus=skus)
 
     raise error_class(text, response, bb_code=bb_code, bb_data=bb_data)
+
+
+def wait_rate_limit(e: BBRateLimitError, wait_function=time.sleep):
+    """
+    Given a BBRateLimitError instance, wait until the rate limit is reset and return True.
+    If no information about the rate limit is given, don’t do anything and return False.
+    """
+    if not isinstance(e, BBRateLimitError):
+        return False
+
+    if delta := e.reset_timedelta():
+        wait_seconds = delta.total_seconds()
+        wait_function(wait_seconds)
+        return True
+
+    return False

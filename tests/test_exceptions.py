@@ -1,6 +1,7 @@
 import json
 import math
 from datetime import datetime, timedelta
+from typing import cast, Optional
 from unittest import mock
 
 import pytest
@@ -162,7 +163,7 @@ def test_raise_for_response_soft_error_headers_in_body():
         ex.raise_for_response(response)
 
 
-def make_exception(rate_limit_datetime):
+def make_rate_limit_exception(rate_limit_datetime):
     headers = {}
     if rate_limit_datetime is not None:
         headers["X-Ratelimit-Reset"] = str(int(rate_limit_datetime.timestamp()))
@@ -176,7 +177,7 @@ def test_reset_time():
             datetime(2000, 1, 2, 3, 4, 5),
             datetime(2100, 1, 2, 3, 4, 5),
     ):
-        e = make_exception(dt)
+        e = make_rate_limit_exception(dt)
         assert dt == e.reset_time
 
 
@@ -186,16 +187,46 @@ def test_bbratelimiterror_reset_timedelta():
     day_1 = day_2 - one_day
 
     # future
-    e = make_exception(day_2)
+    e = make_rate_limit_exception(day_2)
     diff = e.reset_timedelta(utcnow=day_1)
     assert isinstance(diff, timedelta)
     # avoid a rounding issue
     assert one_day.total_seconds() == math.ceil(diff.total_seconds())
 
     # present
-    e = make_exception(day_1)
+    e = make_rate_limit_exception(day_1)
     assert e.reset_timedelta(utcnow=day_1) is None
 
     # past
-    e = make_exception(day_1)
+    e = make_rate_limit_exception(day_1)
     assert e.reset_timedelta(utcnow=day_2) is None
+
+
+def test_wait_rate_limit_bad_type():
+    assert ex.wait_rate_limit(cast(ex.BBRateLimitError, Exception()), wait_function=lambda _: 1) is False
+
+
+def test_wait_rate_limit_past_date():
+    def dont_wait(_):
+        assert False
+
+    e = make_rate_limit_exception(datetime.utcnow() - timedelta(days=2))
+    assert e.reset_timedelta() is None
+    assert ex.wait_rate_limit(e, wait_function=dont_wait) is False
+
+
+def test_wait_rate_limit():
+    _wait: Optional[float] = None
+
+    def wait(seconds: float):
+        nonlocal _wait
+        _wait = seconds
+
+    e = make_rate_limit_exception(datetime.utcnow() + timedelta(seconds=100))
+
+    t = e.reset_timedelta()
+    # Allow some margin
+    assert 90 < t.seconds < 110
+    assert ex.wait_rate_limit(e, wait_function=wait) is True
+    assert _wait is not None
+    assert 90 < _wait < 110
