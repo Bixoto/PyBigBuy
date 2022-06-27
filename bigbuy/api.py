@@ -3,6 +3,7 @@
 """
 Official documentation for Bigbuy API endpoints can be found at: https://api.bigbuy.eu/rest/doc/
 """
+import warnings
 from typing import Optional, Dict, Any, Union, Iterable, List, cast
 
 import requests
@@ -227,10 +228,14 @@ class BigBuy(APISession):
         Example order:
             {"delivery":{"isoCountry":"ES","postcode":"46005"},"products":[{"reference":"V1300179","quantity":1}]}
         """
-        # stay compatible with caller that use .method({"order": order})
-        if "order" not in order:
-            order = {"order": order}
-        return self.post_api('shipping/orders', json=order).json()
+        if "order" in order:
+            warnings.warn("Calling get_shipping_order({\"order\": order}) is deprecated;"
+                          " use get_shipping_order(order) instead.",
+                          DeprecationWarning)
+            order_payload = order
+        else:
+            order_payload = {"order": order}
+        return self.post_api('shipping/orders', json=order_payload).json()
 
     # order
     def get_order_addresses(self, **params):
@@ -283,10 +288,13 @@ class BigBuy(APISession):
           ]
         }
         """
-        # stay compatible with caller that use .method({"order": order})
-        if "order" not in order:
-            order = {"order": order}
-        return self.post_api('order/check', json=order, **params).json()
+        if "order" in order:
+            warnings.warn("Calling check_order({\"order\": order}) is deprecated; use check_order(order) instead.",
+                          DeprecationWarning)
+            order_payload = order
+        else:
+            order_payload = {"order": order}
+        return self.post_api('order/check', json=order_payload, **params).json()
 
     def create_order(self, order: Dict[str, Any], **params):
         """
@@ -324,11 +332,14 @@ class BigBuy(APISession):
           ]
         }
         """
-        # stay compatible with caller that use .method({"order": order})
-        if "order" not in order:
-            order = {"order": order}
+        if "order" in order:
+            warnings.warn("Calling create_order({\"order\": order}) is deprecated; use create_order(order) instead.",
+                          DeprecationWarning)
+            order_payload = order
+        else:
+            order_payload = {"order": order}
         # NOTE(BF): we must return the raw response because we need the headers to parse 'Location'
-        return self.post_api('order/create', json=order, **params)
+        return self.post_api('order/create', json=order_payload, **params)
 
     def create_order_id(self, order: dict, **params) -> str:
         """Like create_order(), but return the order id."""

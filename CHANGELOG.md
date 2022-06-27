@@ -1,5 +1,9 @@
 # PyBigBuy Changelog
 
+## Unreleased
+
+* Deprecate functions called as `function({"order": order})` in favor of `function(order)`
+
 ## 3.13.10 (2022/06/27)
 
 * Add `wait_rate_limit` to wait for a `BBRateLimitError` delay
