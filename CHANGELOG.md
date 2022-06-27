@@ -1,6 +1,6 @@
 # PyBigBuy Changelog
 
-## Unreleased
+## 3.13.10 (2022/06/27)
 
 * Add `wait_rate_limit` to wait for a `BBRateLimitError` delay
 
