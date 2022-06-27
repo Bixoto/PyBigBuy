@@ -1,5 +1,9 @@
 # PyBigBuy Changelog
 
+## Unreleased
+
+* Add `wait_rate_limit` to wait for a `BBRateLimitError` delay
+
 ## 3.13.9 (2022/06/16)
 
 * `raise_for_response`: raise a `BBProductError` with a more useful error message when BigBuy returns the error `Products error.`
