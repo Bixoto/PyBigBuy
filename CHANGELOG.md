@@ -3,6 +3,7 @@
 ## Unreleased
 
 * Deprecate functions called as `function({"order": order})` in favor of `function(order)`
+* `raise_for_response`: trim some garbage in HTML error responses
 
 ## 3.13.10 (2022/06/27)
 

@@ -274,12 +274,18 @@ def raise_for_response(response: requests.Response):
     if content is None:
         if text == "You exceeded the rate limit":
             error_class: Type[BBResponseError] = BBRateLimitError
-        elif text.startswith("<html><body><h1>504 Gateway Time-out</h1>") or \
-                text in {"Bad Gateway", "Internal Server Error"} or \
-                is_5xx:
+        elif is_5xx or \
+                text.startswith("<html><body><h1>504 Gateway Time-out</h1>") or \
+                "Internal Server Error" in text or \
+                text == "Bad Gateway":
             error_class = BBServerError
         else:
             error_class = BBResponseError
+
+        # Trim what we can
+        if re.match(r"<!DOCTYPE html>\s*<html>\s*<head>.*", text, re.DOTALL):
+            if m := re.match(r".+<body>(.+)</body>\s*</html>\s*", text, re.DOTALL):
+                text = m.group(1).strip()
 
         raise error_class(text, response)
 
