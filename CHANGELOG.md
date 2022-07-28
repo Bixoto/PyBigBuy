@@ -1,5 +1,9 @@
 # PyBigBuy Changelog
 
+## Unreleased
+
+* Pass keyword arguments given to `__init__` to the parent
+
 ## 3.13.11 (2022/07/28)
 
 * Deprecate functions called as `function({"order": order})` in favor of `function(order)`

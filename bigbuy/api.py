@@ -18,7 +18,7 @@ Id = Union[int, str]
 
 
 class BigBuy(APISession):
-    def __init__(self, app_key: Optional[str] = None, mode="sandbox"):
+    def __init__(self, app_key: Optional[str] = None, mode="sandbox", **kwargs):
         """Instantiates an instance of BigBuy.
 
         :param app_key: Your applications key
@@ -29,10 +29,11 @@ class BigBuy(APISession):
         else:  # if mode == "production":
             base_url = 'https://api.bigbuy.eu/rest'
 
-        super().__init__(base_url, user_agent=f'pyBigBuy v{__version__}',
-                         none_on_404=False,
-                         # BigBuy likes returning '200 OK' responses with empty bodies instead of 404s.
-                         none_on_empty=True)
+        kwargs.setdefault("none_on_404", False)
+        # BigBuy likes returning '200 OK' responses with empty bodies instead of 404s.
+        kwargs.setdefault("none_on_empty", True)
+
+        super().__init__(base_url, user_agent=f'pyBigBuy v{__version__}', **kwargs)
 
         self.app_key = app_key
         self.headers.setdefault('Authorization', f'Bearer {app_key}')
