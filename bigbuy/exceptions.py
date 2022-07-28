@@ -367,7 +367,7 @@ def raise_for_response(response: requests.Response):
     raise error_class(text, response, bb_code=bb_code, bb_data=bb_data)
 
 
-def wait_rate_limit(e: BBRateLimitError, wait_function=time.sleep):
+def wait_rate_limit(e: BBRateLimitError, wait_function=time.sleep, additional_delay=0.01):
     """
     Given a BBRateLimitError instance, wait until the rate limit is reset and return True.
     If no information about the rate limit is given, don’t do anything and return False.
@@ -377,7 +377,7 @@ def wait_rate_limit(e: BBRateLimitError, wait_function=time.sleep):
 
     if delta := e.reset_timedelta():
         wait_seconds = delta.total_seconds()
-        wait_function(wait_seconds)
+        wait_function(wait_seconds + additional_delay)
         return True
 
     return False
