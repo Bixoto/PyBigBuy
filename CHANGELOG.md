@@ -1,6 +1,6 @@
 # PyBigBuy Changelog
 
-## Unreleased
+## 3.13.11 (2022/07/28)
 
 * Deprecate functions called as `function({"order": order})` in favor of `function(order)`
 * `raise_for_response`: trim some garbage in HTML error responses
