@@ -10,7 +10,7 @@ import requests
 from api_session import APISession
 
 from . import __version__
-from .exceptions import raise_for_response
+from .exceptions import raise_for_response, BBRateLimitError, wait_rate_limit
 
 __all__ = ['BigBuy']
 
@@ -18,7 +18,7 @@ Id = Union[int, str]
 
 
 class BigBuy(APISession):
-    def __init__(self, app_key: Optional[str] = None, mode="sandbox", **kwargs):
+    def __init__(self, app_key: Optional[str] = None, mode="sandbox", retry_on_rate_limit=False, **kwargs):
         """Instantiates an instance of BigBuy.
 
         :param app_key: Your applications key
@@ -36,6 +36,7 @@ class BigBuy(APISession):
         super().__init__(base_url, user_agent=f'pyBigBuy v{__version__}', **kwargs)
 
         self.app_key = app_key
+        self.retry_on_rate_limit = retry_on_rate_limit
         self.headers.setdefault('Authorization', f'Bearer {app_key}')
 
     def __repr__(self):
@@ -45,16 +46,36 @@ class BigBuy(APISession):
         # Implement upstream's method
         return raise_for_response(response)
 
-    def request_api(self, method: str, path: str, *args, throw: Optional[bool] = None, **kwargs) \
-            -> requests.Response:
+    def request_api(self, method: str, path: str, *args,
+                    throw: Optional[bool] = None,
+                    retry_on_rate_limit: Optional[bool] = None,
+                    max_retry_on_rate_limit=2,
+                    **kwargs) -> requests.Response:
         """
         Request BigBuy’s API.
         """
-        return super().request_api(method,
-                                   f'/{path}.json', *args,
-                                   # Default throw= to True unless 'False' was explicitly passed
-                                   throw=throw is not False,
-                                   **kwargs)
+        full_path = f'/{path}.json'
+
+        if retry_on_rate_limit is None:
+            retry_on_rate_limit = self.retry_on_rate_limit
+
+        try:
+            return super().request_api(method, full_path, *args,
+                                       # Default throw= to True unless 'False' was explicitly passed
+                                       throw=throw is not False,
+                                       **kwargs)
+        except BBRateLimitError as e:
+            if not retry_on_rate_limit or max_retry_on_rate_limit <= 0:
+                raise
+
+            if not wait_rate_limit(e):
+                raise
+
+            return self.request_api(method, path, *args,
+                                    throw=throw,
+                                    retry_on_rate_limit=retry_on_rate_limit,
+                                    max_retry_on_rate_limit=max_retry_on_rate_limit - 1,
+                                    **kwargs)
 
     # catalog
     def get_attribute(self, attribute_id: Id, **params):

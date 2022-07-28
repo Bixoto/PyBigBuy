@@ -5,9 +5,10 @@ from typing import cast, Optional
 from unittest import mock
 
 import pytest
+from api_session import APISession
 from requests import Response
 
-from bigbuy import exceptions as ex
+from bigbuy import BigBuy, exceptions as ex
 
 
 def test_json_or_none():
@@ -255,3 +256,49 @@ def test_wait_rate_limit():
     assert ex.wait_rate_limit(e, wait_function=wait) is True
     assert _wait is not None
     assert 90 < _wait < 110
+
+
+class RateLimitedTestAPISession(APISession):
+    def __init__(self, *args, rate_limit_timedelta=timedelta(seconds=10), rate_limited_calls=0, **kwargs):
+        self.rate_limit_timedelta = rate_limit_timedelta
+        self.rate_limited_calls = rate_limited_calls
+        super().__init__(*args, **kwargs)
+
+    def request_api(self, method: str, path: str, *args, throw=None, **kwargs):
+        if throw and self.rate_limited_calls > 0:
+            self.rate_limited_calls -= 1
+            raise make_rate_limit_exception(datetime.utcnow() + self.rate_limit_timedelta)
+
+        response = mock.Mock()
+        response.test = (method, path)
+        return response
+
+
+class RateLimitedTestBigBuy(BigBuy, RateLimitedTestAPISession):
+    pass
+
+
+def test_retry_on_rate_limit_0():
+    bb = RateLimitedTestBigBuy("test_app_key", rate_limited_calls=0, retry_on_rate_limit=True)
+    r = bb.request_api("get", "foo", throw=True)
+    assert getattr(r, "test") == ("get", "/foo.json")
+
+
+def test_retry_on_rate_limit_false_raises():
+    bb = RateLimitedTestBigBuy("test_app_key", rate_limited_calls=1, retry_on_rate_limit=False)
+    with pytest.raises(ex.BBRateLimitError):
+        bb.request_api("get", "foo", throw=True)
+
+
+def test_retry_on_rate_limit_true_1():
+    bb = RateLimitedTestBigBuy("test_app_key", rate_limited_calls=1, retry_on_rate_limit=True,
+                               rate_limit_timedelta=timedelta(seconds=1.5))
+    r = bb.request_api("get", "foo", throw=True)
+    assert getattr(r, "test") == ("get", "/foo.json")
+
+
+def test_retry_on_rate_limit_true_2():
+    bb = RateLimitedTestBigBuy("test_app_key", rate_limited_calls=2, retry_on_rate_limit=True,
+                               rate_limit_timedelta=timedelta(seconds=1.5))
+    r = bb.request_api("get", "foo", throw=True)
+    assert getattr(r, "test") == ("get", "/foo.json")
