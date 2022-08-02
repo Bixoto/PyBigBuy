@@ -4,6 +4,8 @@ from typing import Optional
 
 from requests import Response
 
+RATE_LIMIT_RESPONSE_TEXT = "You exceeded the rate limit"
+
 
 class RateLimit:
     """
@@ -18,7 +20,7 @@ class RateLimit:
         if response.ok:
             return None
 
-        if response.text != "You exceeded the rate limit":
+        if response.text != RATE_LIMIT_RESPONSE_TEXT:
             return None
 
         reset_timestamp: str = response.headers.get("X-Ratelimit-Reset", "")

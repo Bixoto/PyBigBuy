@@ -9,6 +9,7 @@ from api_session import APISession
 from requests import Response
 
 from bigbuy import BigBuy, exceptions as ex
+from bigbuy.rate_limit import RATE_LIMIT_RESPONSE_TEXT
 
 
 def test_json_or_none():
@@ -182,17 +183,24 @@ def test_raise_for_response_500_html_body():
         ex.raise_for_response(response)
 
 
-def make_rate_limit_exception(rate_limit_datetime):
+def make_rate_limit_response(rate_limit_datetime):
     headers = {}
     if rate_limit_datetime is not None:
         headers["X-Ratelimit-Reset"] = str(int(rate_limit_datetime.timestamp()))
-    response = mock.Mock(headers=headers)
-    return ex.BBRateLimitError("some text", response)
+    response = mock.Mock(ok=False, headers=headers, text=RATE_LIMIT_RESPONSE_TEXT)
+    return response
+
+
+def make_rate_limit_exception(rate_limit_datetime):
+    response = make_rate_limit_response(rate_limit_datetime)
+    return ex.BBRateLimitError(response.text, response)
 
 
 def test_reset_time():
+    e = make_rate_limit_exception(None)
+    assert e.rate_limit is None
+
     for dt in (
-            None,
             datetime(2000, 1, 2, 3, 4, 5),
             datetime(2100, 1, 2, 3, 4, 5),
     ):
@@ -202,8 +210,7 @@ def test_reset_time():
 
 
 def test_bbratelimiterror_no_header():
-    response = Response()
-    e = ex.BBRateLimitError("some text", response)
+    e = ex.BBRateLimitError("some text", mock.Mock(text=RATE_LIMIT_RESPONSE_TEXT, ok=False, headers={}))
     assert e.reset_time is None
     assert e.reset_timedelta() is None
 
@@ -248,6 +255,7 @@ def test_wait_until_expiration():
     e = make_rate_limit_exception(datetime.utcnow() + timedelta(seconds=100))
 
     t = e.reset_timedelta()
+    assert t is not None
     # Allow some margin
     assert 90 < t.seconds < 110
     assert e.wait_until_expiration(wait_function=wait) is True

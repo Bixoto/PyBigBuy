@@ -10,9 +10,11 @@ import requests
 from api_session import APISession
 
 from . import __version__
-from .exceptions import raise_for_response, BBRateLimitError
+from .exceptions import raise_for_response
+from .rate_limit import RateLimit
 
 __all__ = ['BigBuy']
+
 
 Id = Union[int, str]
 
@@ -51,36 +53,29 @@ class BigBuy(APISession):
                     retry_on_rate_limit: Optional[bool] = None,
                     max_retry_on_rate_limit=2,
                     **kwargs) -> requests.Response:
-        """
-        Request BigBuy’s API.
-        """
         if retry_on_rate_limit is None:
             retry_on_rate_limit = self.retry_on_rate_limit
 
-        try:
-            return super().request_api(method, f'/{path}.json', *args,
-                                       # Default throw= to True unless 'False' was explicitly passed
-                                       throw=throw is not False,
-                                       **kwargs)
-        except BBRateLimitError as e:
-            if not retry_on_rate_limit or max_retry_on_rate_limit <= 0:
-                raise
+        r = super().request_api(method, f'/{path}.json', *args,
+                                # We handle 'throw' by ourselves
+                                throw=False,
+                                **kwargs)
 
-            if not e.wait_until_expiration():
-                raise
+        if retry_on_rate_limit and max_retry_on_rate_limit > 0:
+            if rate_limit := RateLimit.from_response(r):
+                if rate_limit.wait_until_expiration():
+                    # Retry after waiting for the rate-limit to expire
+                    return self.request_api(method, path, *args,
+                                            throw=throw,
+                                            retry_on_rate_limit=retry_on_rate_limit,
+                                            max_retry_on_rate_limit=max_retry_on_rate_limit - 1,
+                                            **kwargs)
 
-            # Retry
-            return self.request_api(method, path, *args,
-                                    throw=throw,
-                                    retry_on_rate_limit=retry_on_rate_limit,
-                                    max_retry_on_rate_limit=max_retry_on_rate_limit - 1,
-                                    **kwargs)
+        # throw=None = default behavior (True)
+        if throw is True or throw is None:
+            self.raise_for_response(r)
 
-    def get_json_api(self, path: str, params: Optional[dict] = None, *,
-                     throw=True,
-                     **kwargs):
-        if throw:
-            return super().get_json_api(path, params, )
+        return r
 
     # catalog
     def get_attribute(self, attribute_id: Id, **params):
@@ -171,7 +166,7 @@ class BigBuy(APISession):
         return self.get_json_api('catalog/productsimages', params=params)
 
     def get_products_information(self, **params):
-        """Returns all products products information."""
+        """Returns all products' information."""
         return self.get_json_api('catalog/productsinformation', params=params)
 
     def get_products_stock(self, **params):
@@ -280,7 +275,7 @@ class BigBuy(APISession):
         return self.get_json_api('order/carriers/new', **params)
 
     def check_order(self, order: Dict[str, Any], **params):
-        """Check/simulate an order and return the total order to paid.
+        """Check/simulate an order and return the total order to pay.
 
         Example order:
 
@@ -405,7 +400,7 @@ class BigBuy(APISession):
         Get the list of available trackings for the given orders.
 
         If ``match_ids`` is true (the default), the returned sequence is guaranteed to have the same length
-        as ``order_ids``, filled with ``None`` when appropriate. Otherwise it should be in the same order but may
+        as ``order_ids``, filled with ``None`` when appropriate. Otherwise, it should be in the same order but may
         be shorter as some orders may not have available tracking.
         """
         payload = {

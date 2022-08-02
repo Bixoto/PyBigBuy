@@ -241,7 +241,6 @@ def raise_for_response(response: Response):
     """
     text = response.text
     content = json_or_none(text)
-    is_5xx = response.status_code // 100 == 5
 
     if response.ok:
         # BigBuy may return soft errors (with a '200 OK' code)
@@ -266,6 +265,8 @@ def raise_for_response(response: Response):
                     return raise_for_response(response)
 
         return
+
+    is_5xx = response.status_code // 100 == 5
 
     if content is None:
         if text == "You exceeded the rate limit":
