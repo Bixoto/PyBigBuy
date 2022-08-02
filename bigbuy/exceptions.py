@@ -6,15 +6,15 @@ bigbuy.exceptions
 
 This module contains Bigbuy-specific Exception classes.
 """
+import json
 import re
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Optional, Union, Dict, Any, List, Type, cast
 
-import json
-
-import requests
 from requests import Response
+
+from bigbuy.rate_limit import RateLimit
 
 
 class BBError(Exception):
@@ -35,35 +35,31 @@ class BBResponseError(BBError):
 
 
 class BBRateLimitError(BBResponseError):
-    def __init__(self, text: str, response):
+    def __init__(self, text: str, response: Response):
         super().__init__(text, response)
-        self.reset_time: Optional[datetime] = None
-        reset_timestamp: str = response.headers.get("X-Ratelimit-Reset", "")
-        if reset_timestamp and reset_timestamp.isdigit():
-            self.reset_time = datetime.fromtimestamp(int(reset_timestamp))
+        self.rate_limit = RateLimit.from_response(response)
+
+    @property
+    def reset_time(self):
+        if self.rate_limit is not None:
+            return self.rate_limit.reset_time
+
+        return None
 
     def reset_timedelta(self, utcnow: Optional[datetime] = None):
-        """
-        Return a timedelta object representing the delta between the current UTC time and the reset time.
-        Return None if it would be negative (i.e. the rest time is in the past).
+        if self.rate_limit is not None:
+            return self.rate_limit.reset_timedelta(utcnow=utcnow)
 
-        :param utcnow: if passed, this is used instead of datetime.utcnow()
-        """
-        if not self.reset_time:
-            return
+        return None
 
-        if utcnow is None:
-            utcnow = datetime.utcnow()
-
-        delta = self.reset_time - utcnow
-        if delta <= timedelta(0):
-            return
-
-        return delta
+    def wait_until_expiration(self, *, wait_function=time.sleep, additional_delay=0.01):
+        if self.rate_limit is not None:
+            return self.rate_limit.wait_until_expiration(wait_function=wait_function, additional_delay=additional_delay)
+        return None
 
 
 class BBProductError(BBResponseError):
-    def __init__(self, text: str, response, bb_code, bb_data, *, skus: Optional[List[str]] = None):
+    def __init__(self, text: str, response: Response, bb_code, bb_data, *, skus: Optional[List[str]] = None):
         if skus is None:
             skus = bb_data["skus"]
 
@@ -138,7 +134,7 @@ class BBServerError(BBResponseError):
 
 
 class BBValidationError(BBResponseError):
-    def __init__(self, error_fields, response, **kwargs):
+    def __init__(self, error_fields, response: Response, **kwargs):
         text = "Validation failed: %s" % str(error_fields)
         super().__init__(text, response, **kwargs)
         self.error_fields = error_fields
@@ -162,7 +158,7 @@ error_classes = {
 }
 
 
-def json_or_none(text) -> Optional[dict]:
+def json_or_none(text: Optional[str]) -> Optional[dict]:
     if not text:
         return None
 
@@ -238,7 +234,7 @@ def flat_children_errors(children: Union[List, Dict[str, Any]], prefix=""):
     return trimmed
 
 
-def raise_for_response(response: requests.Response):
+def raise_for_response(response: Response):
     """
     Equivalent of request.Response#raise_for_status() that raises an exception based on the response's status.
     This may modify its argument to fix the status code if the response is a soft error.
@@ -367,17 +363,9 @@ def raise_for_response(response: requests.Response):
     raise error_class(text, response, bb_code=bb_code, bb_data=bb_data)
 
 
+# deprecated
 def wait_rate_limit(e: BBRateLimitError, wait_function=time.sleep, additional_delay=0.01):
-    """
-    Given a BBRateLimitError instance, wait until the rate limit is reset and return True.
-    If no information about the rate limit is given, don’t do anything and return False.
-    """
     if not isinstance(e, BBRateLimitError):
         return False
 
-    if delta := e.reset_timedelta():
-        wait_seconds = delta.total_seconds()
-        wait_function(wait_seconds + additional_delay)
-        return True
-
-    return False
+    return e.wait_until_expiration(wait_function=wait_function, additional_delay=additional_delay)

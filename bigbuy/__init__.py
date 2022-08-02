@@ -16,3 +16,4 @@ from .exceptions import (
     BBServerError, BBRateLimitError, BBValidationError,
     wait_rate_limit,
 )
+from .rate_limit import RateLimit

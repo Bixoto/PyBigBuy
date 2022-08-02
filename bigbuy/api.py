@@ -10,7 +10,7 @@ import requests
 from api_session import APISession
 
 from . import __version__
-from .exceptions import raise_for_response, BBRateLimitError, wait_rate_limit
+from .exceptions import raise_for_response, BBRateLimitError
 
 __all__ = ['BigBuy']
 
@@ -54,13 +54,11 @@ class BigBuy(APISession):
         """
         Request BigBuy’s API.
         """
-        full_path = f'/{path}.json'
-
         if retry_on_rate_limit is None:
             retry_on_rate_limit = self.retry_on_rate_limit
 
         try:
-            return super().request_api(method, full_path, *args,
+            return super().request_api(method, f'/{path}.json', *args,
                                        # Default throw= to True unless 'False' was explicitly passed
                                        throw=throw is not False,
                                        **kwargs)
@@ -68,14 +66,21 @@ class BigBuy(APISession):
             if not retry_on_rate_limit or max_retry_on_rate_limit <= 0:
                 raise
 
-            if not wait_rate_limit(e):
+            if not e.wait_until_expiration():
                 raise
 
+            # Retry
             return self.request_api(method, path, *args,
                                     throw=throw,
                                     retry_on_rate_limit=retry_on_rate_limit,
                                     max_retry_on_rate_limit=max_retry_on_rate_limit - 1,
                                     **kwargs)
+
+    def get_json_api(self, path: str, params: Optional[dict] = None, *,
+                     throw=True,
+                     **kwargs):
+        if throw:
+            return super().get_json_api(path, params, )
 
     # catalog
     def get_attribute(self, attribute_id: Id, **params):

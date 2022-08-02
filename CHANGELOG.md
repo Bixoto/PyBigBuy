@@ -1,5 +1,10 @@
 # PyBigBuy Changelog
 
+## Unreleased
+
+* Add `RateLimit` and move all the rate-limit logic in it. Existing attributes and functions are conserved for
+  backward-compatibility.
+
 ## 3.14.0 (2022/07/28)
 
 * Add optional `retry_on_rate_limit` boolean flag to enable automatic retry on rate-limit errors
@@ -17,7 +22,8 @@
 
 ## 3.13.9 (2022/06/16)
 
-* `raise_for_response`: raise a `BBProductError` with a more useful error message when BigBuy returns the error `Products error.`
+* `raise_for_response`: raise a `BBProductError` with a more useful error message when BigBuy returns the error
+  `Products error.`
 * Additional typing hints
 
 ## 3.13.8 (2022/05/25)
@@ -106,7 +112,7 @@ This release revert the main change of 3.10.0.
 
 ## 3.8.3 (2021/10/06)
 
-* Raise `BBServerError` on internal server errors 
+* Raise `BBServerError` on internal server errors
 
 ## 3.8.2 (2021/09/23)
 

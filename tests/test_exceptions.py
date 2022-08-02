@@ -1,7 +1,7 @@
 import json
 import math
 from datetime import datetime, timedelta
-from typing import cast, Optional
+from typing import Optional
 from unittest import mock
 
 import pytest
@@ -197,6 +197,7 @@ def test_reset_time():
             datetime(2100, 1, 2, 3, 4, 5),
     ):
         e = make_rate_limit_exception(dt)
+        assert e.rate_limit is not None
         assert dt == e.reset_time
 
 
@@ -228,20 +229,16 @@ def test_bbratelimiterror_reset_timedelta():
     assert e.reset_timedelta(utcnow=day_2) is None
 
 
-def test_wait_rate_limit_bad_type():
-    assert ex.wait_rate_limit(cast(ex.BBRateLimitError, Exception()), wait_function=lambda _: 1) is False
-
-
-def test_wait_rate_limit_past_date():
+def test_wait_until_expiration_past_date():
     def dont_wait(_):
         assert False
 
     e = make_rate_limit_exception(datetime.utcnow() - timedelta(days=2))
     assert e.reset_timedelta() is None
-    assert ex.wait_rate_limit(e, wait_function=dont_wait) is False
+    assert e.wait_until_expiration(wait_function=dont_wait) is False
 
 
-def test_wait_rate_limit():
+def test_wait_until_expiration():
     _wait: Optional[float] = None
 
     def wait(seconds: float):
@@ -253,7 +250,7 @@ def test_wait_rate_limit():
     t = e.reset_timedelta()
     # Allow some margin
     assert 90 < t.seconds < 110
-    assert ex.wait_rate_limit(e, wait_function=wait) is True
+    assert e.wait_until_expiration(wait_function=wait) is True
     assert _wait is not None
     assert 90 < _wait < 110
 
