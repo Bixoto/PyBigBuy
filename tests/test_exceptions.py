@@ -5,10 +5,9 @@ from typing import Optional
 from unittest import mock
 
 import pytest
-from api_session import APISession
 from requests import Response
 
-from bigbuy import BigBuy, exceptions as ex
+from bigbuy import exceptions as ex
 from bigbuy.rate_limit import RATE_LIMIT_RESPONSE_TEXT
 
 
@@ -166,7 +165,7 @@ def test_raise_for_response_soft_error_headers_in_body():
 
 
 def test_raise_for_response_500_html_body():
-    # Unfortunately Sentry truncated the body so we don't know it
+    # Unfortunately Sentry truncated the body, so we don't know it
     # https://sentry.io/organizations/bixoto/issues/3390287708/
     response = Response()
     response.status_code = 500
