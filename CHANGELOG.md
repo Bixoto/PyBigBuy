@@ -1,6 +1,6 @@
 # PyBigBuy Changelog
 
-## 3.15.0 (unreleased)
+## 3.15.0 (2022/08/03)
 
 * Add `RateLimit` and move all the rate-limit logic in it. Existing attributes and functions are conserved for
   backward-compatibility.
