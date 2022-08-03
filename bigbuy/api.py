@@ -108,7 +108,6 @@ class BigBuy(APISession):
     def get_category(self, category_id: Id, **params):
         """
         Returns the selected category.
-        Note this endpoint has been removed on 2022/05/25.
         """
         return self.get_json_api(f'catalog/category/{category_id}', params=params)
 
@@ -259,20 +258,6 @@ class BigBuy(APISession):
         return self.post_api('shipping/orders', json=order_payload).json()
 
     # order
-    def get_order_addresses(self, **params):
-        """
-        Get order shipping address structure.
-        Note this endpoint has been removed on 2022/05/25.
-        """
-        return self.get_json_api('order/addresses/new', **params)
-
-    def get_order_carriers(self, **params):
-        """
-        Get order shipping address structure.
-        Note this endpoint has been removed on 2022/05/25.
-        """
-        return self.get_json_api('order/carriers/new', **params)
-
     def check_order(self, order: Dict[str, Any], **params):
         """Check/simulate an order and return the total order to pay.
 

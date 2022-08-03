@@ -6,7 +6,10 @@
   backward-compatibility.
 * Improve the "automatic retry on rate-limit errors" feature by making it work on all calls. Previously, it worked only
   on calls using `throw=True` and not on `get_json_api(none_on_404=True)` ones
-* `wait_rate_limit`: remove the 0.01s of additional delay introduced in the previous release
+* `wait_rate_limit`: remove the 0.01s of additional delay introduced in the previous release. Don’t return `False` if
+  the delta is negative.
+* Remove `get_order_addresses` and `get_order_carriers`: the endpoints they were calling have been removed by BigBuy
+  three months ago
 
 ## 3.14.0 (2022/07/28)
 
