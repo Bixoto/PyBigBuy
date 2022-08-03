@@ -17,15 +17,14 @@ class RateLimit:
 
     @classmethod
     def from_response(cls, response: Response):
-        if response.ok:
-            return None
-
-        if response.text != RATE_LIMIT_RESPONSE_TEXT:
+        if response.ok or response.text != RATE_LIMIT_RESPONSE_TEXT:
             return None
 
         reset_timestamp: str = response.headers.get("X-Ratelimit-Reset", "")
-        if reset_timestamp and reset_timestamp.isdigit():
+        if reset_timestamp.isdigit():
             return cls(reset_time=datetime.fromtimestamp(int(reset_timestamp)))
+
+        return None
 
     def reset_timedelta(self, utcnow: Optional[datetime] = None):
         """
@@ -34,9 +33,6 @@ class RateLimit:
 
         :param utcnow: if passed, this is used instead of datetime.utcnow()
         """
-        if not self.reset_time:
-            return
-
         if utcnow is None:
             utcnow = datetime.utcnow()
 
