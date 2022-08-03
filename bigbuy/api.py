@@ -19,11 +19,16 @@ Id = Union[int, str]
 
 
 class BigBuy(APISession):
-    def __init__(self, app_key: Optional[str] = None, mode="sandbox", retry_on_rate_limit=False, **kwargs):
+    def __init__(self, app_key: Optional[str] = None, mode="sandbox",
+                 retry_on_rate_limit=False,
+                 max_retry_on_rate_limit=2,
+                 **kwargs):
         """Instantiates an instance of BigBuy.
 
         :param app_key: Your applications key
         :param mode: "sandbox" or "production"
+        :param retry_on_rate_limit:
+        :param max_retry_on_rate_limit:
         """
         if mode == "sandbox":
             base_url = 'https://api.sandbox.bigbuy.eu/rest'
@@ -38,6 +43,7 @@ class BigBuy(APISession):
 
         self.app_key = app_key
         self.retry_on_rate_limit = retry_on_rate_limit
+        self.max_retry_on_rate_limit = max_retry_on_rate_limit
         self.headers.setdefault('Authorization', f'Bearer {app_key}')
 
     def __repr__(self):
@@ -50,10 +56,13 @@ class BigBuy(APISession):
     def request_api(self, method: str, path: str, *args,
                     throw: Optional[bool] = None,
                     retry_on_rate_limit: Optional[bool] = None,
-                    max_retry_on_rate_limit=2,
+                    max_retry_on_rate_limit: Optional[int] = None,
                     **kwargs) -> requests.Response:
         if retry_on_rate_limit is None:
             retry_on_rate_limit = self.retry_on_rate_limit
+
+        if max_retry_on_rate_limit is None:
+            max_retry_on_rate_limit = self.max_retry_on_rate_limit
 
         r = super().request_api(method, f'/{path}.json', *args,
                                 # We handle 'throw' by ourselves
