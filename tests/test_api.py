@@ -57,13 +57,11 @@ def test_get_json_api_rate_limit_no_retry(app_key):
         bb.get_json_api("toto")
 
 
-@responses.activate(registry=OrderedRegistry)
-def test_get_json_api_auto_retry_once(app_key):
-    bb = BigBuy(app_key, retry_on_rate_limit=True)
-    payload = {"test": "ok"}
-
-    responses.get(
-        bb.base_url + "/toto.json",
+@pytest.fixture()
+def toto_rate_limit_response():
+    return responses.Response(
+        responses.GET,
+        "https://api.sandbox.bigbuy.eu/rest/toto.json",
         body=RATE_LIMIT_RESPONSE_TEXT,
         status=429,
         headers={
@@ -71,12 +69,53 @@ def test_get_json_api_auto_retry_once(app_key):
         }
     )
 
+
+@responses.activate(registry=OrderedRegistry, assert_all_requests_are_fired=True)
+def test_get_json_api_auto_retry_once(app_key, toto_rate_limit_response):
+    bb = BigBuy(app_key, retry_on_rate_limit=True)
+    payload = {"test": "ok"}
+
+    responses.add(toto_rate_limit_response)
+
     responses.get(
         bb.base_url + "/toto.json",
         json=payload,
     )
 
     assert bb.get_json_api("toto") == payload
+
+
+@responses.activate(registry=OrderedRegistry, assert_all_requests_are_fired=True)
+def test_get_json_api_auto_retry_twice(app_key, toto_rate_limit_response):
+    bb = BigBuy(app_key, retry_on_rate_limit=True)
+    payload = {"test": "ok"}
+
+    responses.add(toto_rate_limit_response)
+    responses.add(toto_rate_limit_response)
+
+    responses.get(
+        bb.base_url + "/toto.json",
+        json=payload,
+    )
+
+    assert bb.get_json_api("toto") == payload
+
+
+@responses.activate(registry=OrderedRegistry)
+def test_get_json_api_auto_retry_fail(app_key, toto_rate_limit_response):
+    bb = BigBuy(app_key, retry_on_rate_limit=True)
+
+    responses.add(toto_rate_limit_response)
+    responses.add(toto_rate_limit_response)
+    responses.add(toto_rate_limit_response)
+
+    responses.get(
+        bb.base_url + "/toto.json",
+        json={"test": "ok"},
+    )
+
+    with pytest.raises(BBRateLimitError):
+        bb.get_json_api("toto")
 
 
 @responses.activate(assert_all_requests_are_fired=True)
