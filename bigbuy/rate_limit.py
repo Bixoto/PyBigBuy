@@ -1,5 +1,5 @@
 import time
-from datetime import datetime, timedelta
+from datetime import datetime
 from typing import Optional
 
 from requests import Response
@@ -29,26 +29,20 @@ class RateLimit:
     def reset_timedelta(self, utcnow: Optional[datetime] = None):
         """
         Return a timedelta object representing the delta between the current UTC time and the reset time.
-        Return None if it would be negative (i.e. the rest time is in the past).
+        Note the delta may be negative.
 
         :param utcnow: if passed, this is used instead of datetime.utcnow()
         """
         if utcnow is None:
             utcnow = datetime.utcnow()
 
-        delta = self.reset_time - utcnow
-        if delta <= timedelta(0):
-            return
+        return self.reset_time - utcnow
 
-        return delta
-
-    def wait_until_expiration(self, *, wait_function=time.sleep, additional_delay=0.01):
+    def wait_until_expiration(self, *, wait_function=time.sleep):
         """
-        Wait until the rate limit expires and return True.
-        If the rate limit is invalid, don’t do anything and return False.
+        Wait until the rate limit expires.
         """
-        if delta := self.reset_timedelta():
-            wait_seconds = delta.total_seconds()
-            wait_function(wait_seconds + additional_delay)
-            return True
-        return False
+        delta = self.reset_timedelta()
+        wait_seconds = delta.total_seconds()
+        if wait_seconds >= 0:
+            wait_function(wait_seconds)

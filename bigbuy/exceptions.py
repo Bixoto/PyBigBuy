@@ -9,7 +9,7 @@ This module contains Bigbuy-specific Exception classes.
 import json
 import re
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Optional, Union, Dict, Any, List, Type, cast
 
 from requests import Response
@@ -39,6 +39,7 @@ class BBRateLimitError(BBResponseError):
         super().__init__(text, response)
         self.rate_limit = RateLimit.from_response(response)
 
+    # backward compatibility
     @property
     def reset_time(self):
         if self.rate_limit is not None:
@@ -46,15 +47,21 @@ class BBRateLimitError(BBResponseError):
 
         return None
 
+    # backward compatibility
     def reset_timedelta(self, utcnow: Optional[datetime] = None):
         if self.rate_limit is not None:
-            return self.rate_limit.reset_timedelta(utcnow=utcnow)
+            dt = self.rate_limit.reset_timedelta(utcnow=utcnow)
+            if dt <= timedelta(0):
+                return None
+            return dt
 
         return None
 
+    # backward compatibility
     def wait_until_expiration(self, *, wait_function=time.sleep, additional_delay=0.01):
         if self.rate_limit is not None:
-            return self.rate_limit.wait_until_expiration(wait_function=wait_function, additional_delay=additional_delay)
+            self.rate_limit.wait_until_expiration(wait_function=wait_function)
+            return True
         return None
 
 

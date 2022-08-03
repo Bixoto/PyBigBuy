@@ -1,11 +1,12 @@
 # PyBigBuy Changelog
 
-## Unreleased
+## 3.15.0 (unreleased)
 
 * Add `RateLimit` and move all the rate-limit logic in it. Existing attributes and functions are conserved for
   backward-compatibility.
 * Improve the "automatic retry on rate-limit errors" feature by making it work on all calls. Previously, it worked only
   on calls using `throw=True` and not on `get_json_api(none_on_404=True)` ones
+* `wait_rate_limit`: remove the 0.01s of additional delay introduced in the previous release
 
 ## 3.14.0 (2022/07/28)
 

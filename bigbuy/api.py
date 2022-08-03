@@ -15,7 +15,6 @@ from .rate_limit import RateLimit
 
 __all__ = ['BigBuy']
 
-
 Id = Union[int, str]
 
 
@@ -63,15 +62,15 @@ class BigBuy(APISession):
 
         if retry_on_rate_limit and max_retry_on_rate_limit > 0:
             if rate_limit := RateLimit.from_response(r):
-                if rate_limit.wait_until_expiration():
-                    # Retry after waiting for the rate-limit to expire
-                    return self.request_api(method, path, *args,
-                                            throw=throw,
-                                            retry_on_rate_limit=retry_on_rate_limit,
-                                            max_retry_on_rate_limit=max_retry_on_rate_limit - 1,
-                                            **kwargs)
+                rate_limit.wait_until_expiration()
+                # Retry after waiting for the rate-limit to expire
+                return self.request_api(method, path, *args,
+                                        throw=throw,
+                                        retry_on_rate_limit=retry_on_rate_limit,
+                                        max_retry_on_rate_limit=max_retry_on_rate_limit - 1,
+                                        **kwargs)
 
-        # throw=None = default behavior (True)
+        # throw=None == default behavior (True)
         if throw is True or throw is None:
             self.raise_for_response(r)
 

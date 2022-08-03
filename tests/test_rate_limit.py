@@ -7,7 +7,7 @@ from bigbuy.rate_limit import RATE_LIMIT_RESPONSE_TEXT, RateLimit
 
 def mock_response(ok=True, headers=None, text="", status_code=None):
     if status_code is None:
-        status_code = 200 if ok else 400
+        status_code = 200 if ok else 429
     return mock.Mock(ok=ok, headers=headers or {}, text=text, status_code=status_code)
 
 
@@ -44,8 +44,8 @@ def test_wait_until_expiration_past_date(utcnow):
     r = make_rate_limit_response(utcnow - timedelta(days=2))
     rl = RateLimit.from_response(r)
     assert isinstance(rl, RateLimit)
-    assert rl.reset_timedelta(utcnow=utcnow) is None
-    assert rl.wait_until_expiration(wait_function=dont_wait) is False
+    assert rl.reset_timedelta(utcnow=utcnow) < timedelta(0)
+    rl.wait_until_expiration(wait_function=dont_wait)
 
 
 def test_wait_until_expiration(utcnow):
@@ -58,8 +58,8 @@ def test_wait_until_expiration(utcnow):
     r = make_rate_limit_response(utcnow + timedelta(seconds=2))
     rl = RateLimit.from_response(r)
     assert isinstance(rl, RateLimit)
-    assert rl.reset_timedelta() is not None
-    assert rl.wait_until_expiration(wait_function=wait)
+    assert rl.reset_timedelta() > timedelta(0)
+    rl.wait_until_expiration(wait_function=wait)
 
     assert _wait is not None
     assert 1 < _wait < 3  # add some margin
