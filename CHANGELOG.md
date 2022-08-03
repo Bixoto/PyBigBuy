@@ -1,5 +1,10 @@
 # PyBigBuy Changelog
 
+## 3.15.2 (2022/08/03)
+
+* Add optional `max_retry_on_rate_limit` to `BigBuy` to configure the maximum number of retries in case of rate-limit
+  error response. This has no effect if `retry_on_rate_limit` is not used.
+
 ## 3.15.0, 3.15.1 (2022/08/03)
 
 * Add `RateLimit` and move all the rate-limit logic in it. Existing attributes and functions are conserved for
@@ -13,7 +18,7 @@
 
 ## 3.14.0 (2022/07/28)
 
-* Add optional `retry_on_rate_limit` boolean flag to enable automatic retry on rate-limit errors
+* Add optional `retry_on_rate_limit` boolean flag to `BigBuy` to enable automatic retry on rate-limit errors
 * Pass keyword arguments given to `__init__` to the parent
 * `wait_rate_limit`: add 0.01s of additional delay (configurable)
 
