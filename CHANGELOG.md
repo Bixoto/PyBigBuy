@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+* Add `get_products_stock_by_handling_days`, `get_products_stock_available_by_handling_days`,
+  `get_products_variations_stock_by_handling_days`, `get_products_variations_stock_available_by_handling_days`
+* Add `upload_order_invoice` and `upload_order_invoice_by_path`
 * Fix `repr()` on `BigBuy` instances without app key
 
 ## 3.15.2 (2022/08/03)
