@@ -22,6 +22,11 @@ def test_init_production(app_key):
     assert bb.base_url == "https://api.bigbuy.eu/rest"
 
 
+def test_repr_no_app_key():
+    bb = BigBuy()
+    assert repr(bb) == f"<Bigbuy>"
+
+
 def test_repr(app_key):
     bb = BigBuy(app_key)
     assert repr(bb) == f"<Bigbuy key={app_key[:10]}…>"

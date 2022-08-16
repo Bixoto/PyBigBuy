@@ -1,5 +1,9 @@
 # PyBigBuy Changelog
 
+## Unreleased
+
+* Fix `repr()` on `BigBuy` instances without app key
+
 ## 3.15.2 (2022/08/03)
 
 * Add optional `max_retry_on_rate_limit` to `BigBuy` to configure the maximum number of retries in case of rate-limit

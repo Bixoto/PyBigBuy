@@ -47,7 +47,8 @@ class BigBuy(APISession):
         self.headers.setdefault('Authorization', f'Bearer {app_key}')
 
     def __repr__(self):
-        return f'<Bigbuy key={self.app_key[:10]}…>'
+        attrs = f" key={self.app_key[:10]}…" if self.app_key else ""
+        return f'<Bigbuy{attrs}>'
 
     def raise_for_response(self, response: requests.Response):
         # Implement upstream's method
