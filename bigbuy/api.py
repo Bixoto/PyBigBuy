@@ -425,7 +425,9 @@ class BigBuy(APISession):
           `application/pdf`.
         """
         if mime_type is None:
-            mime_type = mimetypes.guess_type(file_path) or "application/pdf"
+            mime_type, _ = mimetypes.guess_type(file_path)
+            if mime_type is None:
+                mime_type = "application/pdf"
 
         with open(file_path, "rb") as f:
             content = f.read()

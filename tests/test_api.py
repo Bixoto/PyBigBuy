@@ -216,8 +216,8 @@ def test_upload_order_invoice_by_path():
             super().__init__(*args, **kwargs)
             self._calls: List[tuple] = []
 
-        def upload_order_invoice(self, order_id, file_b64_content, *args, **params):
-            self._calls.append((order_id, file_b64_content))
+        def upload_order_invoice(self, order_id, file_b64_content, mime_type, *args, **params):
+            self._calls.append((mime_type, file_b64_content))
             return Response()
 
     bb = TestBigBuy()
@@ -231,5 +231,5 @@ def test_upload_order_invoice_by_path():
 
     assert len(bb._calls) == 1
     assert bb._calls == [
-        (42, base64.b64encode(PDF_BYTES).decode("utf-8"))
+        ("application/pdf", base64.b64encode(PDF_BYTES).decode("utf-8"))
     ]
