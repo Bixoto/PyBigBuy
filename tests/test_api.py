@@ -1,12 +1,22 @@
+import base64
 from datetime import datetime
-from typing import Callable
+from tempfile import NamedTemporaryFile
+from typing import Callable, List
 
 import pytest
 import responses
+from requests import Response
 from responses.registries import OrderedRegistry
 
 from bigbuy import BigBuy, BBRateLimitError
 from bigbuy.rate_limit import RATE_LIMIT_RESPONSE_TEXT
+
+# https://stackoverflow.com/a/66905260/735926
+PDF_BYTES = (
+    b"%PDF-1.2 \n9 0 obj\n<<\n>>\nstream\nBT/ 32 Tf(  A   )' ET\nendstream\nendobj\n4 0 obj\n<<\n/Type /Page\n/Parent 5"
+    b" 0 R\n/Contents 9 0 R\n>>\nendobj\n5 0 obj\n<<\n/Kids [4 0 R ]\n/Count 1\n/Type /Pages\n/MediaBox [ 0 0 250 50 ]"
+    b"\n>>\nendobj\n3 0 obj\n<<\n/Pages 5 0 R\n/Type /Catalog\n>>\nendobj\ntrailer\n<<\n/Root 3 0 R\n>>\n%%EOF"
+)
 
 
 def test_init_defaults(app_key):
@@ -197,3 +207,29 @@ def test_get_purse_amount(app_key):
     bb = BigBuy(app_key)
     responses.get(bb.base_url + "/user/purse.json", body="3.14")
     assert bb.get_purse_amount() == 3.14
+
+
+@responses.activate()
+def test_upload_order_invoice_by_path():
+    class TestBigBuy(BigBuy):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+            self._calls: List[tuple] = []
+
+        def upload_order_invoice(self, order_id, file_b64_content, *args, **params):
+            self._calls.append((order_id, file_b64_content))
+            return Response()
+
+    bb = TestBigBuy()
+
+    file = NamedTemporaryFile(delete=True, suffix=".pdf")
+    file.close()
+    with open(file.name, "wb") as f:
+        f.write(PDF_BYTES)
+
+    bb.upload_order_invoice_by_path(42, file.name, concept="foo", amount=42.0)
+
+    assert len(bb._calls) == 1
+    assert bb._calls == [
+        (42, base64.b64encode(PDF_BYTES).decode("utf-8"))
+    ]

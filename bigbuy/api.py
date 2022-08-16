@@ -3,6 +3,8 @@
 """
 Official documentation for Bigbuy API endpoints can be found at: https://api.bigbuy.eu/rest/doc/
 """
+import base64
+import mimetypes
 import warnings
 from typing import Optional, Dict, Any, Union, Iterable, List, cast
 
@@ -392,9 +394,46 @@ class BigBuy(APISession):
         """Get order information by customer reference."""
         return self.get_json_api(f'order/reference/{reference}', **params)
 
-    def get_order_by_id(self, order_id: Union[str, int], **params):
+    def get_order_by_id(self, order_id: Id, **params):
         """Get order information."""
         return self.get_json_api(f'order/{order_id}', **params)
+
+    def upload_order_invoice(self, order_id: Id, file_b64_content: str, mime_type: str, concept: str, amount: float,
+                             **params):
+        """
+        Upload a base64-encoded invoice to an order in PENDING INVOICE status.
+        """
+        invoice_payload = {
+            "id_order": str(order_id),
+            "file": file_b64_content,
+            "mime_type": mime_type,
+            "concept": concept,
+            "amount": amount
+        }
+        return self.post_api("order/upload_invoice", json={"invoice": invoice_payload}, **params)
+
+    def upload_order_invoice_by_path(self, order_id: Id, file_path: str, concept: str, amount: float,
+                                     *, mime_type: Optional[str] = None, **params):
+        """
+        Wrapper around `upload_order_invoice` that reads the file from disk instead.
+
+        :param order_id:
+        :param file_path:
+        :param concept:
+        :param amount:
+        :param mime_type: mime type of the file. If not provided it is guessed from the file path and defaults on
+          `application/pdf`.
+        """
+        if mime_type is None:
+            mime_type = mimetypes.guess_type(file_path) or "application/pdf"
+
+        with open(file_path, "rb") as f:
+            content = f.read()
+
+        base64_content = base64.b64encode(content).decode("utf-8")
+
+        return self.upload_order_invoice(order_id=order_id, file_b64_content=base64_content, mime_type=mime_type,
+                                         concept=concept, amount=amount, **params)
 
     # tracking
     def get_tracking_carriers(self, **params):
