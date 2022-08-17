@@ -1,6 +1,8 @@
 # PyBigBuy Changelog
 
-## Unreleased
+## 3.15.3 (2022/08/17)
+
+This is the first public release.
 
 * Add `get_products_stock_by_handling_days`, `get_products_stock_available_by_handling_days`,
   `get_products_variations_stock_by_handling_days`, `get_products_variations_stock_available_by_handling_days`
