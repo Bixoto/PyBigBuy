@@ -1,5 +1,17 @@
 # PyBigBuy Changelog
 
+## 3.16.0 (unreleased)
+
+* Deprecated `mode` argument of `BigBuy` and add the optional `sandbox` boolean keyword argument. If `sandbox` is not
+  set, the behavior is exactly the same as today. If it’s set, it overrides the mode. In the future, we’ll remove `mode`
+  in favor of `sandbox=True` (sandbox mode) or `sandbox=False` (production mode; the default).
+
+### Breaking changes
+
+* Arguments `retry_on_rate_limit` and `max_retry_on_rate_limit` of `BigBuy` are now keyword-only.
+  Before you could use `BigBuy(app_key, "sandbox", True)`; now you must use
+  `BigBuy(app_key, "sandbox", retry_on_rate_limit=True)`
+
 ## 3.15.3 (2022/08/17)
 
 This is the first public release.
