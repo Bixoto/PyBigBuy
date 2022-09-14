@@ -286,7 +286,16 @@ def raise_for_response(response: Response):
         else:
             error_class = BBResponseError
 
-        # Trim what we can
+        # Trim what we can. We might want to go even further:
+        #   '<div class="container">
+        #       <h1>Oops! An Error Occurred</h1>
+        #       <h2>The server returned a "500 Internal Server Error".</h2>
+        #
+        #       <p>
+        #           Something is broken. Please let us know what you were doing when this error occurred.
+        #           We will fix it as soon as possible. Sorry for any inconvenience caused.
+        #       </p>
+        #   </div>'
         if re.match(r"<!DOCTYPE html>\s*<html>\s*<head>.*", text, re.DOTALL):
             if m := re.match(r".+<body>(.+)</body>\s*</html>\s*", text, re.DOTALL):
                 text = m.group(1).strip()
