@@ -5,6 +5,7 @@
 * Deprecated `mode` argument of `BigBuy` and add the optional `sandbox` boolean keyword argument. If `sandbox` is not
   set, the behavior is exactly the same as today. If it’s set, it overrides the mode. In the future, we’ll remove `mode`
   in favor of `sandbox=True` (sandbox mode) or `sandbox=False` (production mode; the default).
+* `raise_for_response`: trim more garbage in HTML error responses
 
 ### Breaking changes
 

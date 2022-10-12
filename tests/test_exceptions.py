@@ -165,8 +165,6 @@ def test_raise_for_response_soft_error_headers_in_body():
 
 
 def test_raise_for_response_500_html_body():
-    # Unfortunately Sentry truncated the body, so we don't know it
-    # https://sentry.io/organizations/bixoto/issues/3390287708/
     response = Response()
     response.status_code = 500
     response.encoding = "utf-8"
@@ -181,3 +179,14 @@ def test_raise_for_response_500_html_body():
     with pytest.raises(ex.BBServerError, match="^<div>"):
         ex.raise_for_response(response)
 
+
+def test_raise_for_response_504_html_body():
+    response = Response()
+    response.status_code = 504
+    response.encoding = "utf-8"
+    response._content = (
+        "<html><body><h1>504 Gateway Time-out</h1>\nThe server didn't respond in time.\n</body></html>"
+    ).encode("utf-8")
+
+    with pytest.raises(ex.BBServerError, match="^The server didn't respond in time."):
+        ex.raise_for_response(response)
