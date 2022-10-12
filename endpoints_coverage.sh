@@ -7,6 +7,7 @@ rm -f endpoints.txt supported.txt
 
 grep -Eo "['\"][^/][^'\":]+/[^'\" ]+['\"]" bigbuy/api.py \
   | grep -v application/json \
+  | grep -v application/pdf \
   | sed 's%{[^}]*}%{placeholder}%' \
   | sed -E "s%['\"]%%g" \
   | sort \
