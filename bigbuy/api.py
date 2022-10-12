@@ -198,10 +198,6 @@ class BigBuy(APISession):
         """Returns all products with available stock."""
         return self.get_json_api('catalog/productsstockavailable', params=params)
 
-    def get_products_stock_available_by_handling_days(self, **params):
-        """Returns all products with available stock by handling days."""
-        return self.get_json_api('catalog/productsstockavailablebyhandlingdays', params=params)
-
     def get_products_stock_by_reference(self, skus: Iterable[str]):
         """Get all selected products stock."""
         payload = {
@@ -234,10 +230,6 @@ class BigBuy(APISession):
     def get_products_variations_stock_available(self, **params):
         """Returns all products variations stock available."""
         return self.get_json_api('catalog/productsvariationsstockavailable', params=params)
-
-    def get_products_variations_stock_available_by_handling_days(self, **params):
-        """Returns all products variations stock available by handling days."""
-        return self.get_json_api('catalog/productsvariationsavailablebyhandlingdays', params=params)
 
     def get_product_tags(self, product_id: Id, **params):
         """Get a single ProductTag."""
@@ -523,6 +515,8 @@ class BigBuy(APISession):
     def get_module_platforms(self, **params):
         """
         Get all module platforms.
+
+        Note: this route is not documented by BigBuy.
         """
         return self.get_json_api("module/platforms", **params)
 

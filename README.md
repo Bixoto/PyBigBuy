@@ -4,6 +4,11 @@
 
 Note: PyBigBuy is not affiliated to nor endorsed by BigBuy.
 
+## Coverage
+
+PyBigBuy aims to cover all API endpoints. As of 3.15.3+ they are all implemented, except `order/check/multishipping`
+and `order/create/multishipping`.
+
 ## Install
 
 ### Pip
