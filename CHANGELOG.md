@@ -3,7 +3,7 @@
 Note: the BigBuy API is not versioned and some endpoints are added or removed without notice. The removal of methods
 that called deleted endpoints is not listed as breaking changes here.
 
-## 3.16.0 (unreleased)
+## 3.16.0 (2022/10/12)
 
 * Deprecated `mode` argument of `BigBuy` and add the optional `sandbox` boolean keyword argument. If `sandbox` is not
   set, the behavior is exactly the same as today. If it’s set, it overrides the mode. In the future, we’ll remove `mode`
