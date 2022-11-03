@@ -10,6 +10,7 @@ grep -Eo "['\"][^/][^'\":]+/[^'\" ]+['\"]" bigbuy/api.py \
   | grep -v application/pdf \
   | sed 's%{[^}]*}%{placeholder}%' \
   | sed -E "s%['\"]%%g" \
+  | grep -v '^module/platforms$' \
   | sort \
   >| supported.txt
 
