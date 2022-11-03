@@ -1,7 +1,12 @@
 # PyBigBuy Changelog
 
 Note: the BigBuy API is not versioned and some endpoints are added or removed without notice. The removal of methods
-that called deleted endpoints is not listed as breaking changes here.
+that call deleted endpoints is not listed as breaking changes here.
+
+## Unreleased
+
+* Add a `BBWarehouseError` for the new warehouse errors that BigBuy returns on some orders
+* Add `BBShippingError` as a parent class for `BBWarehouseError` and `BBNoCarrierError`
 
 ## 3.16.0 (2022/10/12)
 

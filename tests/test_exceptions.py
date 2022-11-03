@@ -1,14 +1,9 @@
 import json
-import math
-from datetime import datetime, timedelta
-from typing import Optional
-from unittest import mock
 
 import pytest
 from requests import Response
 
 from bigbuy import exceptions as ex
-from bigbuy.rate_limit import RATE_LIMIT_RESPONSE_TEXT
 
 
 def test_json_or_none():
@@ -92,6 +87,29 @@ def test_raise_for_response_products_error():
 
     with pytest.raises(ex.BBProductError, match="Products error:"):
         ex.raise_for_response(response)
+
+
+def test_raise_for_response_error_detail():
+    warehouses = [
+        {"id": 1, "references": ["59430878", "V0700822"]},
+        {"id": 3, "references": ["S7106391"]}
+    ]
+
+    response = Response()
+    response.encoding = "utf-8"
+    response.status_code = 409
+    payload = {
+        "code": 409,
+        "message": "This cart contains products from different warehouses. You must send separate requests for each set of product references to obtain the shipping costs for each set of products. You can find more info in the field \"error_detail\" in this response",
+        "error_detail": {"warehouses": warehouses}
+    }
+    response._content = json.dumps(payload).encode("utf-8")
+
+    with pytest.raises(ex.BBWarehouseError) as exc_info:
+        ex.raise_for_response(response)
+
+    assert isinstance(exc_info.value, ex.BBWarehouseError)
+    assert exc_info.value.warehouses == warehouses
 
 
 def test_raise_for_response_invalid_value_error(error_payload):

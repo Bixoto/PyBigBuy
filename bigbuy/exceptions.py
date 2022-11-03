@@ -10,7 +10,7 @@ import json
 import re
 import time
 from datetime import datetime, timedelta
-from typing import Optional, Union, Dict, Any, List, Type, cast
+from typing import Optional, Union, Dict, Any, List, Type, cast, Sequence
 
 from requests import Response
 
@@ -114,8 +114,18 @@ class BBTemporaryOrderError(BBResponseError):
     pass
 
 
-class BBNoCarrierError(BBResponseError):
+class BBShippingError(BBResponseError):
     pass
+
+
+class BBNoCarrierError(BBShippingError):
+    pass
+
+
+class BBWarehouseError(BBShippingError):
+    def __init__(self, *args, warehouses: Sequence[dict] = (), **kwargs):
+        super().__init__(*args, **kwargs)
+        self.warehouses = warehouses
 
 
 class BBInvalidPaymentError(BBResponseError):
@@ -249,9 +259,10 @@ def raise_for_response(response: Response):
     text = response.text
     content = json_or_none(text)
 
+    # BigBuy may return soft errors (with a '200 OK' code)
     if response.ok:
         # BigBuy may return soft errors (with a '200 OK' code)
-        if isinstance(content, dict) and set(content) == {"code", "message"}:
+        if isinstance(content, dict) and set(content) - {"error_detail", } == {"code", "message"}:
             code = content["code"]
             message = content["message"]
             if isinstance(code, int) and 400 <= code < 600 and \
@@ -348,6 +359,11 @@ def raise_for_response(response: Response):
     elif "code" in content and "message" in content:
         bb_code = content["code"]
         message = content["message"]
+
+    if "error_detail" in content and "different warehouses" in message:
+        error_detail = content["error_detail"]
+        if isinstance(error_detail, dict) and "warehouses" in error_detail:
+            raise BBWarehouseError(message, response, bb_code=bb_code, warehouses=error_detail["warehouses"])
 
     try:
         if int(bb_code) // 100 == 5:
