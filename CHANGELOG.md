@@ -5,6 +5,7 @@ that call deleted endpoints is not listed as breaking changes here.
 
 ## Unreleased
 
+* Add `check_multi_shipping_order`
 * Add a `BBWarehouseError` for the new warehouse errors that BigBuy returns on some orders
 * Add `BBShippingError` as a parent class for `BBWarehouseError` and `BBNoCarrierError`
 

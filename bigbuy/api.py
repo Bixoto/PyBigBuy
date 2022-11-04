@@ -333,6 +333,42 @@ class BigBuy(APISession):
             order_payload = {"order": order}
         return self.post_api('order/check', json=order_payload, **params).json()
 
+    def check_multi_shipping_order(self, order: Dict[str, Any], **params) -> Dict[str, list]:
+        """
+        Check/simulate an order and return the total to pay. This is the multi-shipping version, which is required for
+        some references.
+
+        See `check_order` for the input format. The response differs because it splits the order in multiple sub-orders,
+        each one with its check result.
+        Example response:
+            {
+              "orders": [
+                {
+                  "productReferences": [ "S4602570" ],
+                  "totalWithoutTaxesAndWithoutShippingCost": 4.52,
+                  "totalWithoutTaxes": 8.52,
+                  "total": 9.809999999999999,
+                  "warehouse": 1
+                },
+                {
+                  "productReferences": [ "S7106391" ],
+                  "totalWithoutTaxesAndWithoutShippingCost": 109.2,
+                  "totalWithoutTaxes": 109.2,
+                  "total": 132.13,
+                  "warehouse": 3
+                }
+              ],
+              "errors": []
+            }
+        """
+        if "order" in order:  # pragma: nocover
+            warnings.warn("Calling check_multi_shipping_order({\"order\": order}) is deprecated; use check_multi_shipping_order(order) instead.",
+                          DeprecationWarning)
+            order_payload = order
+        else:
+            order_payload = {"order": order}
+        return self.post_api('order/check/multishipping', json=order_payload, **params).json()
+
     def create_order(self, order: Dict[str, Any], **params):
         """
         Submit an order.
