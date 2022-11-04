@@ -285,41 +285,45 @@ class BigBuy(APISession):
         return self.post_api('shipping/orders', json=order_payload).json()
 
     # order
-    def check_order(self, order: Dict[str, Any], **params):
-        """Check/simulate an order and return the total order to pay.
+    def check_order(self, order: Dict[str, Any], **params) -> dict:
+        """Check/simulate an order and return the total amount to pay.
 
         Example order:
 
-        {
-          "internalReference": "123456",
-          "language": "es",
-          "paymentMethod": "moneybox",
-          "carriers": [
             {
-              "name": "correos"
-            },
-            {
-              "name": "chrono"
+              "internalReference": "123456",
+              "language": "es",
+              "paymentMethod": "moneybox",
+              "carriers": [
+                { "name": "correos" },
+                { "name": "chrono" }
+              ],
+              "shippingAddress": {
+                "firstName": "John",
+                "lastName": "Doe",
+                "country": "ES",
+                "postcode": "46005",
+                "town": "Valencia",
+                "address": "C/ Altea",
+                "phone": "664869570",
+                "email": "john@email.com",
+                "comment": ""
+              },
+              "products": [
+                {
+                  "reference": "F1505138",
+                  "quantity": 4
+                }
+              ]
             }
-          ],
-          "shippingAddress": {
-            "firstName": "John",
-            "lastName": "Doe",
-            "country": "ES",
-            "postcode": "46005",
-            "town": "Valencia",
-            "address": "C/ Altea",
-            "phone": "664869570",
-            "email": "john@email.com",
-            "comment": ""
-          },
-          "products": [
+
+        Example response:
+
             {
-              "reference": "F1505138",
-              "quantity": 4
+              "totalWithoutTaxesAndWithoutShippingCost": 4.52,
+              "totalWithoutTaxes": 8.52,
+              "total": 9.809999999999999
             }
-          ]
-        }
         """
         if "order" in order:  # pragma: nocover
             warnings.warn("Calling check_order({\"order\": order}) is deprecated; use check_order(order) instead.",
