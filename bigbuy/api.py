@@ -5,10 +5,10 @@ Official documentation for Bigbuy API endpoints can be found at: https://api.big
 """
 import base64
 import mimetypes
-from typing import Optional, Dict, Any, Union, Iterable, List, cast
+from typing import Optional, Dict, Union, Iterable, List, cast
 
 import requests
-from api_session import APISession
+from api_session import APISession, JSONDict
 
 from . import __version__
 from .exceptions import raise_for_response
@@ -267,7 +267,7 @@ class BigBuy(APISession):
         """Get a single variation."""
         return self.get_json_api('shipping/carriers', params=params)
 
-    def get_shipping_order(self, order: Dict[str, Any]):
+    def get_shipping_order(self, order: JSONDict):
         """Get the list of available shipping options with the calculated weight and cost in Kg and € respectively,
         for the given order.
 
@@ -277,7 +277,7 @@ class BigBuy(APISession):
         return self.post_api('shipping/orders', json={"order": order}).json()
 
     # order
-    def check_order(self, order: Dict[str, Any], **params) -> dict:
+    def check_order(self, order: JSONDict, **params) -> dict:
         """Check/simulate an order and return the total amount to pay.
 
         Example order:
@@ -319,7 +319,7 @@ class BigBuy(APISession):
         """
         return self.post_api('order/check', json={"order": order}, **params).json()
 
-    def check_multi_shipping_order(self, order: Dict[str, Any], **params) -> Dict[str, list]:
+    def check_multi_shipping_order(self, order: JSONDict, **params) -> Dict[str, list]:
         """
         Check/simulate an order and return the total to pay. This is the multi-shipping version, which is required for
         some references.
@@ -349,7 +349,7 @@ class BigBuy(APISession):
         """
         return self.post_api('order/check/multishipping', json={"order": order}, **params).json()
 
-    def create_order(self, order: Dict[str, Any], **params) -> requests.Response:
+    def create_order(self, order: JSONDict, **params) -> requests.Response:
         """
         Submit an order.
 
@@ -388,7 +388,7 @@ class BigBuy(APISession):
         # NOTE(BF): we must return the raw response because we need the headers to parse 'Location'
         return self.post_api('order/create', json={"order": order}, **params)
 
-    def create_multi_shipping_order(self, order: Dict[str, Any], **params) -> requests.Response:
+    def create_multi_shipping_order(self, order: JSONDict, **params) -> requests.Response:
         """
         Submit an order. This is the multi-shipping version, which is required for some references.
 
