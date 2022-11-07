@@ -5,7 +5,6 @@ Official documentation for Bigbuy API endpoints can be found at: https://api.big
 """
 import base64
 import mimetypes
-import warnings
 from typing import Optional, Dict, Any, Union, Iterable, List, cast
 
 import requests
@@ -275,14 +274,7 @@ class BigBuy(APISession):
         Example order:
             {"delivery":{"isoCountry":"ES","postcode":"46005"},"products":[{"reference":"V1300179","quantity":1}]}
         """
-        if "order" in order:  # pragma: nocover
-            warnings.warn("Calling get_shipping_order({\"order\": order}) is deprecated;"
-                          " use get_shipping_order(order) instead.",
-                          DeprecationWarning)
-            order_payload = order
-        else:
-            order_payload = {"order": order}
-        return self.post_api('shipping/orders', json=order_payload).json()
+        return self.post_api('shipping/orders', json={"order": order}).json()
 
     # order
     def check_order(self, order: Dict[str, Any], **params) -> dict:
@@ -325,13 +317,7 @@ class BigBuy(APISession):
               "total": 9.809999999999999
             }
         """
-        if "order" in order:  # pragma: nocover
-            warnings.warn("Calling check_order({\"order\": order}) is deprecated; use check_order(order) instead.",
-                          DeprecationWarning)
-            order_payload = order
-        else:
-            order_payload = {"order": order}
-        return self.post_api('order/check', json=order_payload, **params).json()
+        return self.post_api('order/check', json={"order": order}, **params).json()
 
     def check_multi_shipping_order(self, order: Dict[str, Any], **params) -> Dict[str, list]:
         """
@@ -361,7 +347,6 @@ class BigBuy(APISession):
               "errors": []
             }
         """
-        assert "order" not in order
         return self.post_api('order/check/multishipping', json={"order": order}, **params).json()
 
     def create_order(self, order: Dict[str, Any], **params) -> requests.Response:
@@ -400,14 +385,8 @@ class BigBuy(APISession):
               ]
             }
         """
-        if "order" in order:  # pragma: nocover
-            warnings.warn("Calling create_order({\"order\": order}) is deprecated; use create_order(order) instead.",
-                          DeprecationWarning)
-            order_payload = order
-        else:
-            order_payload = {"order": order}
         # NOTE(BF): we must return the raw response because we need the headers to parse 'Location'
-        return self.post_api('order/create', json=order_payload, **params)
+        return self.post_api('order/create', json={"order": order}, **params)
 
     def create_multi_shipping_order(self, order: Dict[str, Any], **params) -> requests.Response:
         """
@@ -415,7 +394,6 @@ class BigBuy(APISession):
 
         See `create_order` for the input format. Just like `create_order`, this returns the raw response.
         """
-        assert "order" not in order
         return self.post_api('order/create/multishipping', json={"order": order}, **params)
 
     def create_order_id(self, order: dict, **params) -> str:
