@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pybigbuy"
-version = "3.16.0"
+version = "3.16.1"
 description = "BigBuy API client in Python"
 authors = ["Bixoto <info@bixoto.com>"]
 license = "MIT"
@@ -9,6 +9,11 @@ readme = "README.md"
 # https://github.com/python-poetry/poetry/issues/705#issuecomment-444742697
 packages = [
     {include = "bigbuy"}
+]
+classifiers = [
+    'License :: OSI Approved :: MIT License',
+    'Programming Language :: Python :: 3',
+    'Development Status :: 5 - Production/Stable',
 ]
 
 [tool.poetry.dependencies]

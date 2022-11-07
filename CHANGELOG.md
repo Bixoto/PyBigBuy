@@ -3,7 +3,7 @@
 Note: the BigBuy API is not versioned and some endpoints are added or removed without notice. The removal of methods
 that call deleted endpoints is not listed as breaking changes here.
 
-## Unreleased
+## 3.16.1 (2022/11/07)
 
 * Add `check_multi_shipping_order`, `create_multi_shipping_order`, `create_multi_shipping_order_id`
 * Add a `BBWarehouseError` for the new warehouse errors that BigBuy returns on some orders
