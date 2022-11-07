@@ -1,7 +1,7 @@
 # PyBigBuy Changelog
 
 Note: the BigBuy API is not versioned and some endpoints are added or removed without notice. The removal of methods
-that call deleted endpoints is not listed as breaking changes here.
+that call deleted endpoints is not considered a breaking change.
 
 ## 3.17.0 (unreleased)
 
