@@ -3,6 +3,11 @@
 Note: the BigBuy API is not versioned and some endpoints are added or removed without notice. The removal of methods
 that call deleted endpoints is not listed as breaking changes here.
 
+## 3.17.0 (unreleased)
+
+* Remove the ability to call `get_shipping_order`/`check_order`/`create_order` with `{"order": order}` instead of
+  `order`. This behavior has been deprecated since 3.13.11.
+
 ## 3.16.1 (2022/11/07)
 
 * Add `check_multi_shipping_order`, `create_multi_shipping_order`, `create_multi_shipping_order_id`
