@@ -5,8 +5,10 @@ that call deleted endpoints is not listed as breaking changes here.
 
 ## 3.17.0 (unreleased)
 
+### Breaking changes
+
 * Remove the ability to call `get_shipping_order`/`check_order`/`create_order` with `{"order": order}` instead of
-  `order`. This behavior has been deprecated since 3.13.11.
+  `order`. This behavior has been deprecated in 3.13.11.
 
 ## 3.16.1 (2022/11/07)
 
@@ -28,7 +30,6 @@ that call deleted endpoints is not listed as breaking changes here.
 * Arguments `retry_on_rate_limit` and `max_retry_on_rate_limit` of `BigBuy` are now keyword-only.
   Before you could use `BigBuy(app_key, "sandbox", True)`; now you must use
   `BigBuy(app_key, "sandbox", retry_on_rate_limit=True)`
-
 
 ## 3.15.3 (2022/08/17)
 
@@ -89,11 +90,7 @@ This is the first public release.
 
 * `raise_for_response`: don’t crash on empty response bodies
 
-## 3.13.6 (2022/05/24)
-
-* Fix the parsing of soft errors introduced in the latest release
-
-## 3.13.5 (2022/05/24)
+## 3.13.5, 3.13.6 (2022/05/24)
 
 * `raise_for_response` now support soft errors where a full error response is embedded in a `200 OK` response body
 
@@ -150,13 +147,9 @@ This release revert the main change of 3.10.0.
 
 ## 3.8.6 (2021/10/07)
 
-* Fix the 3.8.4 release
+* Fix the previous release
 
-## 3.8.5 (2021/10/06)
-
-* Fix the previous release’s addition
-
-## 3.8.4 (2021/10/06)
+## 3.8.4, 3.8.5 (2021/10/06)
 
 * Raise `BBServerError` on another format of internal server error responses
 
@@ -164,14 +157,13 @@ This release revert the main change of 3.10.0.
 
 * Raise `BBServerError` on internal server errors
 
-## 3.8.2 (2021/09/23)
+## 3.8.1, 3.8.2 (2021/09/23)
 
 * Add `BBServerError` as a subclass of `BBResponseError` for `503`/`504` errors
 
-Note: 3.8.1 is the same as this version.
-
 ## 3.8.0 (2021/06/04)
 
+* Fix `bigbuy.__version__`
 * Make BigBuy an HTTP client
 * Add a class for each error code
 * Clarify error messages
@@ -180,5 +172,3 @@ Note: 3.8.1 is the same as this version.
 ## 3.7.0 (2019/11/05)
 
 First version.
-
-It was 3.7.0 in `setup.py` but `0.0.1` in `__init__.py`.
