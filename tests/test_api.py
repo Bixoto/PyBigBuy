@@ -4,11 +4,14 @@ from tempfile import NamedTemporaryFile
 from typing import Callable, List
 
 import pytest
+import requests
 import responses
 from requests import Response
 from responses.registries import OrderedRegistry
 
 from bigbuy import BigBuy, BBRateLimitError
+# noinspection PyProtectedMember
+from bigbuy.api import _get_order_id_from_response_redirect
 from bigbuy.rate_limit import RATE_LIMIT_RESPONSE_TEXT
 
 # https://stackoverflow.com/a/66905260/735926
@@ -252,3 +255,10 @@ def test_upload_order_invoice_by_path():
     assert bb._calls == [
         ("application/pdf", base64.b64encode(PDF_BYTES).decode("utf-8"))
     ]
+
+
+def test_get_order_id_from_response_redirect():
+    response = requests.Response()
+    response._content = ""
+    response.headers["Location"] = "/rest/order/42"
+    assert _get_order_id_from_response_redirect(response) == "42"

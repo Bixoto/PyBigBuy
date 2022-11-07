@@ -361,49 +361,44 @@ class BigBuy(APISession):
               "errors": []
             }
         """
-        if "order" in order:  # pragma: nocover
-            warnings.warn("Calling check_multi_shipping_order({\"order\": order}) is deprecated; use check_multi_shipping_order(order) instead.",
-                          DeprecationWarning)
-            order_payload = order
-        else:
-            order_payload = {"order": order}
-        return self.post_api('order/check/multishipping', json=order_payload, **params).json()
+        assert "order" not in order
+        return self.post_api('order/check/multishipping', json={"order": order}, **params).json()
 
-    def create_order(self, order: Dict[str, Any], **params):
+    def create_order(self, order: Dict[str, Any], **params) -> requests.Response:
         """
         Submit an order.
 
         Example order:
-        order = {
-          "internalReference": "123456",
-          "language": "es",
-          "paymentMethod": "moneybox",
-          "carriers": [
-            {
-              "name": "correos"
-            },
-            {
-              "name": "chrono"
+            order = {
+              "internalReference": "123456",
+              "language": "es",
+              "paymentMethod": "moneybox",
+              "carriers": [
+                {
+                  "name": "correos"
+                },
+                {
+                  "name": "chrono"
+                }
+              ],
+              "shippingAddress": {
+                "firstName": "John",
+                "lastName": "Doe",
+                "country": "ES",
+                "postcode": "46005",
+                "town": "Valencia",
+                "address": "C/ Altea",
+                "phone": "664869570",
+                "email": "john@email.com",
+                "comment": ""
+              },
+              "products": [
+                {
+                  "reference": "F1505138",
+                  "quantity": 4
+                }
+              ]
             }
-          ],
-          "shippingAddress": {
-            "firstName": "John",
-            "lastName": "Doe",
-            "country": "ES",
-            "postcode": "46005",
-            "town": "Valencia",
-            "address": "C/ Altea",
-            "phone": "664869570",
-            "email": "john@email.com",
-            "comment": ""
-          },
-          "products": [
-            {
-              "reference": "F1505138",
-              "quantity": 4
-            }
-          ]
-        }
         """
         if "order" in order:  # pragma: nocover
             warnings.warn("Calling create_order({\"order\": order}) is deprecated; use create_order(order) instead.",
@@ -413,6 +408,15 @@ class BigBuy(APISession):
             order_payload = {"order": order}
         # NOTE(BF): we must return the raw response because we need the headers to parse 'Location'
         return self.post_api('order/create', json=order_payload, **params)
+
+    def create_multi_shipping_order(self, order: Dict[str, Any], **params) -> requests.Response:
+        """
+        Submit an order. This is the multi-shipping version, which is required for some references.
+
+        See `create_order` for the input format. Just like `create_order`, this returns the raw response.
+        """
+        assert "order" not in order
+        return self.post_api('order/create/multishipping', json={"order": order}, **params)
 
     def create_order_id(self, order: dict, **params) -> str:
         """Like create_order(), but return the order id."""
@@ -426,8 +430,12 @@ class BigBuy(APISession):
         #     'Set-Cookie': 'secure_key=16...065; expires=Thu, 16-Apr-2020 07:24:56 GMT; Max-Age=604800; path=/',
         # }
         # the id of the bigbuy order is only known in the location url in the headers
-        order_id = response.headers["Location"].replace("/rest/order/", "")
-        return order_id
+        return _get_order_id_from_response_redirect(response)
+
+    def create_multi_shipping_order_id(self, order: dict, **params) -> str:
+        """Like `create_multi_shipping_order()`, but return the order id."""
+        response = self.create_multi_shipping_order(order, **params)
+        return _get_order_id_from_response_redirect(response)
 
     def get_order_by_customer_reference(self, reference: str, **params):
         """Get order information by customer reference."""
@@ -588,3 +596,7 @@ class BigBuy(APISession):
         The format is the same as ``get_product_taxonomies``
         """
         return self.get_json_api(f"catalog/productstaxonomies", **params)
+
+
+def _get_order_id_from_response_redirect(response: requests.Response):
+    return response.headers["Location"].replace("/rest/order/", "")
