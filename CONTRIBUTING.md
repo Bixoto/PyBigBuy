@@ -13,4 +13,4 @@
 5. Push the code and the tag
 6. Wait for the [CI job][ci] to finish
 
-[ci]: https://gitlab.com/bixoto/pybigbuy/-/jobs
+[ci]: https://github.com/Bixoto/PyBigBuy/actions
