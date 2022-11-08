@@ -5,12 +5,15 @@ that call deleted endpoints is not considered a breaking change.
 
 ## 3.17.0 (unreleased)
 
+* Document `create_multi_shipping_order` response
 * Rename `BBWarehouseError` as `BBWarehouseSplitError` but keep the alias `BBWarehouseError` for now
 
 ### Breaking changes
 
 * Remove the ability to call `get_shipping_order`/`check_order`/`create_order` with `{"order": order}` instead of
   `order`. This behavior has been deprecated in 3.13.11.
+* Rename `create_multi_shipping_order_id` as `create_multi_shipping_order_ids`
+* `create_multi_shipping_order` now returns a dict instead of a `Response` object
 * All cookies are now rejected by default. You can change this by using
   `.cookies.set_policy(http.cookiejar.DefaultCookiePolicy())`. Cookies are not necessary for the API usage so this
   should not break anything.

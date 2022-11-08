@@ -12,7 +12,7 @@ import requests
 from api_session import APISession, JSONDict
 
 from . import __version__
-from .exceptions import raise_for_response
+from .exceptions import raise_for_response, BBError
 from .rate_limit import RateLimit
 
 __all__ = ['BigBuy']
@@ -322,7 +322,7 @@ class BigBuy(APISession):
         """
         return self.post_api('order/check', json={"order": order}, **params).json()
 
-    def check_multi_shipping_order(self, order: JSONDict, **params) -> Dict[str, list]:
+    def check_multi_shipping_order(self, order: JSONDict, **params) -> Dict[str, List[JSONDict]]:
         """
         Check/simulate an order and return the total to pay. This is the multi-shipping version, which is required for
         some references.
@@ -352,9 +352,9 @@ class BigBuy(APISession):
         """
         return self.post_api('order/check/multishipping', json={"order": order}, **params).json()
 
-    def create_order(self, order: JSONDict, **params) -> requests.Response:
+    def create_order(self, order: JSONDict, **params):
         """
-        Submit an order.
+        Submit an order and return the raw response.
 
         Example order:
             order = {
@@ -388,16 +388,21 @@ class BigBuy(APISession):
               ]
             }
         """
-        # NOTE(BF): we must return the raw response because we need the headers to parse 'Location'
+        # NOTE: we must return the raw response because we need the headers to parse 'Location'
         return self.post_api('order/create', json={"order": order}, **params)
 
-    def create_multi_shipping_order(self, order: JSONDict, **params) -> requests.Response:
+    def create_multi_shipping_order(self, order: JSONDict, **params) -> Dict[str, List[JSONDict]]:
         """
         Submit an order. This is the multi-shipping version, which is required for some references.
 
-        See `create_order` for the input format. Just like `create_order`, this returns the raw response.
+        See `create_order` for the input format.
+
+        Example response:
+            {"orders":[{"productReferences":["S1"],"id":"123","warehouse":1,"url":"\/rest\/order\/123"},
+                       {"productReferences":["S2", "S3"],"id":"124","warehouse":3,"url":"\/rest\/order\/124"}],
+             "errors":[]}
         """
-        return self.post_api('order/create/multishipping', json={"order": order}, **params)
+        return self.post_api('order/create/multishipping', json={"order": order}, **params).json()
 
     def create_order_id(self, order: dict, **params) -> str:
         """Like create_order(), but return the order id."""
@@ -413,10 +418,16 @@ class BigBuy(APISession):
         # the id of the bigbuy order is only known in the location url in the headers
         return _get_order_id_from_response_redirect(response)
 
-    def create_multi_shipping_order_id(self, order: dict, **params) -> str:
-        """Like `create_multi_shipping_order()`, but return the order id."""
-        response = self.create_multi_shipping_order(order, **params)
-        return _get_order_id_from_response_redirect(response)
+    def create_multi_shipping_order_ids(self, order: dict, **params) -> List[str]:
+        """
+        Like `create_multi_shipping_order()`, but return the order ids.
+        This checks if the `errors` array is not empty, and raises a `BBError` if so.
+        """
+        creation_response = self.create_multi_shipping_order(order, **params)
+        if creation_response["errors"]:
+            raise BBError("Multi-shipping order errors: %s" % creation_response)
+
+        return [order["id"] for order in creation_response["orders"]]
 
     def get_order_by_customer_reference(self, reference: str, **params):
         """Get order information by customer reference."""

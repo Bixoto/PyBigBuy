@@ -5,15 +5,19 @@
 
 rm -f endpoints.txt supported.txt
 
+# Grep everything that looks like an endpoint
+# Exclude 'module/platforms' (the route is not documented) and the false positives 'application/…' and '/rest/order/…'
 grep -Eo "['\"][^/][^'\":]+/[^'\" ]+['\"]" bigbuy/api.py \
   | grep -v application/json \
   | grep -v application/pdf \
   | sed 's%{[^}]*}%{placeholder}%' \
   | sed -E "s%['\"]%%g" \
   | grep -v '^module/platforms$' \
+  | grep -v '^\\/rest\\/order\\/12' \
   | sort \
   >| supported.txt
 
+# Do the same using the BigBuy swagger
 curl -s https://api.bigbuy.eu/rest/doc/ \
   | grep 'swagger-data'|grep -o '\{.*\}' \
   | jq -r '.spec.paths|to_entries[].key' \
