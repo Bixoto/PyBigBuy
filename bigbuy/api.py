@@ -430,7 +430,10 @@ class BigBuy(APISession):
         return [order["id"] for order in creation_response["orders"]]
 
     def get_order_by_customer_reference(self, reference: str, **params):
-        """Get order information by customer reference."""
+        """
+        Get order information by customer reference. Note that this doesn’t support multi-shipping orders and returns
+        only one of the orders matching the customer reference.
+        """
         return self.get_json_api(f'order/reference/{reference}', **params)
 
     def get_order_by_id(self, order_id: Id, **params):
