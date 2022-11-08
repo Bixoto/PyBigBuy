@@ -11,6 +11,9 @@ that call deleted endpoints is not considered a breaking change.
 
 * Remove the ability to call `get_shipping_order`/`check_order`/`create_order` with `{"order": order}` instead of
   `order`. This behavior has been deprecated in 3.13.11.
+* All cookies are now rejected by default. You can change this by using
+  `.cookies.set_policy(http.cookiejar.DefaultCookiePolicy())`. Cookies are not necessary for the API usage so this
+  should not break anything.
 
 ## 3.16.1 (2022/11/07)
 

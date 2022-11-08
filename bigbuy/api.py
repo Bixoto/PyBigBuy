@@ -5,6 +5,7 @@ Official documentation for Bigbuy API endpoints can be found at: https://api.big
 """
 import base64
 import mimetypes
+from http.cookiejar import DefaultCookiePolicy
 from typing import Optional, Dict, Union, Iterable, List, cast
 
 import requests
@@ -53,6 +54,8 @@ class BigBuy(APISession):
         self.retry_on_rate_limit = retry_on_rate_limit
         self.max_retry_on_rate_limit = max_retry_on_rate_limit
         self.headers.setdefault('Authorization', f'Bearer {app_key}')
+        # Reject all cookies by default. They are not necessary for the API usage (and not documented).
+        self.cookies.set_policy(DefaultCookiePolicy(allowed_domains=[]))
 
     def __repr__(self):
         attrs = f" key={self.app_key[:10]}…" if self.app_key else ""
