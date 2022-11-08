@@ -6,7 +6,7 @@ Note: PyBigBuy is not affiliated to nor endorsed by BigBuy.
 
 ## Coverage
 
-As of 3.16.1 PyBigBuy implements all API endpoints.
+As of 3.17.0 PyBigBuy implements all API endpoints.
 
 ## Install
 
