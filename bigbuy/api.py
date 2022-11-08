@@ -398,8 +398,8 @@ class BigBuy(APISession):
         See `create_order` for the input format.
 
         Example response:
-            {"orders":[{"productReferences":["S1"],"id":"123","warehouse":1,"url":"\/rest\/order\/123"},
-                       {"productReferences":["S2", "S3"],"id":"124","warehouse":3,"url":"\/rest\/order\/124"}],
+            {"orders":[{"productReferences":["S1"],"id":"123","warehouse":1,"url":"\\/rest\\/order\\/123"},
+                       {"productReferences":["S2", "S3"],"id":"124","warehouse":3,"url":"\\/rest\\/order\\/124"}],
              "errors":[]}
         """
         return self.post_api('order/create/multishipping', json={"order": order}, **params).json()
