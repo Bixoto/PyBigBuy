@@ -122,10 +122,14 @@ class BBNoCarrierError(BBShippingError):
     pass
 
 
-class BBWarehouseError(BBShippingError):
+class BBWarehouseSplitError(BBShippingError):
     def __init__(self, *args, warehouses: Sequence[dict] = (), **kwargs):
         super().__init__(*args, **kwargs)
         self.warehouses = warehouses
+
+
+# Backward compatibility
+BBWarehouseError = BBWarehouseSplitError
 
 
 class BBInvalidPaymentError(BBResponseError):
@@ -363,7 +367,7 @@ def raise_for_response(response: Response):
     if "error_detail" in content and "different warehouses" in message:
         error_detail = content["error_detail"]
         if isinstance(error_detail, dict) and "warehouses" in error_detail:
-            raise BBWarehouseError(message, response, bb_code=bb_code, warehouses=error_detail["warehouses"])
+            raise BBWarehouseSplitError(message, response, bb_code=bb_code, warehouses=error_detail["warehouses"])
 
     try:
         if int(bb_code) // 100 == 5:

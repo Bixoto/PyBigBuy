@@ -5,6 +5,8 @@ that call deleted endpoints is not considered a breaking change.
 
 ## 3.17.0 (unreleased)
 
+* Rename `BBWarehouseError` as `BBWarehouseSplitError` but keep the alias `BBWarehouseError` for now
+
 ### Breaking changes
 
 * Remove the ability to call `get_shipping_order`/`check_order`/`create_order` with `{"order": order}` instead of

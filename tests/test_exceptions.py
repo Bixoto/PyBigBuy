@@ -105,10 +105,10 @@ def test_raise_for_response_error_detail():
     }
     response._content = json.dumps(payload).encode("utf-8")
 
-    with pytest.raises(ex.BBWarehouseError) as exc_info:
+    with pytest.raises(ex.BBWarehouseSplitError) as exc_info:
         ex.raise_for_response(response)
 
-    assert isinstance(exc_info.value, ex.BBWarehouseError)
+    assert isinstance(exc_info.value, ex.BBWarehouseSplitError)
     assert exc_info.value.warehouses == warehouses
 
 
