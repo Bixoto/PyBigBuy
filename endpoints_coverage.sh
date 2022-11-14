@@ -13,7 +13,7 @@ grep -Eo "['\"][^/][^'\":]+/[^'\" ]+['\"]" bigbuy/api.py \
   | sed 's%{[^}]*}%{placeholder}%' \
   | sed -E "s%['\"]%%g" \
   | grep -v '^module/platforms$' \
-  | grep -v '^\\/rest\\/order\\/12' \
+  | grep -v '\\\\/order\\\\/12[34]' \
   | sort \
   >| supported.txt
 
