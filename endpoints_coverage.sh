@@ -17,10 +17,9 @@ grep -Eo "['\"][^/][^'\":]+/[^'\" ]+['\"]" bigbuy/api.py \
   | sort \
   >| supported.txt
 
-# Do the same using the BigBuy swagger
-curl -s https://api.bigbuy.eu/rest/doc/ \
-  | grep 'swagger-data'|grep -o '\{.*\}' \
-  | jq -r '.spec.paths|to_entries[].key' \
+# Do the same using the BigBuy doc
+curl -s http://api.bigbuy.eu/rest/doc.json \
+  | jq -r '.paths|to_entries[].key' \
   | sed 's%/rest/%%' \
   | sed "s%\.{format}%%" \
   | sed 's%{[^}]*}%{placeholder}%' \
