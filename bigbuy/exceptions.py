@@ -40,14 +40,6 @@ class BBRateLimitError(BBResponseError):
         self.rate_limit = RateLimit.from_response(response)
 
     # backward compatibility
-    @property
-    def reset_time(self):
-        if self.rate_limit is not None:
-            return self.rate_limit.reset_time
-
-        return None
-
-    # backward compatibility
     def reset_timedelta(self, utcnow: Optional[datetime] = None):
         if self.rate_limit is not None:
             dt = self.rate_limit.reset_timedelta(utcnow=utcnow)
@@ -126,10 +118,6 @@ class BBWarehouseSplitError(BBShippingError):
     def __init__(self, *args, warehouses: Sequence[dict] = (), **kwargs):
         super().__init__(*args, **kwargs)
         self.warehouses = warehouses
-
-
-# Backward compatibility
-BBWarehouseError = BBWarehouseSplitError
 
 
 class BBInvalidPaymentError(BBResponseError):
@@ -406,11 +394,3 @@ def raise_for_response(response: Response):
             raise BBProductError(text, response, bb_code, bb_data, skus=skus)
 
     raise error_class(text, response, bb_code=bb_code, bb_data=bb_data)
-
-
-# deprecated
-def wait_rate_limit(e: BBRateLimitError, wait_function=time.sleep, additional_delay=0.01):
-    if not isinstance(e, BBRateLimitError):
-        return False
-
-    return e.wait_until_expiration(wait_function=wait_function, additional_delay=additional_delay)

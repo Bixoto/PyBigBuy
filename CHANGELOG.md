@@ -3,9 +3,16 @@
 Note: the BigBuy API is not versioned and some endpoints are added or removed without notice. The removal of methods
 that call deleted endpoints is not considered a breaking change.
 
-## Unreleased
+## 3.18.0 (Unreleased)
 
 * Support another weird HTML formatting for 500 errors
+* Allow to import `BBShippingError` and `BBWarehouseSplitError` directly from `bigbuy`
+
+### Breaking changes
+
+* Remove `BBRateLimitError.reset_time` (use `BBRateLimitError.rate_limit.reset_time`)
+* Remove `wait_rate_limit(e)` (use `e.wait_rate_limit()`)
+* Remove `BBWarehouseError` (use `BBWarehouseSplitError`)
 
 ## 3.17.0 (2022/11/08)
 
