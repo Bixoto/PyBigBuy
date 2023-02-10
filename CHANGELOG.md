@@ -3,6 +3,10 @@
 Note: the BigBuy API is not versioned and some endpoints are added or removed without notice. The removal of methods
 that call deleted endpoints is not considered a breaking change.
 
+## Unreleased
+
+* Support another weird HTML formatting for 500 errors
+
 ## 3.17.0 (2022/11/08)
 
 * Document `create_multi_shipping_order` response

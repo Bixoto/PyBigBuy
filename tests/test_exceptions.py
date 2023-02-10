@@ -206,5 +206,23 @@ def test_raise_for_response_504_html_body():
         "<html><body><h1>504 Gateway Time-out</h1>\nThe server didn't respond in time.\n</body></html>"
     ).encode("utf-8")
 
-    with pytest.raises(ex.BBServerError, match="^The server didn't respond in time."):
+    with pytest.raises(ex.BBServerError, match=r"^The server didn't respond in time\."):
+        ex.raise_for_response(response)
+
+
+def test_raise_for_response_500_html_body_container_div():
+    response = Response()
+    response.status_code = 500
+    response.encoding = "utf-8"
+    response._content = """
+    <html><body><div class="container"><h1>Oops! An Error Occurred</h1>
+    <h2>The server returned a "500 Internal Server Error".</h2>
+    <p>
+        Something is broken. Please let us know what you were doing when this error occurred.
+        We will fix it as soon as possible. Sorry for any inconvenience caused.
+    </p>
+    </div></body></html>
+    """.encode("utf-8")
+
+    with pytest.raises(ex.BBServerError, match=r"^Something is broken\."):
         ex.raise_for_response(response)

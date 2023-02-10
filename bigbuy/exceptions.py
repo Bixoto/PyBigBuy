@@ -260,7 +260,7 @@ def raise_for_response(response: Response):
     Equivalent of request.Response#raise_for_status() that raises an exception based on the response's status.
     This may modify its argument to fix the status code if the response is a soft error.
     """
-    text = response.text
+    text = response.text.strip()
     content = json_or_none(text)
 
     # BigBuy may return soft errors (with a '200 OK' code)
@@ -303,21 +303,24 @@ def raise_for_response(response: Response):
 
         # Trim what we can.
         if text.startswith("<html>") or text.startswith("<!DOCTYPE html>"):
-            # We may want to go further:
-            #   '<div class="container">
-            #       <h1>Oops! An Error Occurred</h1>
-            #       <h2>The server returned a "500 Internal Server Error".</h2>
-            #
-            #       <p>
-            #           Something is broken. Please let us know what you were doing when this error occurred.
-            #           We will fix it as soon as possible. Sorry for any inconvenience caused.
-            #       </p>
-            #   </div>'
             if m := re.match(r".+<body>(.+)</body>\s*</html>\s*", text, re.DOTALL):
                 text = m.group(1).strip()
 
                 # Trim "<h1>504 Gateway Time-out</h1>"
                 if m := re.match(r"<h1>5\d\d .+?</h1>(.+)$", text, re.DOTALL):
+                    text = m.group(1).strip()
+
+                # <div class="container">
+                #    <h1>Oops! An Error Occurred</h1>
+                #    <h2>The server returned a "500 Internal Server Error".</h2>
+                #    <p>
+                #        Something is broken. Please let us know what you were doing when this error occurred.
+                #        We will fix it as soon as possible. Sorry for any inconvenience caused.
+                #    </p>
+                # </div>
+                if m := re.match(r'<div class="container">\s*<h1>Oops! An Error Occurred</h1>\s*'
+                                 r'<h2>The server returned a "500 Internal Server Error".</h2>\s*'
+                                 r'<p>(.+)</p>\s*</div>$', text, re.DOTALL):
                     text = m.group(1).strip()
 
         raise error_class(text, response)
