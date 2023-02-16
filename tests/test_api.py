@@ -210,6 +210,7 @@ def test_get_api_endpoints(app_key):
             ("module/", bb.get_modules),
             ("module/platforms", bb.get_module_platforms),
             ("order/123", bb.get_order_by_id, ("123",)),
+            ("order/orderstatuses", bb.get_order_statuses),
             ("order/reference/REF123", bb.get_order_by_customer_reference, ("REF123",)),
             ("shipping/carriers", bb.get_carriers),
             ("shipping/lowest-shipping-costs-by-country/XX", bb.get_lowest_shipping_costs_by_country, ("XX",)),

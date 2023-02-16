@@ -479,6 +479,10 @@ class BigBuy(APISession):
         return self.upload_order_invoice(order_id=order_id, file_b64_content=base64_content, mime_type=mime_type,
                                          concept=concept, amount=amount, **params)
 
+    def get_order_statuses(self, **params) -> List[JSONDict]:
+        """Get order statuses, as a list of dicts with "id" and "name" keys."""
+        return self.get_json_api("order/orderstatuses", **params)
+
     # tracking
     def get_tracking_carriers(self, **params):
         """Get the list of available carriers."""
