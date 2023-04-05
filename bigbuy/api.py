@@ -209,7 +209,7 @@ class BigBuy(APISession):
         }
         return self.post_api('catalog/productsstockbyreference', json=payload).json()
 
-    def get_products_tags(self, **params):
+    def get_products_tags(self, **params) -> List[dict]:
         """Lists all product tags."""
         return self.get_json_api('catalog/productstags', params=params)
 
@@ -233,8 +233,8 @@ class BigBuy(APISession):
         """Returns all products variations stock available."""
         return self.get_json_api('catalog/productsvariationsstockavailable', params=params)
 
-    def get_product_tags(self, product_id: Id, **params):
-        """Get a single ProductTag."""
+    def get_product_tags(self, product_id: Id, **params) -> List[dict]:
+        """Get tags for a single product."""
         return self.get_json_api(f'catalog/producttags/{product_id}', params=params)
 
     def get_product_variations(self, product_id: Id, **params):
@@ -245,15 +245,15 @@ class BigBuy(APISession):
         """Get a single product variation stock."""
         return self.get_json_api(f'catalog/productvariationsstock/{product_id}', params=params)
 
-    def get_tag(self, tag_id: Id, **params):
+    def get_tag(self, tag_id: Id, **params) -> dict:
         """Get a single tag."""
         return self.get_json_api(f'catalog/tag/{tag_id}', params=params)
 
-    def get_tag_all_languages(self, tag_id: Id, **params):
+    def get_tag_all_languages(self, tag_id: Id, **params) -> List[dict]:
         """Get a single tag in all languages."""
         return self.get_json_api(f'catalog/tagalllanguages/{tag_id}', params=params)
 
-    def get_tags(self, **params):
+    def get_tags(self, **params) -> List[dict]:
         """Lists all tags."""
         return self.get_json_api('catalog/tags', params=params)
 
