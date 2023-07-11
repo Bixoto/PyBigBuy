@@ -176,6 +176,10 @@ class BigBuy(APISession):
         """Returns all products."""
         return self.get_json_api('catalog/products', params=params)
 
+    def get_new_products(self, **params):
+        """Returns new or republished products in the last 7 days."""
+        return self.get_json_api('catalog/new-products', params=params)
+
     def get_products_categories(self, **params):
         """Returns all products categories."""
         return self.get_json_api('catalog/productscategories', params=params)
