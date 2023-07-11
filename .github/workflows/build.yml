@@ -35,7 +35,7 @@ jobs:
       - name: Lint with Mypy
         run: |
           # "tests" removed to avoid https://github.com/python/mypy/issues/8944
-          poetry run mypy *.py bigbuy
+          poetry run mypy --check-untyped-defs *.py bigbuy
       - name: Run Tests
         run: |
           poetry run pytest -v --cov=bigbuy
