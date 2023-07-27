@@ -213,6 +213,7 @@ def test_get_api_endpoints(app_key):
         ("order/123", bb.get_order_by_id, ("123",)),
         ("order/orderstatuses", bb.get_order_statuses),
         ("order/reference/REF123", bb.get_order_by_customer_reference, ("REF123",)),
+        ("order/delivery-notes/143", bb.get_order_delivery_notes, ("143",)),
         ("shipping/carriers", bb.get_carriers),
         ("shipping/lowest-shipping-costs-by-country/XX", bb.get_lowest_shipping_costs_by_country, ("XX",)),
         ("tracking/carriers", bb.get_tracking_carriers),

@@ -444,6 +444,10 @@ class BigBuy(APISession):
         """Get order information."""
         return self.get_json_api(f'order/{order_id}', **params)
 
+    def get_order_delivery_notes(self, order_id: Id, **params):
+        """Get delivery notes for an order."""
+        return self.get_json_api(f'order/delivery-notes/{order_id}', **params)
+
     def upload_order_invoice(self, order_id: Id, file_b64_content: str, mime_type: str, concept: str, amount: float,
                              **params):
         """

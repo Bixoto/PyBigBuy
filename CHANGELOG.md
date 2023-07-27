@@ -3,6 +3,12 @@
 Note: the BigBuy API is not versioned and some endpoints are added or removed without notice. The removal of methods
 that call deleted endpoints is not considered a breaking change.
 
+## 3.18.1 (unreleased)
+
+* Add `get_order_delivery_notes` for the new `order/delivery-notes` route
+* Add `BBTimeoutError` as a subclass of `BBServerError` and `TimeoutError`
+* Support more weird HTML formatting for 500 errors
+
 ## 3.18.0 (2023/07/11)
 
 * Add `get_order_statuses` for the new `order/orderstatuses` route
