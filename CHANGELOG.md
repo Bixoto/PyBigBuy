@@ -3,7 +3,7 @@
 Note: the BigBuy API is not versioned and some endpoints are added or removed without notice. The removal of methods
 that call deleted endpoints is not considered a breaking change.
 
-## 3.18.1 (unreleased)
+## 3.18.1 (2023/07/27)
 
 * Add `get_order_delivery_notes` for the new `order/delivery-notes` route
 * Add `BBTimeoutError` as a subclass of `BBServerError` and `TimeoutError`
