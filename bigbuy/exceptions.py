@@ -142,6 +142,10 @@ class BBServerError(BBResponseError):
     pass
 
 
+class BBTimeoutError(BBServerError, TimeoutError):
+    pass
+
+
 class BBValidationError(BBResponseError):
     def __init__(self, error_fields, response: Response, **kwargs):
         text = "Validation failed: %s" % str(error_fields)
@@ -281,22 +285,17 @@ def raise_for_response(response: Response):
     if content is None:
         if text == "You exceeded the rate limit":
             error_class: Type[BBResponseError] = BBRateLimitError
-        elif is_5xx or \
-                text.startswith("<html><body><h1>504 Gateway Time-out</h1>") or \
-                "Internal Server Error" in text or \
-                text == "Bad Gateway":
+        elif "<h1>504 Gateway Time-out</h1>" in text:
+            error_class = BBTimeoutError
+        elif is_5xx or text == "Bad Gateway" or "Internal Server Error" in text:
             error_class = BBServerError
         else:
             error_class = BBResponseError
 
         # Trim what we can.
         if text.startswith("<html>") or text.startswith("<!DOCTYPE html>"):
-            if m := re.match(r".+<body>(.+)</body>\s*</html>\s*", text, re.DOTALL):
+            if m := re.match(r".+<body>(.+)</body>", text, re.DOTALL):
                 text = m.group(1).strip()
-
-                # Trim "<h1>504 Gateway Time-out</h1>"
-                if m := re.match(r"<h1>5\d\d .+?</h1>(.+)$", text, re.DOTALL):
-                    text = m.group(1).strip()
 
                 # <div class="container">
                 #    <h1>Oops! An Error Occurred</h1>
@@ -306,9 +305,15 @@ def raise_for_response(response: Response):
                 #        We will fix it as soon as possible. Sorry for any inconvenience caused.
                 #    </p>
                 # </div>
-                if m := re.match(r'<div class="container">\s*<h1>Oops! An Error Occurred</h1>\s*'
-                                 r'<h2>The server returned a "500 Internal Server Error".</h2>\s*'
-                                 r'<p>(.+)</p>\s*</div>$', text, re.DOTALL):
+                if m := re.match(r'<div class="container">(.+)</div>', text, re.DOTALL):
+                    text = m.group(1).strip()
+
+                text = text.replace("<h1>Oops! An Error Occurred</h1>", "").strip()
+
+                if m := re.match(r'<h2>The server returned a "500 Internal Server Error".</h2>\s*'
+                                 r'<p>(.+)</p>$', text, re.DOTALL):
+                    text = m.group(1).strip()
+                elif m := re.match(r'<h1>5.. .*?</h1>\s*(.+)', text, re.DOTALL):
                     text = m.group(1).strip()
 
         raise error_class(text, response)

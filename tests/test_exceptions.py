@@ -206,7 +206,7 @@ def test_raise_for_response_504_html_body():
         "<html><body><h1>504 Gateway Time-out</h1>\nThe server didn't respond in time.\n</body></html>"
     ).encode("utf-8")
 
-    with pytest.raises(ex.BBServerError, match=r"^The server didn't respond in time\."):
+    with pytest.raises(ex.BBTimeoutError, match=r"^The server didn't respond in time\."):
         ex.raise_for_response(response)
 
 
