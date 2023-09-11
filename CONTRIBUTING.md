@@ -4,7 +4,7 @@
 
     poetry run pytest
 
-## Making a release
+## Make a release
 
 1. Update the CHANGELOG
 2. Update the version in `pyproject.toml` and in `bigbuy/__init__.py`

@@ -3,6 +3,16 @@
 Note: the BigBuy API is not versioned and some endpoints are added or removed without notice. The removal of methods
 that call deleted endpoints is not considered a breaking change.
 
+## 3.19.0 (2023/09/11)
+
+* Add official support for Python 3.12-rc2
+
+### Breaking change
+
+* Remove the `mode` argument of the class constructor. This has been deprecated for almost a year, since 3.16.0.
+  Use `sandbox=True` to use the sandbox mode instead of `mode="sandbox"`. Note the class now defaults to production mode
+  rather than the sandbox.
+
 ## 3.18.1 (2023/07/27)
 
 * Add `get_order_delivery_notes` for the new `order/delivery-notes` route
