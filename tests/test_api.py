@@ -27,11 +27,6 @@ def test_init_defaults(app_key):
     assert bb.none_on_404 is False
     assert bb.none_on_empty is True
     assert bb.retry_on_rate_limit is False
-    assert bb.base_url == "https://api.sandbox.bigbuy.eu/rest"
-
-
-def test_init_production(app_key):
-    bb = BigBuy(app_key)
     assert bb.base_url == "https://api.bigbuy.eu/rest"
 
 
@@ -89,7 +84,7 @@ def test_get_json_api_rate_limit_no_retry(app_key):
 def toto_rate_limit_response():
     return responses.Response(
         responses.GET,
-        "https://api.sandbox.bigbuy.eu/rest/toto.json",
+        "https://api.bigbuy.eu/rest/toto.json",
         body=RATE_LIMIT_RESPONSE_TEXT,
         status=429,
         headers={
