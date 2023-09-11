@@ -31,7 +31,7 @@ def test_init_defaults(app_key):
 
 
 def test_init_production(app_key):
-    bb = BigBuy(app_key, mode="production")
+    bb = BigBuy(app_key)
     assert bb.base_url == "https://api.bigbuy.eu/rest"
 
 
@@ -39,21 +39,9 @@ def test_init_sandbox_true(app_key):
     bb = BigBuy(app_key, sandbox=True)
     assert bb.base_url == "https://api.sandbox.bigbuy.eu/rest"
 
-    bb = BigBuy(app_key, sandbox=True, mode="production")
-    assert bb.base_url == "https://api.sandbox.bigbuy.eu/rest"
-
-    bb = BigBuy(app_key, sandbox=True, mode="sandbox")
-    assert bb.base_url == "https://api.sandbox.bigbuy.eu/rest"
-
 
 def test_init_sandbox_false(app_key):
     bb = BigBuy(app_key, sandbox=False)
-    assert bb.base_url == "https://api.bigbuy.eu/rest"
-
-    bb = BigBuy(app_key, sandbox=False, mode="production")
-    assert bb.base_url == "https://api.bigbuy.eu/rest"
-
-    bb = BigBuy(app_key, sandbox=False, mode="sandbox")
     assert bb.base_url == "https://api.bigbuy.eu/rest"
 
 
