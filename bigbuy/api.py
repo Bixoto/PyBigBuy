@@ -21,24 +21,19 @@ Id = Union[int, str]
 
 
 class BigBuy(APISession):
-    def __init__(self, app_key: Optional[str] = None, mode="sandbox",
+    def __init__(self, app_key: Optional[str] = None,
                  *,
-                 sandbox: Optional[bool] = None,
+                 sandbox = False,
                  retry_on_rate_limit=False,
                  max_retry_on_rate_limit=2,
                  **kwargs):
         """Instantiates an instance of BigBuy.
 
         :param app_key: Your applications key
-        :param mode: "sandbox" or "production" (deprecated)
-        :param sandbox: shortcut to use the client in sandbox mode. If not set, `mode` is used to ensure backward
-          compatibility. If set, it overrides it. In the future, this will default to `False` (production).
+        :param sandbox: if `True`, use the client in sandbox mode.
         :param retry_on_rate_limit:
         :param max_retry_on_rate_limit:
         """
-        if sandbox is None:
-            sandbox = mode == "sandbox"
-
         if sandbox:
             base_url = 'https://api.sandbox.bigbuy.eu/rest'
         else:
