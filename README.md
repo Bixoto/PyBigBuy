@@ -24,7 +24,7 @@ As of 3.17.0 PyBigBuy implements all API endpoints.
 from bigbuy import BigBuy
 
 
-client = BigBuy("your-API-token", "production")
+client = BigBuy("your-API-token")
 ```
 
 ## License
