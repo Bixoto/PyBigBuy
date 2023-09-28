@@ -5,7 +5,8 @@ that call deleted endpoints is not considered a breaking change.
 
 ## Unreleased
 
-* Remove `get_products_stock_available`, since BigBuy removed the API endpoint on September 28, 2023
+* Remove `get_products_stock_available` and `get_products_variations_stock_available`,
+  since BigBuy removed the endpoints on September 28, 2023
 
 ## 3.19.0 (2023/09/11)
 

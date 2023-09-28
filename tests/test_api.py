@@ -177,7 +177,6 @@ def test_get_api_endpoints(app_key):
         ("catalog/productstock/136", bb.get_product_stock, ("136",)),
         ("catalog/productsvariations", bb.get_products_variations),
         ("catalog/productsvariationsstock", bb.get_products_variations_stock),
-        ("catalog/productsvariationsstockavailable", bb.get_products_variations_stock_available),
         ("catalog/productsvariationsstockbyhandlingdays", bb.get_products_variations_stock_by_handling_days),
         ("catalog/producttags/137", bb.get_product_tags, ("137",)),
         ("catalog/producttaxonomies/123", bb.get_product_taxonomies, ("123",)),

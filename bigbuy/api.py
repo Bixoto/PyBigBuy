@@ -224,10 +224,6 @@ class BigBuy(APISession):
         """Returns all products variations stock by handling days."""
         return self.get_json_api('catalog/productsvariationsstockbyhandlingdays', params=params)
 
-    def get_products_variations_stock_available(self, **params):
-        """Returns all products variations stock available."""
-        return self.get_json_api('catalog/productsvariationsstockavailable', params=params)
-
     def get_product_tags(self, product_id: Id, **params) -> List[dict]:
         """Get tags for a single product."""
         return self.get_json_api(f'catalog/producttags/{product_id}', params=params)
