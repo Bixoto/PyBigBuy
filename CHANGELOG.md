@@ -3,6 +3,10 @@
 Note: the BigBuy API is not versioned and some endpoints are added or removed without notice. The removal of methods
 that call deleted endpoints is not considered a breaking change.
 
+## Unreleased
+
+* Remove `get_products_stock_available`, since BigBuy removed the API endpoint on September 28, 2023
+
 ## 3.19.0 (2023/09/11)
 
 * Add official support for Python 3.12-rc2

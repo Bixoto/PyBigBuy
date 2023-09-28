@@ -23,7 +23,7 @@ Id = Union[int, str]
 class BigBuy(APISession):
     def __init__(self, app_key: Optional[str] = None,
                  *,
-                 sandbox = False,
+                 sandbox=False,
                  retry_on_rate_limit=False,
                  max_retry_on_rate_limit=2,
                  **kwargs):
@@ -194,10 +194,6 @@ class BigBuy(APISession):
     def get_products_stock_by_handling_days(self, **params):
         """Returns all products stock by handling days."""
         return self.get_json_api('catalog/productsstockbyhandlingdays', params=params)
-
-    def get_products_stock_available(self, **params):
-        """Returns all products with available stock."""
-        return self.get_json_api('catalog/productsstockavailable', params=params)
 
     def get_products_stock_by_reference(self, skus: Iterable[str]):
         """Get all selected products stock."""
