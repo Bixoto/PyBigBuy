@@ -6,6 +6,9 @@ The removal of methods that call deleted endpoints is not considered a breaking 
 ## Unreleased
 
 * Add `get_user_auth_status`, `get_product_stock_by_handling_days`, `get_product_variations_stock_by_handling_days`
+* Deprecate `get_products_stock`, `get_product_stock`, `get_products_variations_stock`
+  and `get_product_variations_stock`, because the endpoint they’re calling are deprecated and will be removed
+  on April 1st, 2024
 
 ## 3.19.1 (2023/09/29)
 

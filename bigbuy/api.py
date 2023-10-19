@@ -5,6 +5,7 @@ Official documentation for Bigbuy API endpoints can be found at: https://api.big
 """
 import base64
 import mimetypes
+import warnings
 from http.cookiejar import DefaultCookiePolicy
 from typing import Optional, Dict, Union, Iterable, List, cast, Any
 
@@ -189,6 +190,10 @@ class BigBuy(APISession):
 
     def get_products_stock(self, **params):
         """Returns all products stock."""
+        warnings.warn("The endpoint used by `get_products_stock` has been deprecated by BigBuy"
+                      " and will be removed on April 1st, 2024."
+                      " Use `get_products_stock_by_handling_days` instead.",
+                      DeprecationWarning)
         return self.get_json_api('catalog/productsstock', params=params)
 
     def get_products_stock_by_handling_days(self, **params):
@@ -210,6 +215,10 @@ class BigBuy(APISession):
 
     def get_product_stock(self, product_id: Id, **params):
         """Get a single product stock."""
+        warnings.warn("The endpoint used by `get_product_stock` has been deprecated by BigBuy"
+                      " and will be removed on April 1st, 2024."
+                      " Use `get_product_stock_by_handling_days` instead.",
+                      DeprecationWarning)
         return self.get_json_api(f'catalog/productstock/{product_id}', params=params)
 
     def get_product_stock_by_handling_days(self, product_id: Id, **params):
@@ -222,6 +231,10 @@ class BigBuy(APISession):
 
     def get_products_variations_stock(self, **params):
         """Returns all products variations stock."""
+        warnings.warn("The endpoint used by `get_products_variations_stock` has been deprecated by BigBuy"
+                      " and will be removed on April 1st, 2024."
+                      " Use `get_products_variations_stock_by_handling_days` instead.",
+                      DeprecationWarning)
         return self.get_json_api('catalog/productsvariationsstock', params=params)
 
     def get_products_variations_stock_by_handling_days(self, **params):
@@ -238,6 +251,10 @@ class BigBuy(APISession):
 
     def get_product_variations_stock(self, product_id: Id, **params):
         """Get a single product variation stock."""
+        warnings.warn("The endpoint used by `get_product_variations_stock` has been deprecated by BigBuy"
+                      " and will be removed on April 1st, 2024."
+                      " Use `get_product_variations_stock_by_handling_days` instead.",
+                      DeprecationWarning)
         return self.get_json_api(f'catalog/productvariationsstock/{product_id}', params=params)
 
     def get_product_variations_stock_by_handling_days(self, product_id: Id, **params):
