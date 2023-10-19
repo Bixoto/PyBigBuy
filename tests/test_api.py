@@ -146,6 +146,7 @@ def test_get_api_endpoints(app_key):
     bb = BigBuy(app_key=app_key)
     payload = {"test": "ok"}
 
+    # noinspection PyDeprecation
     test_cases: List[Union[Tuple[str, Callable], Tuple[str, Callable, tuple]]] = [
         ("catalog/attribute/123", bb.get_attribute, ("123",)),
         ("catalog/attributealllanguages/124", bb.get_attribute_all_languages, ("124",)),
