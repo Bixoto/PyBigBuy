@@ -3,6 +3,10 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
+## Unreleased
+
+* Add official support for Python 3.12.0
+
 ## 3.19.2 (2023/10/19)
 
 * Add `get_user_auth_status`, `get_product_stock_by_handling_days`, `get_product_variations_stock_by_handling_days`
