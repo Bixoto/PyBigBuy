@@ -6,7 +6,7 @@ Official documentation for Bigbuy API endpoints can be found at: https://api.big
 import base64
 import mimetypes
 from http.cookiejar import DefaultCookiePolicy
-from typing import Optional, Dict, Union, Iterable, List, cast
+from typing import Optional, Dict, Union, Iterable, List, cast, Any
 
 import requests
 from api_session import APISession, JSONDict
@@ -212,6 +212,10 @@ class BigBuy(APISession):
         """Get a single product stock."""
         return self.get_json_api(f'catalog/productstock/{product_id}', params=params)
 
+    def get_product_stock_by_handling_days(self, product_id: Id, **params):
+        """Get a single product stock by handling days."""
+        return self.get_json_api(f'catalog/productstockbyhandlingdays/{product_id}', params=params)
+
     def get_products_variations(self, **params):
         """Returns all products variations."""
         return self.get_json_api('catalog/productsvariations', params=params)
@@ -235,6 +239,10 @@ class BigBuy(APISession):
     def get_product_variations_stock(self, product_id: Id, **params):
         """Get a single product variation stock."""
         return self.get_json_api(f'catalog/productvariationsstock/{product_id}', params=params)
+
+    def get_product_variations_stock_by_handling_days(self, product_id: Id, **params):
+        """Get a single product variation's stocks by handling days."""
+        return self.get_json_api(f'catalog/productvariationsstockbyhandlingdays/{product_id}', params=params)
 
     def get_tag(self, tag_id: Id, **params) -> dict:
         """Get a single tag."""
@@ -589,7 +597,13 @@ class BigBuy(APISession):
         Return all taxonomies of all products.
         The format is the same as ``get_product_taxonomies``
         """
-        return self.get_json_api(f"catalog/productstaxonomies", **params)
+        return self.get_json_api("catalog/productstaxonomies", **params)
+
+    def get_user_auth_status(self, **params) -> Optional[Any]:  # The doc does not say what is the response format
+        """
+        Get the auth status of the user.
+        """
+        return self.get_json_api("user/auth/status", **params)
 
 
 def _get_order_id_from_response_redirect(response: requests.Response):

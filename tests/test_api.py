@@ -1,7 +1,7 @@
 import base64
 from datetime import datetime
 from tempfile import NamedTemporaryFile
-from typing import Callable, List, Tuple, Union
+from typing import Callable, List, Tuple, Union, cast
 
 import pytest
 import requests
@@ -175,6 +175,7 @@ def test_get_api_endpoints(app_key):
         ("catalog/productstags", bb.get_products_tags),
         ("catalog/productstaxonomies", bb.get_products_taxonomies),
         ("catalog/productstock/136", bb.get_product_stock, ("136",)),
+        ("catalog/productstockbyhandlingdays/136", bb.get_product_stock_by_handling_days, ("136",)),
         ("catalog/productsvariations", bb.get_products_variations),
         ("catalog/productsvariationsstock", bb.get_products_variations_stock),
         ("catalog/productsvariationsstockbyhandlingdays", bb.get_products_variations_stock_by_handling_days),
@@ -182,6 +183,8 @@ def test_get_api_endpoints(app_key):
         ("catalog/producttaxonomies/123", bb.get_product_taxonomies, ("123",)),
         ("catalog/productvariations/138", bb.get_product_variations, ("138",)),
         ("catalog/productvariationsstock/139", bb.get_product_variations_stock, ("139",)),
+        ("catalog/productvariationsstockbyhandlingdays/139", bb.get_product_variations_stock_by_handling_days,
+         ("139",)),
         ("catalog/tag/140", bb.get_tag, ("140",)),
         ("catalog/tagalllanguages/141", bb.get_tag_all_languages, ("141",)),
         ("catalog/tags", bb.get_tags),
@@ -199,10 +202,11 @@ def test_get_api_endpoints(app_key):
         ("shipping/lowest-shipping-costs-by-country/XX", bb.get_lowest_shipping_costs_by_country, ("XX",)),
         ("tracking/carriers", bb.get_tracking_carriers),
         ("tracking/order/123", bb.get_tracking_order, ("123",)),
+        ("user/auth/status", bb.get_user_auth_status),
     ]
     for test_case in test_cases:
         endpoint: str = test_case[0]
-        method: Callable = test_case[1]
+        method = cast(Callable, test_case[1])
         args: tuple = test_case[2] if len(test_case) == 3 else ()
 
         responses.get(f"{bb.base_url}/{endpoint}.json", json=payload)
