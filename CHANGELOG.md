@@ -6,6 +6,7 @@ The removal of methods that call deleted endpoints is not considered a breaking 
 ## Unreleased
 
 * Add official support for Python 3.12.0
+* Use `BBTimeoutError` for more timeout errors instead of `BBResponseError`
 
 ## 3.19.2 (2023/10/19)
 

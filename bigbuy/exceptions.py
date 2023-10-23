@@ -285,7 +285,17 @@ def raise_for_response(response: Response):
     if content is None:
         if text == "You exceeded the rate limit":
             error_class: Type[BBResponseError] = BBRateLimitError
-        elif "<h1>504 Gateway Time-out</h1>" in text:
+
+        elif (
+                "<h1>504 Gateway Time-out</h1>" in text
+                or "504 Gateway Time-out" in text
+                or "503 Service Unavailable" in text
+                or "No server is available to handle this request." in text
+                or "The server didn't respond in time." in text
+                or text.startswith('Idle timeout reached for')
+                # (yes, there is a double space)
+                or text.startswith('HTTP/2 503  returned for "https://www.bigbuy.eu/order/payment/')
+        ):
             error_class = BBTimeoutError
         elif is_5xx or text == "Bad Gateway" or "Internal Server Error" in text:
             error_class = BBServerError
