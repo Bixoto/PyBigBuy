@@ -3,6 +3,11 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
+## 3.19.4 (2023/11/09)
+
+* The read-only mode now allows `POST` calls to the API that read data without modifying it, like order simulation
+  or checking tracking numbers
+
 ## 3.19.3 (2023/10/23)
 
 * Add official support for Python 3.12.0
