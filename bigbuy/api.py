@@ -207,7 +207,7 @@ class BigBuy(APISession):
                 "products": [{"sku": sku} for sku in skus],
             }
         }
-        return self.post_api('catalog/productsstockbyreference', json=payload).json()
+        return self.post_api('catalog/productsstockbyreference', json=payload, bypass_read_only=True).json()
 
     def get_products_tags(self, **params) -> List[dict]:
         """Lists all product tags."""
@@ -293,7 +293,7 @@ class BigBuy(APISession):
         Example order:
             {"delivery":{"isoCountry":"ES","postcode":"46005"},"products":[{"reference":"V1300179","quantity":1}]}
         """
-        return self.post_api('shipping/orders', json={"order": order}).json()
+        return self.post_api('shipping/orders', json={"order": order}, bypass_read_only=True).json()
 
     # order
     def check_order(self, order: JSONDict, **params) -> dict:
@@ -336,7 +336,7 @@ class BigBuy(APISession):
               "total": 9.809999999999999
             }
         """
-        return self.post_api('order/check', json={"order": order}, **params).json()
+        return self.post_api('order/check', json={"order": order}, bypass_read_only=True, **params).json()
 
     def check_multi_shipping_order(self, order: JSONDict, **params) -> Dict[str, List[JSONDict]]:
         """
@@ -366,7 +366,7 @@ class BigBuy(APISession):
               "errors": []
             }
         """
-        return self.post_api('order/check/multishipping', json={"order": order}, **params).json()
+        return self.post_api('order/check/multishipping', json={"order": order}, bypass_read_only=True, **params).json()
 
     def create_order(self, order: JSONDict, **params):
         """
@@ -526,7 +526,8 @@ class BigBuy(APISession):
             }
         }
 
-        trackings = cast(List[dict], self.post_api('tracking/orders', json=payload, **params).json())
+        trackings = cast(List[dict],
+                         self.post_api('tracking/orders', json=payload, bypass_read_only=True, **params).json())
 
         if not match_ids:
             # make mypy happy
@@ -555,6 +556,7 @@ class BigBuy(APISession):
         """
         return self.post_api("shipping/lowest-shipping-cost-by-country",
                              json={"product_country": {"reference": reference, "countryIsoCode": country_code}},
+                             bypass_read_only=True,
                              **params).json()
 
     def get_lowest_shipping_costs_by_country(self, country_code: str, **params) -> List[dict]:
