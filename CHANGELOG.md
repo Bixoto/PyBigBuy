@@ -3,6 +3,10 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
+## Unreleased
+
+* Add a default auto-retry on connection and server errors on read call
+
 ## 3.19.4 (2023/11/09)
 
 * The read-only mode now allows `POST` calls to the API that read data without modifying it, like order simulation

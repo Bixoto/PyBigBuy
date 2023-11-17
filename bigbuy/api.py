@@ -11,6 +11,7 @@ from typing import Optional, Dict, Union, Iterable, List, cast, Any
 
 import requests
 from api_session import APISession, JSONDict
+from urllib3 import Retry
 
 from . import __version__
 from .exceptions import raise_for_response, BBError
@@ -44,6 +45,12 @@ class BigBuy(APISession):
         # BigBuy likes returning '200 OK' responses with empty bodies instead of 404s.
         kwargs.setdefault("none_on_empty", True)
 
+        kwargs.setdefault("max_retries", Retry(
+            allowed_methods=self.READ_METHODS,
+            raise_on_status=False,
+            status_forcelist={500, 502, 503, 524},
+        ))
+
         super().__init__(base_url, user_agent=f'pyBigBuy v{__version__}', **kwargs)
 
         self.app_key = app_key
@@ -58,7 +65,6 @@ class BigBuy(APISession):
         return f'<Bigbuy{attrs}>'
 
     def raise_for_response(self, response: requests.Response):
-        # Implement upstream's method
         return raise_for_response(response)
 
     def request_api(self, method: str, path: str, *args,
