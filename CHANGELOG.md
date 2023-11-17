@@ -3,9 +3,9 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
-## Unreleased
+## 3.19.5 (2023/11/17)
 
-* Add a default auto-retry on connection and server errors on read call
+* Add a default auto-retry on connection and server errors on all read call
 
 ## 3.19.4 (2023/11/09)
 
