@@ -147,6 +147,15 @@ def test_raise_for_response_soft_409():
     with pytest.raises(ex.BBResponseError, match="Something went wrong"):
         ex.raise_for_response(response)
 
+def test_raise_for_response_inverted_code_and_message():
+    response = Response()
+    response.status_code = 400
+    response.encoding = "utf-8"
+    payload = {'code': 'Bad request', 'message': 400}
+    response._content = json.dumps(payload).encode("utf-8")
+
+    with pytest.raises(ex.BBResponseError, match="Bad request"):
+        ex.raise_for_response(response)
 
 def test_raise_for_response_soft_error_headers_in_body():
     """

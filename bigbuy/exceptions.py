@@ -12,9 +12,8 @@ import time
 from datetime import datetime, timedelta
 from typing import Optional, Union, Dict, Any, List, Type, cast, Sequence
 
-from requests import Response
-
 from bigbuy.rate_limit import RateLimit
+from requests import Response
 
 
 class BBError(Exception):
@@ -369,6 +368,10 @@ def raise_for_response(response: Response):
     elif "code" in content and "message" in content:
         bb_code = content["code"]
         message = content["message"]
+
+        # {"code": "Bad request", "message": 400}
+        if isinstance(message, int) and 400 <= message <= 599 and isinstance(bb_code, str):
+            bb_code, message = str(message), bb_code
 
     if "error_detail" in content and "different warehouses" in message:
         error_detail = content["error_detail"]
