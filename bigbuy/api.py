@@ -5,6 +5,7 @@ Official documentation for Bigbuy API endpoints can be found at: https://api.big
 """
 import base64
 import mimetypes
+import warnings
 from http.cookiejar import DefaultCookiePolicy
 from typing import Optional, Dict, Union, Iterable, List, cast, Any
 
@@ -99,97 +100,103 @@ class BigBuy(APISession):
         return r
 
     # catalog
-    def get_attribute(self, attribute_id: Id, **params):
+    def get_attribute(self, attribute_id: Id, **params) -> JSONDict:
         """Get a single attribute."""
         return self.get_json_api(f'catalog/attribute/{attribute_id}', params=params)
 
-    def get_attribute_all_languages(self, attribute_id: Id, **params):
+    def get_attribute_all_languages(self, attribute_id: Id, **params) -> List[JSONDict]:
         """Get a single attribute."""
         return self.get_json_api(f'catalog/attributealllanguages/{attribute_id}', params=params)
 
-    def get_attribute_group(self, attribute_group_id: Id, **params):
+    def get_attribute_group(self, attribute_group_id: Id, **params) -> JSONDict:
         """Get a single attribute group."""
         return self.get_json_api(f'catalog/attributegroup/{attribute_group_id}', params=params)
 
-    def get_attribute_group_all_languages(self, attribute_group_id: Id, **params):
+    def get_attribute_group_all_languages(self, attribute_group_id: Id, **params) -> List[JSONDict]:
         """Get a single attribute group."""
         return self.get_json_api(f'catalog/attributegroupalllanguages/{attribute_group_id}', params=params)
 
-    def get_attribute_groups(self, **params):
+    def get_attribute_groups(self, **params) -> List[JSONDict]:
         """Lists all attribute groups."""
         return self.get_json_api('catalog/attributegroups', params=params)
 
-    def get_attributes(self, **params):
+    def get_attributes(self, **params) -> List[JSONDict]:
         """Lists all attributes."""
         return self.get_json_api('catalog/attributes', params=params)
 
-    def get_categories(self, **params):
+    def get_categories(self, **params) -> List[JSONDict]:
         """Lists all categories."""
+        warnings.warn("The categories endpoints are deprecated by BigBuy in favor of the taxonomies."
+                      " Use get_taxonomies instead.", DeprecationWarning)
         return self.get_json_api('catalog/categories', params=params)
 
-    def get_category(self, category_id: Id, **params):
+    def get_category(self, category_id: Id, **params) -> JSONDict:
         """
         Returns the selected category.
         """
+        warnings.warn("The categories endpoints are deprecated by BigBuy in favor of the taxonomies.",
+                      DeprecationWarning)
         return self.get_json_api(f'catalog/category/{category_id}', params=params)
 
-    def get_category_all_languages(self, category_id: Id, **params):
+    def get_category_all_languages(self, category_id: Id, **params) -> List[JSONDict]:
         """Returns the selected category."""
+        warnings.warn("The categories endpoints are deprecated by BigBuy in favor of the taxonomies."
+                      " Use get_taxonomy_all_languages instead.", DeprecationWarning)
         return self.get_json_api(f'catalog/categoryalllanguages/{category_id}', params=params)
 
-    def get_languages(self, **params):
+    def get_languages(self, **params) -> List[JSONDict]:
         """Returns all languages"""
         return self.get_json_api('catalog/languages', params=params)
 
-    def get_manufacturer(self, manufacturer_id: Id, **params):
+    def get_manufacturer(self, manufacturer_id: Id, **params) -> JSONDict:
         """Get a single manufacturer."""
         return self.get_json_api(f'catalog/manufacturer/{manufacturer_id}', params=params)
 
-    def get_manufacturers(self, **params):
+    def get_manufacturers(self, **params) -> List[JSONDict]:
         """Lists all manufacturers."""
         return self.get_json_api('catalog/manufacturers', params=params)
 
-    def get_product(self, product_id: Id, **params):
+    def get_product(self, product_id: Id, **params) -> JSONDict:
         """Get a single product."""
         return self.get_json_api(f'catalog/product/{product_id}', params=params)
 
-    def get_product_categories(self, product_id: Id, **params):
+    def get_product_categories(self, product_id: Id, **params) -> JSONDict:
         """Get product categories."""
         return self.get_json_api(f'catalog/productcategories/{product_id}', params=params)
 
-    def get_product_images(self, product_id: Id, **params):
+    def get_product_images(self, product_id: Id, **params) -> JSONDict:
         """Get a single product images."""
         return self.get_json_api(f'catalog/productimages/{product_id}', params=params)
 
-    def get_product_information(self, product_id: Id, **params):
+    def get_product_information(self, product_id: Id, **params) -> JSONDict:
         """Get a single product information."""
         return self.get_json_api(f'catalog/productinformation/{product_id}', params=params)
 
-    def get_product_information_all_languages(self, product_id: Id, **params):
+    def get_product_information_all_languages(self, product_id: Id, **params) -> List[JSONDict]:
         """Get a single product."""
         return self.get_json_api(f'catalog/productinformationalllanguages/{product_id}', params=params)
 
-    def get_product_information_by_sku(self, sku: str, **params):
+    def get_product_information_by_sku(self, sku: str, **params) -> JSONDict:
         """Get a single product by sku."""
         return self.get_json_api(f'catalog/productinformationbysku/{sku}', params=params)
 
-    def get_products(self, **params):
+    def get_products(self, **params) -> List[JSONDict]:
         """Returns all products."""
         return self.get_json_api('catalog/products', params=params)
 
-    def get_new_products(self, **params):
+    def get_new_products(self, **params) -> List[JSONDict]:
         """Returns new or republished products in the last 7 days."""
         return self.get_json_api('catalog/new-products', params=params)
 
-    def get_products_categories(self, **params):
+    def get_products_categories(self, **params) -> List[JSONDict]:
         """Returns all products categories."""
         return self.get_json_api('catalog/productscategories', params=params)
 
-    def get_products_images(self, **params):
+    def get_products_images(self, **params) -> List[JSONDict]:
         """Returns all products images."""
         return self.get_json_api('catalog/productsimages', params=params)
 
-    def get_products_information(self, **params):
+    def get_products_information(self, **params) -> List[JSONDict]:
         """Returns all products' information."""
         return self.get_json_api('catalog/productsinformation', params=params)
 
@@ -201,64 +208,64 @@ class BigBuy(APISession):
         """Returns all product variation pricing info."""
         return self.get_json_api('catalog/productvariationprices', params=params)
 
-    def get_products_stock_by_handling_days(self, **params):
+    def get_products_stock_by_handling_days(self, **params) -> List[JSONDict]:
         """Returns all products stock by handling days."""
         return self.get_json_api('catalog/productsstockbyhandlingdays', params=params)
 
-    def get_products_tags(self, **params) -> List[dict]:
+    def get_products_tags(self, **params) -> List[JSONDict]:
         """Lists all product tags."""
         return self.get_json_api('catalog/productstags', params=params)
 
-    def get_product_stock_by_handling_days(self, product_id: Id, **params):
+    def get_product_stock_by_handling_days(self, product_id: Id, **params) -> JSONDict:
         """Get a single product stock by handling days."""
         return self.get_json_api(f'catalog/productstockbyhandlingdays/{product_id}', params=params)
 
-    def get_products_variations(self, **params):
+    def get_products_variations(self, **params) -> List[JSONDict]:
         """Returns all products variations."""
         return self.get_json_api('catalog/productsvariations', params=params)
 
-    def get_products_variations_stock_by_handling_days(self, **params):
+    def get_products_variations_stock_by_handling_days(self, **params) -> List[JSONDict]:
         """Returns all products variations stock by handling days."""
         return self.get_json_api('catalog/productsvariationsstockbyhandlingdays', params=params)
 
-    def get_product_tags(self, product_id: Id, **params) -> List[dict]:
+    def get_product_tags(self, product_id: Id, **params) -> List[JSONDict]:
         """Get tags for a single product."""
         return self.get_json_api(f'catalog/producttags/{product_id}', params=params)
 
-    def get_product_variations(self, product_id: Id, **params):
+    def get_product_variations(self, product_id: Id, **params) -> List[JSONDict]:
         """Get a single Product variations."""
         return self.get_json_api(f'catalog/productvariations/{product_id}', params=params)
 
-    def get_product_variations_stock_by_handling_days(self, product_id: Id, **params):
+    def get_product_variations_stock_by_handling_days(self, product_id: Id, **params) -> JSONDict:
         """Get a single product variation's stocks by handling days."""
         return self.get_json_api(f'catalog/productvariationsstockbyhandlingdays/{product_id}', params=params)
 
-    def get_tag(self, tag_id: Id, **params) -> dict:
+    def get_tag(self, tag_id: Id, **params) -> JSONDict:
         """Get a single tag."""
         return self.get_json_api(f'catalog/tag/{tag_id}', params=params)
 
-    def get_tag_all_languages(self, tag_id: Id, **params) -> List[dict]:
+    def get_tag_all_languages(self, tag_id: Id, **params) -> List[JSONDict]:
         """Get a single tag in all languages."""
         return self.get_json_api(f'catalog/tagalllanguages/{tag_id}', params=params)
 
-    def get_tags(self, **params) -> List[dict]:
+    def get_tags(self, **params) -> List[JSONDict]:
         """Lists all tags."""
         return self.get_json_api('catalog/tags', params=params)
 
-    def get_variation(self, variation_id: Id, **params):
+    def get_variation(self, variation_id: Id, **params) -> JSONDict:
         """Get a single variation."""
         return self.get_json_api(f'catalog/variation/{variation_id}', params=params)
 
-    def get_variations(self, **params):
+    def get_variations(self, **params) -> List[JSONDict]:
         """Lists all variations."""
         return self.get_json_api('catalog/variations', params=params)
 
     # shipping
-    def get_carriers(self, **params):
-        """Get a single variation."""
+    def get_carriers(self, **params) -> List[JSONDict]:
+        """Get the list of available carriers."""
         return self.get_json_api('shipping/carriers', params=params)
 
-    def get_shipping_order(self, order: JSONDict):
+    def get_shipping_order(self, order: JSONDict) -> List[JSONDict]:
         """Get the list of available shipping options with the calculated weight and cost in Kg and € respectively,
         for the given order.
 
@@ -268,7 +275,7 @@ class BigBuy(APISession):
         return self.post_api('shipping/orders', json={"order": order}, bypass_read_only=True).json()
 
     # order
-    def check_order(self, order: JSONDict, **params) -> dict:
+    def check_order(self, order: JSONDict, **params) -> JSONDict:
         """Check/simulate an order and return the total amount to pay.
 
         Example order:
@@ -417,23 +424,23 @@ class BigBuy(APISession):
 
         return [order["id"] for order in creation_response["orders"]]
 
-    def get_order_by_customer_reference(self, reference: str, **params):
+    def get_order_by_customer_reference(self, reference: str, **params) -> JSONDict:
         """
         Get order information by customer reference. Note that this doesn’t support multi-shipping orders and returns
         only one of the orders matching the customer reference.
         """
         return self.get_json_api(f'order/reference/{reference}', **params)
 
-    def get_order_by_id(self, order_id: Id, **params):
+    def get_order_by_id(self, order_id: Id, **params) -> JSONDict:
         """Get order information."""
         return self.get_json_api(f'order/{order_id}', **params)
 
-    def get_order_delivery_notes(self, order_id: Id, **params):
+    def get_order_delivery_notes(self, order_id: Id, **params) -> JSONDict:
         """Get delivery notes for an order."""
         return self.get_json_api(f'order/delivery-notes/{order_id}', **params)
 
     def upload_order_invoice(self, order_id: Id, file_b64_content: str, mime_type: str, concept: str, amount: float,
-                             **params):
+                             **params) -> List[bool]:
         """
         Upload a base64-encoded invoice to an order in PENDING INVOICE status.
         """
@@ -476,15 +483,15 @@ class BigBuy(APISession):
         return self.get_json_api("order/orderstatuses", **params)
 
     # tracking
-    def get_tracking_carriers(self, **params):
+    def get_tracking_carriers(self, **params) -> List[JSONDict]:
         """Get the list of available carriers."""
         return self.get_json_api('tracking/carriers', **params)
 
-    def get_tracking_order(self, order_id: Id, **params):
+    def get_tracking_order(self, order_id: Id, **params) -> List[JSONDict]:
         """Get the list of available trackings."""
         return self.get_json_api(f'tracking/order/{order_id}', **params)
 
-    def get_tracking_orders(self, order_ids: Iterable[Id], match_ids=True, **params) -> List[Optional[dict]]:
+    def get_tracking_orders(self, order_ids: Iterable[Id], match_ids=True, **params) -> List[Optional[JSONDict]]:
         """
         Get the list of available trackings for the given orders.
 
@@ -511,7 +518,7 @@ class BigBuy(APISession):
 
         return [tracking_by_id.get(str(order_id)) for order_id in order_ids]
 
-    def get_lowest_shipping_cost_by_country(self, reference: str, country_code: str, **params) -> dict:
+    def get_lowest_shipping_cost_by_country(self, reference: str, country_code: str, **params) -> JSONDict:
         """
         Equivalent of ``get_lowest_shipping_costs_by_country`` for a single product. Returns the lowest shipping cost
         for a product reference when sent to the provided country.
@@ -531,7 +538,7 @@ class BigBuy(APISession):
                              bypass_read_only=True,
                              **params).json()
 
-    def get_lowest_shipping_costs_by_country(self, country_code: str, **params) -> List[dict]:
+    def get_lowest_shipping_costs_by_country(self, country_code: str, **params) -> List[JSONDict]:
         """
         Returns the lowest shipping cost for a product reference when sent to the provided country.
 
@@ -561,7 +568,7 @@ class BigBuy(APISession):
         """
         return self.get_json_api("module/platforms", **params)
 
-    def get_taxonomies(self, **params) -> List[dict]:
+    def get_taxonomies(self, **params) -> List[JSONDict]:
         """
         List all taxonomies.
         """
@@ -573,7 +580,7 @@ class BigBuy(APISession):
         """
         return self.get_json_api(f"catalog/taxonomyalllanguages/{taxonomy_id}", **params)
 
-    def get_product_taxonomies(self, product_id: Id, **params) -> Optional[List[dict]]:
+    def get_product_taxonomies(self, product_id: Id, **params) -> Optional[List[JSONDict]]:
         """
         Return all taxonomies associated with a product.
 
@@ -583,7 +590,7 @@ class BigBuy(APISession):
         """
         return self.get_json_api(f"catalog/producttaxonomies/{product_id}", **params)
 
-    def get_products_taxonomies(self, **params) -> List[dict]:
+    def get_products_taxonomies(self, **params) -> List[JSONDict]:
         """
         Return all taxonomies of all products.
         The format is the same as ``get_product_taxonomies``

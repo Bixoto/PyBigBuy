@@ -9,6 +9,9 @@ The removal of methods that call deleted endpoints is not considered a breaking 
   `get_products_variations_stock`, `get_product_stock`, `get_products_stock`
 * Remove `get_products_stock_by_reference`; BigBuy has silently removed the endpoint
 * Add `get_products_information` and `get_product_variations_prices`
+* Add deprecation warnings on categories methods because BigBuy deprecated categories in favor of taxonomies
+* Add a return type hint on all methods
+* Fix the docstring of `get_carriers`
 * Bump `api-session` requirement to 1.4.0
 
 ## 3.19.6 (2024/04/16)
