@@ -167,6 +167,7 @@ def test_get_api_endpoints(app_key):
         ("catalog/productinformation/133", bb.get_product_information, ("133",)),
         ("catalog/productinformationalllanguages/134", bb.get_product_information_all_languages, ("134",)),
         ("catalog/productinformationbysku/SK135", bb.get_product_information_by_sku, ("SK135",)),
+        ("catalog/productprices", bb.get_products_prices),
         ("catalog/products", bb.get_products),
         ("catalog/productscategories", bb.get_products_categories),
         ("catalog/productsimages", bb.get_products_images),
