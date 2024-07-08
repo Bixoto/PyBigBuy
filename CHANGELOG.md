@@ -3,7 +3,7 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
-## Unreleased
+## 3.20.0 (2024/07/08)
 
 * Remove calls to endpoints removed by BigBuy in April 2024: `get_product_variations_stock`,
   `get_products_variations_stock`, `get_product_stock`, `get_products_stock`
