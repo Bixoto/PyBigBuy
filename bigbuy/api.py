@@ -197,15 +197,6 @@ class BigBuy(APISession):
         """Returns all products stock by handling days."""
         return self.get_json_api('catalog/productsstockbyhandlingdays', params=params)
 
-    def get_products_stock_by_reference(self, skus: Iterable[str]):
-        """Get all selected products stock."""
-        payload = {
-            "product_stock_request": {
-                "products": [{"sku": sku} for sku in skus],
-            }
-        }
-        return self.post_api('catalog/productsstockbyreference', json=payload, bypass_read_only=True).json()
-
     def get_products_tags(self, **params) -> List[dict]:
         """Lists all product tags."""
         return self.get_json_api('catalog/productstags', params=params)

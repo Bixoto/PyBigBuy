@@ -5,7 +5,9 @@ The removal of methods that call deleted endpoints is not considered a breaking 
 
 ## Unreleased
 
-* Remove calls to endpoints removed by BigBuy in April 2024
+* Remove calls to endpoints removed by BigBuy in April 2024: `get_product_variations_stock`,
+  `get_products_variations_stock`, `get_product_stock`, `get_products_stock`
+* Remove `get_products_stock_by_reference`; BigBuy has silently removed the endpoint
 * Bump `api-session` requirement to 1.4.0
 
 ## 3.19.6 (2024/04/16)
