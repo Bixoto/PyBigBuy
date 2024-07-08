@@ -197,6 +197,10 @@ class BigBuy(APISession):
         """Returns all product pricing info."""
         return self.get_json_api('catalog/productprices', params=params)
 
+    def get_product_variations_prices(self, **params) -> List[JSONDict]:
+        """Returns all product variation pricing info."""
+        return self.get_json_api('catalog/productvariationprices', params=params)
+
     def get_products_stock_by_handling_days(self, **params):
         """Returns all products stock by handling days."""
         return self.get_json_api('catalog/productsstockbyhandlingdays', params=params)
