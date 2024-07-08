@@ -5,6 +5,7 @@ The removal of methods that call deleted endpoints is not considered a breaking 
 
 ## Unreleased
 
+* Remove calls to endpoints removed by BigBuy in April 2024
 * Bump `api-session` requirement to 1.4.0
 
 ## 3.19.6 (2024/04/16)
