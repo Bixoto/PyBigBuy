@@ -265,13 +265,14 @@ class BigBuy(APISession):
         """Get the list of available carriers."""
         return self.get_json_api('shipping/carriers', params=params)
 
-    def get_shipping_order(self, order: JSONDict) -> List[JSONDict]:
+    def get_shipping_order(self, order: JSONDict) -> JSONDict:
         """Get the list of available shipping options with the calculated weight and cost in Kg and € respectively,
         for the given order.
 
         Example order:
             {"delivery":{"isoCountry":"ES","postcode":"46005"},"products":[{"reference":"V1300179","quantity":1}]}
         """
+        # Note BigBuy's documentation says this returns a list of dicts, but in reality it returns a single dict
         return self.post_json_api('shipping/orders', json={"order": order}, bypass_read_only=True)
 
     # order
