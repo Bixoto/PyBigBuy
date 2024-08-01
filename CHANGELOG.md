@@ -3,10 +3,11 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
-## Unreleased
+## 3.20.1 (2024/08/01)
 
 * Fix the return type hint for `get_shipping_order`: the documentation from BigBuy says it returns a list but in reality
   it returns a dict with a `shippingOptions` key
+* Bump `api-session` requirement to 1.4.1
 
 ## 3.20.0 (2024/07/08)
 
