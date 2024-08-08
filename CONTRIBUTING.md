@@ -1,5 +1,10 @@
 # Contributing to PyBigBuy
 
+## Test endpoints coverage
+
+Run `./endpoints_coverage.sh` to print a diff between endpoints in the API and endpoints implemented in the library.
+This helps to detect removed or added endpoints, since BigBuy doesn't announce changes to the API.
+
 ## Run tests
 
     poetry run pytest
