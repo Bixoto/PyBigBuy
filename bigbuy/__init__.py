@@ -19,12 +19,14 @@ from .rate_limit import RateLimit
 from .types import (
     BBAttributeDict,
     BBAttributeGroupDict,
+    BBCategoryDict,
     BBImageDict,
+    BBLanguageDict,
     BBLowestShippingCostDict,
     BBTaxonomyDict,
 
     BBProductImagesDict,
-    BBProductTaxonomyDict,
+    BBProductTaxonomyDict, BBManufacturerDict, BBProductDict,
 )
 
 __all__ = (
@@ -55,8 +57,12 @@ __all__ = (
 
     "BBAttributeDict",
     "BBAttributeGroupDict",
+    "BBCategoryDict",
     "BBImageDict",
+    "BBLanguageDict",
     "BBLowestShippingCostDict",
+    "BBManufacturerDict",
+    "BBProductDict",
     "BBTaxonomyDict",
     "BBProductImagesDict",
     "BBProductTaxonomyDict",

@@ -20,7 +20,7 @@ from .rate_limit import RateLimit
 __all__ = ['BigBuy']
 
 from .types import BBProductImagesDict, BBTaxonomyDict, BBProductTaxonomyDict, BBLowestShippingCostDict, \
-    BBAttributeDict, BBAttributeGroupDict
+    BBAttributeDict, BBAttributeGroupDict, BBCategoryDict, BBLanguageDict, BBManufacturerDict, BBProductDict
 
 Id = Union[int, str]
 
@@ -127,13 +127,13 @@ class BigBuy(APISession):
         """Lists all attributes."""
         return self.get_json_api('catalog/attributes', params=params)
 
-    def get_categories(self, **params) -> list[JSONDict]:
+    def get_categories(self, **params) -> list[BBCategoryDict]:
         """Lists all categories."""
         warnings.warn("The categories endpoints are deprecated by BigBuy in favor of the taxonomies."
                       " Use get_taxonomies instead.", DeprecationWarning)
         return self.get_json_api('catalog/categories', params=params)
 
-    def get_category(self, category_id: Id, **params) -> JSONDict:
+    def get_category(self, category_id: Id, **params) -> BBCategoryDict:
         """
         Returns the selected category.
         """
@@ -141,25 +141,25 @@ class BigBuy(APISession):
                       DeprecationWarning)
         return self.get_json_api(f'catalog/category/{category_id}', params=params)
 
-    def get_category_all_languages(self, category_id: Id, **params) -> list[JSONDict]:
+    def get_category_all_languages(self, category_id: Id, **params) -> list[BBCategoryDict]:
         """Returns the selected category."""
         warnings.warn("The categories endpoints are deprecated by BigBuy in favor of the taxonomies."
                       " Use get_taxonomy_all_languages instead.", DeprecationWarning)
         return self.get_json_api(f'catalog/categoryalllanguages/{category_id}', params=params)
 
-    def get_languages(self, **params) -> list[JSONDict]:
+    def get_languages(self, **params) -> list[BBLanguageDict]:
         """Returns all languages"""
         return self.get_json_api('catalog/languages', params=params)
 
-    def get_manufacturer(self, manufacturer_id: Id, **params) -> JSONDict:
+    def get_manufacturer(self, manufacturer_id: Id, **params) -> BBManufacturerDict:
         """Get a single manufacturer."""
         return self.get_json_api(f'catalog/manufacturer/{manufacturer_id}', params=params)
 
-    def get_manufacturers(self, **params) -> list[JSONDict]:
+    def get_manufacturers(self, **params) -> list[BBManufacturerDict]:
         """Lists all manufacturers."""
         return self.get_json_api('catalog/manufacturers', params=params)
 
-    def get_product(self, product_id: Id, **params) -> JSONDict:
+    def get_product(self, product_id: Id, **params) -> BBProductDict:
         """Get a single product."""
         return self.get_json_api(f'catalog/product/{product_id}', params=params)
 
@@ -183,7 +183,7 @@ class BigBuy(APISession):
         """Get a single product by sku."""
         return self.get_json_api(f'catalog/productinformationbysku/{sku}', params=params)
 
-    def get_products(self, **params) -> list[JSONDict]:
+    def get_products(self, **params) -> list[BBProductDict]:
         """Returns all products."""
         return self.get_json_api('catalog/products', params=params)
 
@@ -528,16 +528,6 @@ class BigBuy(APISession):
         """
         Equivalent of ``get_lowest_shipping_costs_by_country`` for a single product. Returns the lowest shipping cost
         for a product reference when sent to the provided country.
-
-        Example response:
-
-            {
-                "shippingCost": "4.3",
-                "carrier": {
-                    "id": "43",
-                    "name": "Chrono"
-                }
-            }
         """
         return self.post_json_api("shipping/lowest-shipping-cost-by-country",
                                   json={"product_country": {"reference": reference, "countryIsoCode": country_code}},

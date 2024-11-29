@@ -1,5 +1,7 @@
 from typing import TypedDict, Union
 
+from api_session import JSONDict
+
 
 class BBImageDict(TypedDict):
     id: int
@@ -50,3 +52,10 @@ class BBAttributeGroupDict(TypedDict):
     id: int
     name: str
     isoCode: str
+
+
+# TODO
+BBCategoryDict = JSONDict
+BBLanguageDict = JSONDict
+BBManufacturerDict = JSONDict
+BBProductDict = JSONDict
