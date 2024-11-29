@@ -16,6 +16,16 @@ from .exceptions import (
     BBServerError, BBRateLimitError, BBValidationError, BBWarehouseSplitError, BBShippingError, BBTimeoutError,
 )
 from .rate_limit import RateLimit
+from .types import (
+    BBAttributeDict,
+    BBAttributeGroupDict,
+    BBImageDict,
+    BBLowestShippingCostDict,
+    BBTaxonomyDict,
+
+    BBProductImagesDict,
+    BBProductTaxonomyDict,
+)
 
 __all__ = (
     "BigBuy",
@@ -42,4 +52,12 @@ __all__ = (
     "BBShippingError",
     "BBTimeoutError",
     "RateLimit",
+
+    "BBAttributeDict",
+    "BBAttributeGroupDict",
+    "BBImageDict",
+    "BBLowestShippingCostDict",
+    "BBTaxonomyDict",
+    "BBProductImagesDict",
+    "BBProductTaxonomyDict",
 )

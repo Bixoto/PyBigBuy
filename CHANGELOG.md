@@ -3,6 +3,11 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
+## 3.21.0 (unreleased)
+
+* Add typed dicts for select endpoints: `BBProductImagesDict`, `BBTaxonomyDict`, `BBProductTaxonomyDict`,
+  `BBLowestShippingCostDict`, `BBAttributeDict`, `BBAttributeGroupDict`
+
 ## 3.20.1 (2024/08/01)
 
 * Fix the return type hint for `get_shipping_order`: the documentation from BigBuy says it returns a list but in reality
@@ -22,7 +27,8 @@ The removal of methods that call deleted endpoints is not considered a breaking 
 
 ## 3.19.6 (2024/04/16)
 
-* Don’t crash if BigBuy returns a bad error payload with inverted code and error message (`{"code": "Bad request", "message": 400}`)
+* Don’t crash if BigBuy returns a bad error payload with inverted code and error message (
+  `{"code": "Bad request", "message": 400}`)
 
 ## 3.19.5 (2023/11/17)
 

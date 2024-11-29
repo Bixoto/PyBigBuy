@@ -19,6 +19,9 @@ from .rate_limit import RateLimit
 
 __all__ = ['BigBuy']
 
+from .types import BBProductImagesDict, BBTaxonomyDict, BBProductTaxonomyDict, BBLowestShippingCostDict, \
+    BBAttributeDict, BBAttributeGroupDict
+
 Id = Union[int, str]
 
 
@@ -100,27 +103,27 @@ class BigBuy(APISession):
         return r
 
     # catalog
-    def get_attribute(self, attribute_id: Id, **params) -> JSONDict:
+    def get_attribute(self, attribute_id: Id, **params) -> BBAttributeDict:
         """Get a single attribute."""
         return self.get_json_api(f'catalog/attribute/{attribute_id}', params=params)
 
-    def get_attribute_all_languages(self, attribute_id: Id, **params) -> List[JSONDict]:
+    def get_attribute_all_languages(self, attribute_id: Id, **params) -> List[BBAttributeDict]:
         """Get a single attribute."""
         return self.get_json_api(f'catalog/attributealllanguages/{attribute_id}', params=params)
 
-    def get_attribute_group(self, attribute_group_id: Id, **params) -> JSONDict:
+    def get_attribute_group(self, attribute_group_id: Id, **params) -> BBAttributeGroupDict:
         """Get a single attribute group."""
         return self.get_json_api(f'catalog/attributegroup/{attribute_group_id}', params=params)
 
-    def get_attribute_group_all_languages(self, attribute_group_id: Id, **params) -> List[JSONDict]:
+    def get_attribute_group_all_languages(self, attribute_group_id: Id, **params) -> List[BBAttributeGroupDict]:
         """Get a single attribute group."""
         return self.get_json_api(f'catalog/attributegroupalllanguages/{attribute_group_id}', params=params)
 
-    def get_attribute_groups(self, **params) -> List[JSONDict]:
+    def get_attribute_groups(self, **params) -> List[BBAttributeGroupDict]:
         """Lists all attribute groups."""
         return self.get_json_api('catalog/attributegroups', params=params)
 
-    def get_attributes(self, **params) -> List[JSONDict]:
+    def get_attributes(self, **params) -> List[BBAttributeDict]:
         """Lists all attributes."""
         return self.get_json_api('catalog/attributes', params=params)
 
@@ -164,7 +167,7 @@ class BigBuy(APISession):
         """Get product categories."""
         return self.get_json_api(f'catalog/productcategories/{product_id}', params=params)
 
-    def get_product_images(self, product_id: Id, **params) -> JSONDict:
+    def get_product_images(self, product_id: Id, **params) -> BBProductImagesDict:
         """Get a single product images."""
         return self.get_json_api(f'catalog/productimages/{product_id}', params=params)
 
@@ -192,7 +195,7 @@ class BigBuy(APISession):
         """Returns all products categories."""
         return self.get_json_api('catalog/productscategories', params=params)
 
-    def get_products_images(self, **params) -> List[JSONDict]:
+    def get_products_images(self, **params) -> List[BBProductImagesDict]:
         """Returns all products images."""
         return self.get_json_api('catalog/productsimages', params=params)
 
@@ -520,7 +523,8 @@ class BigBuy(APISession):
 
         return [tracking_by_id.get(str(order_id)) for order_id in order_ids]
 
-    def get_lowest_shipping_cost_by_country(self, reference: str, country_code: str, **params) -> JSONDict:
+    def get_lowest_shipping_cost_by_country(self, reference: str, country_code: str,
+                                            **params) -> BBLowestShippingCostDict:
         """
         Equivalent of ``get_lowest_shipping_costs_by_country`` for a single product. Returns the lowest shipping cost
         for a product reference when sent to the provided country.
@@ -540,7 +544,7 @@ class BigBuy(APISession):
                                   bypass_read_only=True,
                                   **params)
 
-    def get_lowest_shipping_costs_by_country(self, country_code: str, **params) -> List[JSONDict]:
+    def get_lowest_shipping_costs_by_country(self, country_code: str, **params) -> List[BBLowestShippingCostDict]:
         """
         Returns the lowest shipping cost for a product reference when sent to the provided country.
 
@@ -570,19 +574,19 @@ class BigBuy(APISession):
         """
         return self.get_json_api("module/platforms", **params)
 
-    def get_taxonomies(self, **params) -> List[JSONDict]:
+    def get_taxonomies(self, **params) -> List[BBTaxonomyDict]:
         """
         List all taxonomies.
         """
         return self.get_json_api("catalog/taxonomies", **params)
 
-    def get_taxonomy_all_languages(self, taxonomy_id: Id, **params):
+    def get_taxonomy_all_languages(self, taxonomy_id: Id, **params) -> List[BBTaxonomyDict]:
         """
         Get a single taxonomy in all languages.
         """
         return self.get_json_api(f"catalog/taxonomyalllanguages/{taxonomy_id}", **params)
 
-    def get_product_taxonomies(self, product_id: Id, **params) -> Optional[List[JSONDict]]:
+    def get_product_taxonomies(self, product_id: Id, **params) -> Optional[List[BBProductTaxonomyDict]]:
         """
         Return all taxonomies associated with a product.
 
