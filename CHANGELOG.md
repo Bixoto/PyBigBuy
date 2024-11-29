@@ -3,7 +3,7 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
-## 3.21.0 (unreleased)
+## 3.21.0 (2024/11/29)
 
 * Drop support for Python 3.8
 * Add typed dicts for select endpoints: `BBProductImagesDict`, `BBTaxonomyDict`, `BBProductTaxonomyDict`,

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pybigbuy"
-version = "3.20.1"
+version = "3.21.0"
 description = "BigBuy API client in Python"
 authors = ["Bixoto <tech@bixoto.com>"]
 license = "MIT"
