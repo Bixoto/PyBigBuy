@@ -5,8 +5,10 @@ The removal of methods that call deleted endpoints is not considered a breaking 
 
 ## 3.21.0 (unreleased)
 
+* Drop support for Python 3.8
 * Add typed dicts for select endpoints: `BBProductImagesDict`, `BBTaxonomyDict`, `BBProductTaxonomyDict`,
   `BBLowestShippingCostDict`, `BBAttributeDict`, `BBAttributeGroupDict`
+* Add explicit support for Python 3.13
 
 ## 3.20.1 (2024/08/01)
 
