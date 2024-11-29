@@ -1,4 +1,4 @@
-from typing import TypedDict, Union, List
+from typing import TypedDict, Union
 
 
 class BBImageDict(TypedDict):
@@ -11,7 +11,7 @@ class BBImageDict(TypedDict):
 class BBProductImagesDict(TypedDict):
     """A product ID and a list of images."""
     id: int
-    images: List[BBImageDict]
+    images: list[BBImageDict]
 
 
 class BBTaxonomyDict(TypedDict):
