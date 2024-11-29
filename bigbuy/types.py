@@ -1,4 +1,4 @@
-from typing import TypedDict
+from typing import TypedDict, Union, List
 
 
 class BBImageDict(TypedDict):
@@ -11,7 +11,7 @@ class BBImageDict(TypedDict):
 class BBProductImagesDict(TypedDict):
     """A product ID and a list of images."""
     id: int
-    images: list[BBImageDict]
+    images: List[BBImageDict]
 
 
 class BBTaxonomyDict(TypedDict):
@@ -34,7 +34,7 @@ class BBProductTaxonomyDict(TypedDict):
 
 class BBLowestShippingCostDict(TypedDict):
     reference: str
-    cost: str | None
+    cost: Union[str, None]
     carrierId: str
     carrierName: str
 
