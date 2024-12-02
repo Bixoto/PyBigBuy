@@ -3,7 +3,7 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
-## 3.21.1 (unreleased)
+## 3.21.1 (2024/12/02)
 
 * Add `TypedDict`s for the return hint of select endpoints: `BBProductCategoryDict`, `BBProductInformationDict`
 * Fix the return type hint of `get_product_categories`
