@@ -20,7 +20,8 @@ from .rate_limit import RateLimit
 __all__ = ['BigBuy']
 
 from .types import BBProductImagesDict, BBTaxonomyDict, BBProductTaxonomyDict, BBLowestShippingCostDict, \
-    BBAttributeDict, BBAttributeGroupDict, BBCategoryDict, BBLanguageDict, BBManufacturerDict, BBProductDict
+    BBAttributeDict, BBAttributeGroupDict, BBCategoryDict, BBLanguageDict, BBManufacturerDict, BBProductDict, \
+    BBProductCategoryDict, BBProductInformationDict
 
 Id = Union[int, str]
 
@@ -163,7 +164,7 @@ class BigBuy(APISession):
         """Get a single product."""
         return self.get_json_api(f'catalog/product/{product_id}', params=params)
 
-    def get_product_categories(self, product_id: Id, **params) -> JSONDict:
+    def get_product_categories(self, product_id: Id, **params) -> list[BBProductCategoryDict]:
         """Get product categories."""
         return self.get_json_api(f'catalog/productcategories/{product_id}', params=params)
 
@@ -171,15 +172,15 @@ class BigBuy(APISession):
         """Get a single product images."""
         return self.get_json_api(f'catalog/productimages/{product_id}', params=params)
 
-    def get_product_information(self, product_id: Id, **params) -> JSONDict:
+    def get_product_information(self, product_id: Id, **params) -> BBProductInformationDict:
         """Get a single product information."""
         return self.get_json_api(f'catalog/productinformation/{product_id}', params=params)
 
-    def get_product_information_all_languages(self, product_id: Id, **params) -> list[JSONDict]:
+    def get_product_information_all_languages(self, product_id: Id, **params) -> list[BBProductInformationDict]:
         """Get a single product."""
         return self.get_json_api(f'catalog/productinformationalllanguages/{product_id}', params=params)
 
-    def get_product_information_by_sku(self, sku: str, **params) -> JSONDict:
+    def get_product_information_by_sku(self, sku: str, **params) -> BBProductInformationDict:
         """Get a single product by sku."""
         return self.get_json_api(f'catalog/productinformationbysku/{sku}', params=params)
 
@@ -187,11 +188,11 @@ class BigBuy(APISession):
         """Returns all products."""
         return self.get_json_api('catalog/products', params=params)
 
-    def get_new_products(self, **params) -> list[JSONDict]:
+    def get_new_products(self, **params) -> list[BBProductDict]:
         """Returns new or republished products in the last 7 days."""
         return self.get_json_api('catalog/new-products', params=params)
 
-    def get_products_categories(self, **params) -> list[JSONDict]:
+    def get_products_categories(self, **params) -> list[BBProductCategoryDict]:
         """Returns all products categories."""
         return self.get_json_api('catalog/productscategories', params=params)
 
@@ -199,9 +200,11 @@ class BigBuy(APISession):
         """Returns all products images."""
         return self.get_json_api('catalog/productsimages', params=params)
 
-    def get_products_information(self, **params) -> list[JSONDict]:
+    def get_products_information(self, **params) -> list[BBProductInformationDict]:
         """Returns all products' information."""
         return self.get_json_api('catalog/productsinformation', params=params)
+
+    # TODO type hints below
 
     def get_products_prices(self, **params) -> list[JSONDict]:
         """Returns all product pricing info."""

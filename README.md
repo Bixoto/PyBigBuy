@@ -12,7 +12,7 @@ We release new versions of the API client each time there are new or modified en
 ## Install
 
 Requirements:
-* From PyBgBuy 3.21.0: Python 3.9+
+* From PyBigBuy 3.21.0: Python 3.9+
 * Up to 3.20.1: Python 3.8+
 
 ### Pip

@@ -1,6 +1,12 @@
+import sys
 from typing import TypedDict, Union
 
 from api_session import JSONDict
+
+if sys.version_info >= (3, 11):
+    from typing import NotRequired
+else:
+    from typing_extensions import NotRequired
 
 
 class BBImageDict(TypedDict):
@@ -52,6 +58,23 @@ class BBAttributeGroupDict(TypedDict):
     id: int
     name: str
     isoCode: str
+
+
+class BBProductCategoryDict(TypedDict):
+    id: int
+    product: int
+    category: int
+    position: int
+
+
+class BBProductInformationDict(TypedDict):
+    id: int
+    sku: str
+    name: str
+    description: str
+    url: str
+    isoCode: str
+    dateUpdDescription: NotRequired[str]
 
 
 # TODO
