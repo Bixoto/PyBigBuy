@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pybigbuy"
-version = "3.21.1"
+version = "3.21.2"
 description = "BigBuy API client in Python"
 authors = ["Bixoto <tech@bixoto.com>"]
 license = "MIT"
@@ -23,10 +23,10 @@ api-session = "^1.4.1"
 
 [tool.poetry.dev-dependencies]
 mypy = "^1"
-types-requests = "^2.25.0"
-pytest = "^7.1.0"
+types-requests = "*"
+pytest = "^8.0"
 pytest-coverage = "^0.0"
-responses = "^0.21.0"
+responses = "^0.25"
 
 [tool.coverage.report]
 omit = ["tests/*", "conftest.py"]
