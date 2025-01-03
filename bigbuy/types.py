@@ -77,6 +77,11 @@ class BBProductInformationDict(TypedDict):
     dateUpdDescription: NotRequired[str]
 
 
+class BBTrackingCarrierDict(TypedDict):
+    id: str
+    name: str
+
+
 # TODO
 BBCategoryDict = JSONDict
 BBLanguageDict = JSONDict

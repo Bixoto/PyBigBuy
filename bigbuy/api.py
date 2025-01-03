@@ -21,7 +21,7 @@ __all__ = ['BigBuy']
 
 from .types import BBProductImagesDict, BBTaxonomyDict, BBProductTaxonomyDict, BBLowestShippingCostDict, \
     BBAttributeDict, BBAttributeGroupDict, BBCategoryDict, BBLanguageDict, BBManufacturerDict, BBProductDict, \
-    BBProductCategoryDict, BBProductInformationDict
+    BBProductCategoryDict, BBProductInformationDict, BBTrackingCarrierDict
 
 Id = Union[int, str]
 
@@ -491,7 +491,7 @@ class BigBuy(APISession):
         return self.get_json_api("order/orderstatuses", **params)
 
     # tracking
-    def get_tracking_carriers(self, **params) -> list[JSONDict]:
+    def get_tracking_carriers(self, **params) -> list[BBTrackingCarrierDict]:
         """Get the list of available carriers."""
         return self.get_json_api('tracking/carriers', **params)
 
