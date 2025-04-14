@@ -27,4 +27,8 @@ curl -s http://api.bigbuy.eu/rest/doc.json \
   >| endpoints.txt
 
 git diff --no-index endpoints.txt supported.txt
+ok="$?"
 rm -f endpoints.txt supported.txt
+if [ "$ok" = "1" ]; then
+  exit 1
+fi
