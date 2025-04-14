@@ -3,6 +3,10 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
+## Unreleased
+
+* Add `get_product_compliance`
+
 ## 3.21.2 (2025/01/03)
 
 * `get_tracking_carriers` return type hint now uses `BBTrackingCarrierDict`

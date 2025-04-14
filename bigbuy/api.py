@@ -184,6 +184,10 @@ class BigBuy(APISession):
         """Get a single product by sku."""
         return self.get_json_api(f'catalog/productinformationbysku/{sku}', params=params)
 
+    def get_product_compliance(self, product_id: Id, **params):
+        """Get a single product compliance."""
+        return self.get_json_api(f"catalog/productcompliance/{product_id}", params=params)
+
     def get_products(self, **params) -> list[BBProductDict]:
         """Returns all products."""
         return self.get_json_api('catalog/products', params=params)
