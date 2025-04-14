@@ -34,4 +34,4 @@ client = BigBuy("your-API-token")
 
 ## License
 
-Copyright 2020-2024 [Bixoto](https://bixoto.com/).
+Copyright 2020-2025 [Bixoto](https://bixoto.com/).
