@@ -3,12 +3,20 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
-## Unreleased
+## 3.22.0 (unreleased)
 
 ### Breaking Changes
 
 * `upload_order_invoice` now returns the parsed result instead of a `Response` object
-* 
+* `get_purse_amount`, `get_modules`, `get_module_platforms`, `get_taxonomies`, `get_taxonomy_all_languages`,
+  `get_product_taxonomies`: additional keyword arguments are now passed as parameters to the call.
+  ```python
+  # Before
+  client.get_taxonomies(params={"isoCode": "en"})
+
+  # After
+  client.get_taxonomies(isoCode="en")
+  ```
 
 ### Other Changes
 

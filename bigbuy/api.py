@@ -554,13 +554,13 @@ class BigBuy(APISession):
         """
         Get the amount of money available in the purse.
         """
-        return float(self.get_json_api("user/purse", **params))
+        return float(self.get_json_api("user/purse", params=params))
 
     def get_modules(self, **params: Any):
         """
         Get all modules.
         """
-        return self.get_json_api("module/", **params)
+        return self.get_json_api("module/", params=params)
 
     def get_module_platforms(self, **params: Any):
         """
@@ -568,19 +568,19 @@ class BigBuy(APISession):
 
         Note: this route is not documented by BigBuy.
         """
-        return self.get_json_api("module/platforms", **params)
+        return self.get_json_api("module/platforms", params=params)
 
     def get_taxonomies(self, **params: Any) -> list[BBTaxonomyDict]:
         """
         List all taxonomies.
         """
-        return self.get_json_api("catalog/taxonomies", **params)
+        return self.get_json_api("catalog/taxonomies", params=params)
 
     def get_taxonomy_all_languages(self, taxonomy_id: Id, **params: Any) -> list[BBTaxonomyDict]:
         """
         Get a single taxonomy in all languages.
         """
-        return self.get_json_api(f"catalog/taxonomyalllanguages/{taxonomy_id}", **params)
+        return self.get_json_api(f"catalog/taxonomyalllanguages/{taxonomy_id}", params=params)
 
     def get_product_taxonomies(self, product_id: Id, **params: Any) -> Optional[list[BBProductTaxonomyDict]]:
         """
@@ -590,7 +590,7 @@ class BigBuy(APISession):
 
             [{'id': 5906, 'taxonomy': 5906, 'product': 334497}, {'id': 5908, 'taxonomy': 5908, 'product': 334497}]
         """
-        return self.get_json_api(f"catalog/producttaxonomies/{product_id}", **params)
+        return self.get_json_api(f"catalog/producttaxonomies/{product_id}", params=params)
 
     def get_products_taxonomies(self, **params: Any) -> list[JSONDict]:
         """
