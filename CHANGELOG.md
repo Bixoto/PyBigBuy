@@ -5,7 +5,15 @@ The removal of methods that call deleted endpoints is not considered a breaking 
 
 ## Unreleased
 
+### Breaking Changes
+
+* `upload_order_invoice` now returns the parsed result instead of a `Response` object
+* 
+
+### Other Changes
+
 * Add `get_product_compliance`
+* Add more type hints
 
 ## 3.21.2 (2025/01/03)
 

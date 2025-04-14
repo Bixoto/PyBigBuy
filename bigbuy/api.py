@@ -461,7 +461,7 @@ class BigBuy(APISession):
             "concept": concept,
             "amount": amount
         }
-        return self.post_api("order/upload_invoice", json={"invoice": invoice_payload}, **params)
+        return self.post_json_api("order/upload_invoice", json={"invoice": invoice_payload}, **params)
 
     def upload_order_invoice_by_path(self, order_id: Id, file_path: str, concept: str, amount: float,
                                      *, mime_type: Optional[str] = None, **params: Any):
