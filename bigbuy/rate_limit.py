@@ -1,8 +1,9 @@
 import time
 from datetime import datetime, timedelta
-from typing import Optional, Self, Callable
+from typing import Optional, Callable
 
 from requests import Response
+from typing_extensions import Self
 
 RATE_LIMIT_RESPONSE_TEXT = "You exceeded the rate limit"
 
