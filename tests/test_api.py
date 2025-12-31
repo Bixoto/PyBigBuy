@@ -220,7 +220,7 @@ def test_get_purse_amount(app_key):
 @responses.activate()
 def test_upload_order_invoice_by_path():
     class TestBigBuy(BigBuy):
-        def __init__(self, *args, **kwargs: Any):
+        def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
             self._calls: list[tuple[str, str]] = []
 
