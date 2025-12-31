@@ -10,10 +10,11 @@ import json
 import re
 import time
 from datetime import datetime, timedelta
-from typing import Optional, Union, Dict, Any, List, Type, cast, Sequence
+from typing import Optional, Union, Any, Type, cast, Sequence, Callable
+
+from requests import Response
 
 from bigbuy.rate_limit import RateLimit
-from requests import Response
 
 
 class BBError(Exception):
@@ -24,7 +25,7 @@ class BBResponseError(BBError):
     def __init__(self, text: str,
                  response: Response,
                  bb_code: Optional[Union[str, int]] = None,
-                 bb_data: Optional[Union[dict, list]] = None):
+                 bb_data: Optional[Union[dict[str, Any], list[Any]]] = None):
         self.response = response
         self.text = text
         self.bb_code = bb_code
@@ -39,7 +40,7 @@ class BBRateLimitError(BBResponseError):
         self.rate_limit = RateLimit.from_response(response)
 
     # backward compatibility
-    def reset_timedelta(self, utcnow: Optional[datetime] = None):
+    def reset_timedelta(self, utcnow: Optional[datetime] = None) -> Optional[timedelta]:
         if self.rate_limit is not None:
             dt = self.rate_limit.reset_timedelta(utcnow=utcnow)
             if dt <= timedelta(0):
@@ -49,7 +50,8 @@ class BBRateLimitError(BBResponseError):
         return None
 
     # backward compatibility
-    def wait_until_expiration(self, *, wait_function=time.sleep, additional_delay=0.01):
+    def wait_until_expiration(self, *, wait_function: Callable[[float], None] = time.sleep,
+                              additional_delay: float = 0.01) -> Optional[bool]:
         if self.rate_limit is not None:
             self.rate_limit.wait_until_expiration(wait_function=wait_function)
             return True
@@ -57,7 +59,7 @@ class BBRateLimitError(BBResponseError):
 
 
 class BBProductError(BBResponseError):
-    def __init__(self, text: str, response: Response, bb_code, bb_data, *, skus: Optional[List[str]] = None):
+    def __init__(self, text: str, response: Response, bb_code: Any, bb_data: Any, *, skus: Optional[list[str]] = None):
         if skus is None:
             skus = bb_data["skus"]
 
@@ -114,7 +116,7 @@ class BBNoCarrierError(BBShippingError):
 
 
 class BBWarehouseSplitError(BBShippingError):
-    def __init__(self, *args, warehouses: Sequence[dict] = (), **kwargs):
+    def __init__(self, *args: Any, warehouses: Sequence[dict[str, Any]] = (), **kwargs: Any):
         super().__init__(*args, **kwargs)
         self.warehouses = warehouses
 
@@ -146,7 +148,7 @@ class BBTimeoutError(BBServerError, TimeoutError):
 
 
 class BBValidationError(BBResponseError):
-    def __init__(self, error_fields, response: Response, **kwargs):
+    def __init__(self, error_fields: Any, response: Response, **kwargs: Any):
         text = "Validation failed: %s" % str(error_fields)
         super().__init__(text, response, **kwargs)
         self.error_fields = error_fields
@@ -170,7 +172,7 @@ error_classes = {
 }
 
 
-def json_or_none(text: Optional[str]) -> Optional[dict]:
+def json_or_none(text: Optional[str]) -> Optional[dict[str, Any]]:
     if not text:
         return None
 
@@ -179,12 +181,13 @@ def json_or_none(text: Optional[str]) -> Optional[dict]:
         return None
 
     try:
-        return json.loads(text)
+        decoded: dict[str, Any] = json.loads(text)
+        return decoded
     except ValueError:
         return None
 
 
-def _trim_empty_collections(obj: Any):
+def _trim_empty_collections(obj: Any) -> Any:
     """
     Given a dict or list whose children are only dicts or lists with either truthy values or empty collections, remove
     the latter. This is an internal utility.
@@ -207,7 +210,8 @@ def _trim_empty_collections(obj: Any):
     return obj
 
 
-def flat_children_errors(children: Union[List, Dict[str, Any]], prefix=""):
+def flat_children_errors(children: Union[list[Any], dict[str, Any]], prefix: str = "") \
+        -> Union[list[Any], dict[str, Any]]:
     """
     Simplify children errors:
 
@@ -223,7 +227,7 @@ def flat_children_errors(children: Union[List, Dict[str, Any]], prefix=""):
     if isinstance(children, list):
         return children
 
-    trimmed = {}
+    trimmed: dict[str, Any] = {}
 
     for field, value in children.items():
         if prefix:
@@ -246,7 +250,7 @@ def flat_children_errors(children: Union[List, Dict[str, Any]], prefix=""):
     return trimmed
 
 
-def raise_for_response(response: Response):
+def raise_for_response(response: Response) -> None:
     """
     Equivalent of request.Response#raise_for_status() that raises an exception based on the response's status.
     This may modify its argument to fix the status code if the response is a soft error.
@@ -277,7 +281,7 @@ def raise_for_response(response: Response):
                     response._content = body.encode(response.encoding)
                     return raise_for_response(response)
 
-        return
+        return None
 
     is_5xx = response.status_code // 100 == 5
 
@@ -327,7 +331,7 @@ def raise_for_response(response: Response):
 
         raise error_class(text, response)
 
-    content = cast(dict, response.json())
+    content = cast(dict[str, Any], response.json())
 
     bb_code = "unknown"
     message = str(content)
@@ -342,7 +346,7 @@ def raise_for_response(response: Response):
                 #  "errors":{"children":{"delivery":{"children":{"postcode":{"errors":["Invalid postcode format..."]}}},
                 #                        "products":{...}}}}
                 if "children" in errors:
-                    errors_message = flat_children_errors(errors["children"])
+                    errors_message: Any = flat_children_errors(errors["children"])
 
                     if content["message"].strip() == "Validation Failed" or "ERROR:" in content["message"]:
                         raise BBValidationError(

@@ -31,8 +31,8 @@ class BigBuy(APISession):
                  *,
                  sandbox: bool = False,
                  retry_on_rate_limit: bool = False,
-                 max_retry_on_rate_limit=2,
-                 **kwargs):
+                 max_retry_on_rate_limit: int = 2,
+                 **kwargs: Any):
         """Instantiates an instance of BigBuy.
 
         :param app_key: Your applications key
@@ -64,18 +64,18 @@ class BigBuy(APISession):
         # Reject all cookies by default. They are not necessary for the API usage (and not documented).
         self.cookies.set_policy(DefaultCookiePolicy(allowed_domains=[]))
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         attrs = f" key={self.app_key[:10]}…" if self.app_key else ""
         return f'<Bigbuy{attrs}>'
 
-    def raise_for_response(self, response: requests.Response):
+    def raise_for_response(self, response: requests.Response) -> None:
         return raise_for_response(response)
 
-    def request_api(self, method: str, path: str, *args,
+    def request_api(self, method: str, path: str, *args: Any,
                     throw: Optional[bool] = None,
                     retry_on_rate_limit: Optional[bool] = None,
                     max_retry_on_rate_limit: Optional[int] = None,
-                    **kwargs) -> requests.Response:
+                    **kwargs: Any) -> requests.Response:
         if retry_on_rate_limit is None:
             retry_on_rate_limit = self.retry_on_rate_limit
 
@@ -106,33 +106,43 @@ class BigBuy(APISession):
     # catalog
     def get_attribute(self, attribute_id: Id, **params: Any) -> BBAttributeDict:
         """Get a single attribute."""
-        return self.get_json_api(f'catalog/attribute/{attribute_id}', params=params)
+        attribute: BBAttributeDict = self.get_json_api(f'catalog/attribute/{attribute_id}', params=params)
+        return attribute
 
     def get_attribute_all_languages(self, attribute_id: Id, **params: Any) -> list[BBAttributeDict]:
-        """Get a single attribute."""
-        return self.get_json_api(f'catalog/attributealllanguages/{attribute_id}', params=params)
+        """Get a single attribute in all languages."""
+        attributes: list[BBAttributeDict] = self.get_json_api(f'catalog/attributealllanguages/{attribute_id}',
+                                                              params=params)
+        return attributes
 
     def get_attribute_group(self, attribute_group_id: Id, **params: Any) -> BBAttributeGroupDict:
         """Get a single attribute group."""
-        return self.get_json_api(f'catalog/attributegroup/{attribute_group_id}', params=params)
+        attribute_group: BBAttributeGroupDict = self.get_json_api(f'catalog/attributegroup/{attribute_group_id}',
+                                                                  params=params)
+        return attribute_group
 
     def get_attribute_group_all_languages(self, attribute_group_id: Id, **params: Any) -> list[BBAttributeGroupDict]:
-        """Get a single attribute group."""
-        return self.get_json_api(f'catalog/attributegroupalllanguages/{attribute_group_id}', params=params)
+        """Get a single attribute group in all languages."""
+        attribute_groups: list[BBAttributeGroupDict] = self.get_json_api(
+            f'catalog/attributegroupalllanguages/{attribute_group_id}', params=params)
+        return attribute_groups
 
     def get_attribute_groups(self, **params: Any) -> list[BBAttributeGroupDict]:
         """Lists all attribute groups."""
-        return self.get_json_api('catalog/attributegroups', params=params)
+        attribute_groups: list[BBAttributeGroupDict] = self.get_json_api('catalog/attributegroups', params=params)
+        return attribute_groups
 
     def get_attributes(self, **params: Any) -> list[BBAttributeDict]:
         """Lists all attributes."""
-        return self.get_json_api('catalog/attributes', params=params)
+        attributes: list[BBAttributeDict] = self.get_json_api('catalog/attributes', params=params)
+        return attributes
 
     def get_categories(self, **params: Any) -> list[BBCategoryDict]:
         """Lists all categories."""
         warnings.warn("The categories endpoints are deprecated by BigBuy in favor of the taxonomies."
                       " Use get_taxonomies instead.", DeprecationWarning)
-        return self.get_json_api('catalog/categories', params=params)
+        categories: list[BBCategoryDict] = self.get_json_api('catalog/categories', params=params)
+        return categories
 
     def get_category(self, category_id: Id, **params: Any) -> BBCategoryDict:
         """
@@ -140,51 +150,65 @@ class BigBuy(APISession):
         """
         warnings.warn("The categories endpoints are deprecated by BigBuy in favor of the taxonomies.",
                       DeprecationWarning)
-        return self.get_json_api(f'catalog/category/{category_id}', params=params)
+        category: BBCategoryDict = self.get_json_api(f'catalog/category/{category_id}', params=params)
+        return category
 
     def get_category_all_languages(self, category_id: Id, **params: Any) -> list[BBCategoryDict]:
         """Returns the selected category."""
         warnings.warn("The categories endpoints are deprecated by BigBuy in favor of the taxonomies."
                       " Use get_taxonomy_all_languages instead.", DeprecationWarning)
-        return self.get_json_api(f'catalog/categoryalllanguages/{category_id}', params=params)
+        categories: list[BBCategoryDict] = self.get_json_api(f'catalog/categoryalllanguages/{category_id}',
+                                                             params=params)
+        return categories
 
     def get_languages(self, **params: Any) -> list[BBLanguageDict]:
         """Returns all languages"""
-        return self.get_json_api('catalog/languages', params=params)
+        languages: list[BBLanguageDict] = self.get_json_api('catalog/languages', params=params)
+        return languages
 
     def get_manufacturer(self, manufacturer_id: Id, **params: Any) -> BBManufacturerDict:
         """Get a single manufacturer."""
-        return self.get_json_api(f'catalog/manufacturer/{manufacturer_id}', params=params)
+        manufacturer: BBManufacturerDict = self.get_json_api(f'catalog/manufacturer/{manufacturer_id}', params=params)
+        return manufacturer
 
     def get_manufacturers(self, **params: Any) -> list[BBManufacturerDict]:
         """Lists all manufacturers."""
-        return self.get_json_api('catalog/manufacturers', params=params)
+        manufacturers: list[BBManufacturerDict] = self.get_json_api('catalog/manufacturers', params=params)
+        return manufacturers
 
     def get_product(self, product_id: Id, **params: Any) -> BBProductDict:
         """Get a single product."""
-        return self.get_json_api(f'catalog/product/{product_id}', params=params)
+        product: BBProductDict = self.get_json_api(f'catalog/product/{product_id}', params=params)
+        return product
 
     def get_product_categories(self, product_id: Id, **params: Any) -> list[BBProductCategoryDict]:
         """Get product categories."""
-        return self.get_json_api(f'catalog/productcategories/{product_id}', params=params)
+        product_categories: list[BBProductCategoryDict] = self.get_json_api(f'catalog/productcategories/{product_id}',
+                                                                            params=params)
+        return product_categories
 
     def get_product_images(self, product_id: Id, **params: Any) -> BBProductImagesDict:
-        """Get a single product images."""
-        return self.get_json_api(f'catalog/productimages/{product_id}', params=params)
+        """Get a single product images dict."""
+        product_images: BBProductImagesDict = self.get_json_api(f'catalog/productimages/{product_id}', params=params)
+        return product_images
 
     def get_product_information(self, product_id: Id, **params: Any) -> BBProductInformationDict:
-        """Get a single product information."""
-        return self.get_json_api(f'catalog/productinformation/{product_id}', params=params)
+        """Get a single product information dict."""
+        product_information: BBProductInformationDict = self.get_json_api(f'catalog/productinformation/{product_id}',
+                                                                          params=params)
+        return product_information
 
     def get_product_information_all_languages(self, product_id: Id, **params: Any) -> list[BBProductInformationDict]:
-        """Get a single product."""
-        return self.get_json_api(f'catalog/productinformationalllanguages/{product_id}', params=params)
+        """Get a single product's information dicts in all languages."""
+        product_information_dicts: list[BBProductInformationDict] = self.get_json_api(
+            f'catalog/productinformationalllanguages/{product_id}', params=params)
+        return product_information_dicts
 
     def get_product_information_by_sku(self, sku: str, **params: Any) -> BBProductInformationDict:
         """Get a single product by sku."""
         return self.get_json_api(f'catalog/productinformationbysku/{sku}', params=params)
 
-    def get_product_compliance(self, product_id: Id, **params: Any):
+    def get_product_compliance(self, product_id: Id, **params: Any) -> Any:  # TODO: typing
         """Get a single product compliance."""
         return self.get_json_api(f"catalog/productcompliance/{product_id}", params=params)
 
@@ -201,7 +225,23 @@ class BigBuy(APISession):
         return self.get_json_api('catalog/productscategories', params=params)
 
     def get_products_images(self, **params: Any) -> list[BBProductImagesDict]:
-        """Returns all products images."""
+        """
+        Returns all products images.
+
+            Example format::
+
+                {
+                    "id": 123,
+                    "images": [
+                        {
+                            "id": 45678,
+                            "isCover": true,
+                            "name": "H123_BC",
+                            "url": "https://cdnbigbuy.com/images/H123_BC.jpg"
+                        }
+                    ]
+                }
+        """
         return self.get_json_api('catalog/productsimages', params=params)
 
     def get_products_information(self, **params: Any) -> list[BBProductInformationDict]:
@@ -265,7 +305,10 @@ class BigBuy(APISession):
         return self.get_json_api(f'catalog/variation/{variation_id}', params=params)
 
     def get_variations(self, **params: Any) -> list[JSONDict]:
-        """Lists all variations."""
+        """Lists all variations.
+        Format: {"id":1169758,"attributes":[{"id":24161}]}
+        """
+        # TODO: proper type
         return self.get_json_api('catalog/variations', params=params)
 
     # shipping
@@ -357,7 +400,7 @@ class BigBuy(APISession):
         return self.post_json_api('order/check/multishipping', json={"order": order}, bypass_read_only=True,
                                   **params)
 
-    def create_order(self, order: JSONDict, **params: Any):
+    def create_order(self, order: JSONDict, **params: Any) -> requests.Response:
         """
         Submit an order and return the raw response.
 
@@ -409,7 +452,7 @@ class BigBuy(APISession):
         """
         return self.post_json_api('order/create/multishipping', json={"order": order}, **params)
 
-    def create_order_id(self, order: dict, **params: Any) -> str:
+    def create_order_id(self, order: dict[str, Any], **params: Any) -> str:
         """Like create_order(), but return the order id."""
         response = self.create_order(order, **params)
         # Format:
@@ -423,7 +466,7 @@ class BigBuy(APISession):
         # the id of the bigbuy order is only known in the location url in the headers
         return _get_order_id_from_response_redirect(response)
 
-    def create_multi_shipping_order_ids(self, order: dict, **params: Any) -> list[str]:
+    def create_multi_shipping_order_ids(self, order: dict[str, Any], **params: Any) -> list[str]:
         """
         Like `create_multi_shipping_order()`, but return the order ids.
         This checks if the `errors` array is not empty, and raises a `BBError` if so.
@@ -464,7 +507,7 @@ class BigBuy(APISession):
         return self.post_json_api("order/upload_invoice", json={"invoice": invoice_payload}, **params)
 
     def upload_order_invoice_by_path(self, order_id: Id, file_path: str, concept: str, amount: float,
-                                     *, mime_type: Optional[str] = None, **params: Any):
+                                     *, mime_type: Optional[str] = None, **params: Any) -> Any:  # TODO: typing
         """
         Wrapper around `upload_order_invoice` that reads the file from disk instead.
 
@@ -516,14 +559,14 @@ class BigBuy(APISession):
             }
         }
 
-        trackings = cast(list[dict],
+        trackings = cast(list[dict[str, Any]],
                          self.post_json_api('tracking/orders', json=payload, bypass_read_only=True, **params))
 
         if not match_ids:
             # make mypy happy
-            return cast(list[Optional[dict]], trackings)
+            return cast(list[Optional[dict[str, Any]]], trackings)
 
-        tracking_by_id: dict[str, dict] = {}
+        tracking_by_id: dict[str, dict[str, Any]] = {}
         for tracking in trackings:
             tracking_by_id[str(tracking["id"])] = tracking
 
@@ -547,6 +590,10 @@ class BigBuy(APISession):
         As of 2022/04/21 the information is available for the following countries:
            FR, DK, CY, HU, GB, LT, MT, ES, LV, SK, RO, US, FI, GR, CZ, HR, SE, IE, LU, NL, AU, BG, NO, IT, DE, SI, PL,
            BE, CH, EE, PT, AT.
+
+        Example item: ``{'reference': 'S4500511', 'cost': '4', 'carrierId': '43', 'carrierName': 'Chrono'}``.
+
+        Warning: some dictionaries have ``'cost': None``.
         """
         return self.get_json_api(f"shipping/lowest-shipping-costs-by-country/{country_code}", **params)
 
@@ -573,6 +620,12 @@ class BigBuy(APISession):
     def get_taxonomies(self, **params: Any) -> list[BBTaxonomyDict]:
         """
         List all taxonomies.
+
+        Example::
+
+            {'id': 2, 'name': 'Acampada', 'url': 'acampada-y-foobar',
+               'parentTaxonomy': 123, 'dateAdd': '2021-10-20 12:00:00', 'dateUpd': '2023-10-20 12:00:00',
+               'urlImages': 'https://cdnbigbuy.com/images/HC123_BC_P00.jpg', 'isoCode': 'es'}
         """
         return self.get_json_api("catalog/taxonomies", params=params)
 
@@ -584,9 +637,9 @@ class BigBuy(APISession):
 
     def get_product_taxonomies(self, product_id: Id, **params: Any) -> Optional[list[BBProductTaxonomyDict]]:
         """
-        Return all taxonomies associated with a product.
+        Generate links between products and taxonomies.
 
-        Example:
+        Example::
 
             [{'id': 5906, 'taxonomy': 5906, 'product': 334497}, {'id': 5908, 'taxonomy': 5908, 'product': 334497}]
         """
@@ -599,12 +652,12 @@ class BigBuy(APISession):
         """
         return self.get_json_api("catalog/productstaxonomies", **params)
 
-    def get_user_auth_status(self, **params: Any) -> Optional[Any]:  # The doc does not say what is the response format
+    def get_user_auth_status(self, **params: Any) -> Optional[Any]:  # The doc does not say what the response format is
         """
         Get the auth status of the user.
         """
         return self.get_json_api("user/auth/status", **params)
 
 
-def _get_order_id_from_response_redirect(response: requests.Response):
+def _get_order_id_from_response_redirect(response: requests.Response) -> str:
     return response.headers["Location"].replace("/rest/order/", "")

@@ -1,6 +1,6 @@
 import time
-from datetime import datetime
-from typing import Optional
+from datetime import datetime, timedelta
+from typing import Optional, Self, Callable
 
 from requests import Response
 
@@ -16,7 +16,7 @@ class RateLimit:
         self.reset_time = reset_time
 
     @classmethod
-    def from_response(cls, response: Response):
+    def from_response(cls, response: Response) -> Optional[Self]:
         if response.ok or response.text != RATE_LIMIT_RESPONSE_TEXT:
             return None
 
@@ -26,7 +26,7 @@ class RateLimit:
 
         return None
 
-    def reset_timedelta(self, utcnow: Optional[datetime] = None):
+    def reset_timedelta(self, utcnow: Optional[datetime] = None) -> timedelta:
         """
         Return a timedelta object representing the delta between the current UTC time and the reset time.
         Note the delta may be negative.
@@ -38,7 +38,7 @@ class RateLimit:
 
         return self.reset_time - utcnow
 
-    def wait_until_expiration(self, *, wait_function=time.sleep):
+    def wait_until_expiration(self, *, wait_function: Callable[[float], None] = time.sleep) -> None:
         """
         Wait until the rate limit expires.
         """

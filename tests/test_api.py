@@ -1,7 +1,7 @@
 import base64
 from datetime import datetime
 from tempfile import NamedTemporaryFile
-from typing import Callable, List, Tuple, Union, cast
+from typing import Callable, Union, cast
 
 import pytest
 import requests
@@ -147,7 +147,7 @@ def test_get_api_endpoints(app_key):
     payload = {"test": "ok"}
 
     # noinspection PyDeprecation
-    test_cases: List[Union[Tuple[str, Callable], Tuple[str, Callable, tuple]]] = [
+    test_cases: list[Union[tuple[str, Callable], tuple[str, Callable, tuple]]] = [
         ("catalog/attribute/123", bb.get_attribute, ("123",)),
         ("catalog/attributealllanguages/124", bb.get_attribute_all_languages, ("124",)),
         ("catalog/attributegroup/125", bb.get_attribute_group, ("125",)),
@@ -222,9 +222,9 @@ def test_get_purse_amount(app_key):
 @responses.activate()
 def test_upload_order_invoice_by_path():
     class TestBigBuy(BigBuy):
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args, **kwargs: Any):
             super().__init__(*args, **kwargs)
-            self._calls: List[tuple] = []
+            self._calls: list[tuple[str, str]] = []
 
         def upload_order_invoice(self, order_id, file_b64_content, mime_type, *args, **params):
             self._calls.append((mime_type, file_b64_content))

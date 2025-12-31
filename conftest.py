@@ -4,10 +4,10 @@ import pytest
 
 
 @pytest.fixture
-def utcnow():
+def utcnow() -> datetime:
     return datetime.utcnow()
 
 
 @pytest.fixture
-def app_key():
+def app_key() -> str:
     return "top_secret_app_key"
