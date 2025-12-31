@@ -1,5 +1,5 @@
 import sys
-from typing import TypedDict, Union
+from typing import TypedDict, Union, Any
 
 from api_session import JSONDict
 
@@ -85,6 +85,84 @@ class BBTrackingCarrierDict(TypedDict):
 class BBOrderStatusDict(TypedDict):
     id: int
     name: str
+
+
+class BBProductComplianceDict(TypedDict):
+    # TODO: better types
+    generalProductSafetyRegulations: list[dict[str, Any]]
+    id: int
+    productComplianceDocuments: list[Any]
+    sku: str
+
+
+class BBProductPriceDict(TypedDict):
+    id: int
+    sku: str
+    wholesalePrice: float
+    retailPrice: float
+    inShopsPrice: float
+
+
+class BBStockByHandlingDaysDict(TypedDict):
+    quantity: int
+    minHandlingDays: int
+    maxHandlingDays: int
+    warehouse: int
+
+
+class BBProductStockByHandlingDaysDict(TypedDict):
+    id: int
+    sku: str
+    stocks: list[BBStockByHandlingDaysDict]
+
+
+class BBTagDict(TypedDict):
+    id: int
+    name: str
+    linkRewrite: str
+    language: str
+
+
+class BBProductTagDict(TypedDict):
+    id: int
+    sku: str
+    tag: BBTagDict
+
+
+class BBPriceLargeQuantitiesDict(TypedDict):
+    id: int
+    quantity: int
+    price: float
+
+
+class BBProductVariationDict(TypedDict):
+    id: int
+    sku: str
+    ean13: str
+    extraWeight: float
+    product: int
+    wholesalePrice: float
+    retailPrice: float
+    inShopsPrice: float
+    width: float
+    height: float
+    depth: float
+    priceLargeQuantities: list[BBPriceLargeQuantitiesDict]
+    logisticClass: str
+
+
+# {'id': '43', 'delay': '1-2 jours', 'name': 'Chrono', 'pod': True}
+class BBShippingServiceDict(TypedDict):
+    id: str
+    delay: str
+    name: str
+    pod: bool
+
+
+class BBCarrierDict(TypedDict):
+    id: str
+    name: str
+    shippingServices: list[BBShippingServiceDict]
 
 
 # TODO
