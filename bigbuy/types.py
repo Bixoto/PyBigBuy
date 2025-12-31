@@ -165,6 +165,16 @@ class BBCarrierDict(TypedDict):
     shippingServices: list[BBShippingServiceDict]
 
 
+class BBIdDict(TypedDict):
+    id: int
+
+
+class BBVariationDict(TypedDict):
+    """Format: {"id":1169758,"attributes":[{"id":24161}]}."""
+    id: int
+    attributes: list[BBIdDict]
+
+
 # TODO
 BBCategoryDict = JSONDict
 BBLanguageDict = JSONDict

@@ -10,7 +10,7 @@ The removal of methods that call deleted endpoints is not considered a breaking 
 * More functions use typed dicts in their return type: `get_order_statuses`, `get_product_compliance`,
   `get_products_prices`, `get_products_tags`, `get_product_stock_by_handling_days`, `get_products_variations`,
   `get_products_variations_stock_by_handling_days`, `get_product_tags`, `get_tag`, `get_tag_all_languages`, `get_tags`,
-  `get_products_taxonomies`, `get_carriers`
+  `get_products_taxonomies`, `get_carriers`, `get_variation`, `get_variations`
 * Add more type hints
 
 ## 3.22.0 (2025/04/14)

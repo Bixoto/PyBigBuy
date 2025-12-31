@@ -23,7 +23,7 @@ from .types import BBProductImagesDict, BBTaxonomyDict, BBProductTaxonomyDict, B
     BBAttributeDict, BBAttributeGroupDict, BBCategoryDict, BBLanguageDict, BBManufacturerDict, BBProductDict, \
     BBProductCategoryDict, BBProductInformationDict, BBTrackingCarrierDict, BBOrderStatusDict, BBProductComplianceDict, \
     BBProductPriceDict, BBProductStockByHandlingDaysDict, BBProductTagDict, BBProductVariationDict, BBTagDict, \
-    BBCarrierDict
+    BBCarrierDict, BBVariationDict
 
 Id = Union[int, str]
 
@@ -319,15 +319,17 @@ class BigBuy(APISession):
         tags: list[BBTagDict] = self.get_json_api('catalog/tags', params=params)
         return tags
 
-    def get_variation(self, variation_id: Id, **params: Any) -> JSONDict:  # TODO: typing
+    def get_variation(self, variation_id: Id, **params: Any) -> BBVariationDict:
         """Get a single variation."""
-        return self.get_json_api(f'catalog/variation/{variation_id}', params=params)
+        variation: BBVariationDict = self.get_json_api(f'catalog/variation/{variation_id}', params=params)
+        return variation
 
-    def get_variations(self, **params: Any) -> list[JSONDict]:  # TODO: typing
+    def get_variations(self, **params: Any) -> list[BBVariationDict]:
         """Lists all variations.
         Format: {"id":1169758,"attributes":[{"id":24161}]}
         """
-        return self.get_json_api('catalog/variations', params=params)
+        variations: list[BBVariationDict] = self.get_json_api('catalog/variations', params=params)
+        return variations
 
     # shipping
     def get_carriers(self, **params: Any) -> list[BBCarrierDict]:

@@ -30,7 +30,7 @@ from .types import (
     BBProductTaxonomyDict, BBManufacturerDict, BBProductDict, BBProductCategoryDict, BBProductInformationDict,
     BBOrderStatusDict, BBProductComplianceDict, BBProductPriceDict, BBStockByHandlingDaysDict,
     BBProductStockByHandlingDaysDict, BBProductTagDict, BBTagDict, BBPriceLargeQuantitiesDict, BBProductVariationDict,
-    BBShippingServiceDict, BBCarrierDict,
+    BBShippingServiceDict, BBCarrierDict, BBIdDict, BBVariationDict,
 )
 
 __all__ = (
@@ -66,6 +66,7 @@ __all__ = (
     "BBAttributeGroupDict",
     "BBCarrierDict",
     "BBCategoryDict",
+    "BBIdDict",
     "BBImageDict",
     "BBLanguageDict",
     "BBLowestShippingCostDict",
@@ -87,4 +88,5 @@ __all__ = (
     "BBTagDict",
     "BBTaxonomyDict",
     "BBTrackingCarrierDict",
+    "BBVariationDict",
 )
