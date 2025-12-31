@@ -28,6 +28,7 @@ from .types import (
 
     BBProductImagesDict,
     BBProductTaxonomyDict, BBManufacturerDict, BBProductDict, BBProductCategoryDict, BBProductInformationDict,
+    BBOrderStatusDict,
 )
 
 __all__ = (
@@ -66,6 +67,7 @@ __all__ = (
     "BBLanguageDict",
     "BBLowestShippingCostDict",
     "BBManufacturerDict",
+    "BBOrderStatusDict",
     "BBProductCategoryDict",
     "BBProductDict",
     "BBProductImagesDict",

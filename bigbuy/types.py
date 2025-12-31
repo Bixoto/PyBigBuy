@@ -82,6 +82,11 @@ class BBTrackingCarrierDict(TypedDict):
     name: str
 
 
+class BBOrderStatusDict(TypedDict):
+    id: int
+    name: str
+
+
 # TODO
 BBCategoryDict = JSONDict
 BBLanguageDict = JSONDict
