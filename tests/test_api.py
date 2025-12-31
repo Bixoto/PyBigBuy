@@ -191,8 +191,6 @@ def test_get_api_endpoints(app_key):
         ("catalog/taxonomyalllanguages/42", bb.get_taxonomy_all_languages, ("42",)),
         ("catalog/variation/142", bb.get_variation, ("142",)),
         ("catalog/variations", bb.get_variations),
-        ("module/", bb.get_modules),
-        ("module/platforms", bb.get_module_platforms),
         ("order/123", bb.get_order_by_id, ("123",)),
         ("order/orderstatuses", bb.get_order_statuses),
         ("order/reference/REF123", bb.get_order_by_customer_reference, ("REF123",)),

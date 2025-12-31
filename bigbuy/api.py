@@ -603,20 +603,6 @@ class BigBuy(APISession):
         """
         return float(self.get_json_api("user/purse", params=params))
 
-    def get_modules(self, **params: Any):
-        """
-        Get all modules.
-        """
-        return self.get_json_api("module/", params=params)
-
-    def get_module_platforms(self, **params: Any):
-        """
-        Get all module platforms.
-
-        Note: this route is not documented by BigBuy.
-        """
-        return self.get_json_api("module/platforms", params=params)
-
     def get_taxonomies(self, **params: Any) -> list[BBTaxonomyDict]:
         """
         List all taxonomies.
