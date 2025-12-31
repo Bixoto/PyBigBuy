@@ -3,7 +3,7 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
-## 3.23.0 (unreleased)
+## 3.23.0 (2025/12/31)
 
 * Remove `get_modules` (BigBuy removed the route)
 * Remove `get_module_platforms` (BigBuy now returns an empty response and the route was not documented anyway)
@@ -12,6 +12,7 @@ The removal of methods that call deleted endpoints is not considered a breaking 
   `get_products_variations_stock_by_handling_days`, `get_product_tags`, `get_tag`, `get_tag_all_languages`, `get_tags`,
   `get_products_taxonomies`, `get_carriers`, `get_variation`, `get_variations`
 * Add more type hints
+* Add explicit support for Python 3.14
 
 ## 3.22.0 (2025/04/14)
 
