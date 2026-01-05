@@ -19,10 +19,10 @@ from .rate_limit import RateLimit
 __all__ = ['BigBuy']
 
 from .types import BBProductImagesDict, BBTaxonomyDict, BBProductTaxonomyDict, BBLowestShippingCostDict, \
-    BBAttributeDict, BBAttributeGroupDict, BBCategoryDict, BBLanguageDict, BBManufacturerDict, BBProductDict, \
+    BBAttributeDict, BBAttributeGroupDict, BBLanguageDict, BBManufacturerDict, BBProductDict, \
     BBProductCategoryDict, BBProductInformationDict, BBTrackingCarrierDict, BBOrderStatusDict, BBProductComplianceDict, \
     BBProductPriceDict, BBProductStockByHandlingDaysDict, BBProductTagDict, BBProductVariationDict, BBTagDict, \
-    BBCarrierDict, BBVariationDict
+    BBCarrierDict, BBVariationDict, BBCheckOrderDict
 
 Id = Union[int, str]
 
@@ -153,7 +153,7 @@ class BigBuy(APISession):
         manufacturers: list[BBManufacturerDict] = self.get_json_api('catalog/manufacturers', params=params)
         return manufacturers
 
-    def get_product(self, product_id: Id, **params: Any) -> BBProductDict:
+    def get_product(self, product_id: Id, **params: Any) -> BBProductDict:  # TODO: typing
         """Get a single product."""
         product: BBProductDict = self.get_json_api(f'catalog/product/{product_id}', params=params)
         return product
@@ -322,7 +322,7 @@ class BigBuy(APISession):
         return self.post_json_api('shipping/orders', json={"order": order}, bypass_read_only=True)
 
     # order
-    def check_order(self, order: JSONDict, **params: Any) -> JSONDict:  # TODO: typing
+    def check_order(self, order: JSONDict, **params: Any) -> BBCheckOrderDict:
         """Check/simulate an order and return the total amount to pay.
 
         Example order:

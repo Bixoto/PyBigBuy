@@ -1,7 +1,5 @@
 import sys
-from typing import TypedDict, Union, Any
-
-from api_session import JSONDict
+from typing import TypedDict, Union, Any, Optional
 
 if sys.version_info >= (3, 11):
     from typing import NotRequired
@@ -175,8 +173,56 @@ class BBVariationDict(TypedDict):
     attributes: list[BBIdDict]
 
 
-# TODO
-BBCategoryDict = JSONDict
-BBLanguageDict = JSONDict
-BBManufacturerDict = JSONDict
-BBProductDict = JSONDict
+class BBManufacturerDict(TypedDict):
+    id: int
+    name: str
+    urlImage: str
+    reference: int
+
+
+class BBLanguageDict(TypedDict):
+    name: str
+    isoCode: str
+
+
+class BBCheckOrderDict(TypedDict):
+    totalWithoutTaxesAndWithoutShippingCost: float
+    totalWithoutTaxes: float
+    total: float
+
+
+class BBProductDict(TypedDict):
+    sku: str
+    id: int
+    active: int
+    attributes: bool
+    canon: NotRequired[Optional[float]]
+    categories: bool
+    category: int
+    condition: str
+    dateAdd: NotRequired[str]
+    dateUpd: str
+    dateUpdCategories: NotRequired[Optional[str]]
+    dateUpdDescription: NotRequired[str]
+    dateUpdProperties: NotRequired[Optional[str]]
+    dateUpdImages: NotRequired[str]
+    dateUpdStock: NotRequired[str]
+    depth: float
+    ean13: NotRequired[Optional[str]]
+    height: float
+    images: bool
+    inShopsPrice: float
+    intrastat: str
+    logisticClass: str
+    manufacturer: int
+    partNumber: NotRequired[Optional[str]]
+    priceLargeQuantities: list[BBPriceLargeQuantitiesDict]
+    retailPrice: float
+    tags: bool
+    taxId: int
+    taxRate: int
+    taxonomy: int
+    video: str
+    weight: float
+    wholesalePrice: float
+    width: float
