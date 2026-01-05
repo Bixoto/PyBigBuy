@@ -5,7 +5,6 @@ Official documentation for Bigbuy API endpoints can be found at: https://api.big
 """
 import base64
 import mimetypes
-import warnings
 from http.cookiejar import DefaultCookiePolicy
 from typing import Optional, Union, Iterable, cast, Any
 
@@ -138,30 +137,6 @@ class BigBuy(APISession):
         """Lists all attributes."""
         attributes: list[BBAttributeDict] = self.get_json_api('catalog/attributes', params=params)
         return attributes
-
-    def get_categories(self, **params: Any) -> list[BBCategoryDict]:
-        """Lists all categories."""
-        warnings.warn("The categories endpoints are deprecated by BigBuy in favor of the taxonomies."
-                      " Use get_taxonomies instead.", DeprecationWarning)
-        categories: list[BBCategoryDict] = self.get_json_api('catalog/categories', params=params)
-        return categories
-
-    def get_category(self, category_id: Id, **params: Any) -> BBCategoryDict:
-        """
-        Returns the selected category.
-        """
-        warnings.warn("The categories endpoints are deprecated by BigBuy in favor of the taxonomies.",
-                      DeprecationWarning)
-        category: BBCategoryDict = self.get_json_api(f'catalog/category/{category_id}', params=params)
-        return category
-
-    def get_category_all_languages(self, category_id: Id, **params: Any) -> list[BBCategoryDict]:
-        """Returns the selected category."""
-        warnings.warn("The categories endpoints are deprecated by BigBuy in favor of the taxonomies."
-                      " Use get_taxonomy_all_languages instead.", DeprecationWarning)
-        categories: list[BBCategoryDict] = self.get_json_api(f'catalog/categoryalllanguages/{category_id}',
-                                                             params=params)
-        return categories
 
     def get_languages(self, **params: Any) -> list[BBLanguageDict]:
         """Returns all languages"""
