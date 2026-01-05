@@ -3,7 +3,7 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
-## 3.24.0 (unreleased)
+## 3.24.0 (2026/01/05)
 
 * `BBProductDict`, `BBManufacturerDict` and `BBLanguageDict` are now typed dicts
 * Remove `get_categories` (BigBuy deprecated the route long ago, and it now returns an empty list). Remove the
