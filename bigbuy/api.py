@@ -12,9 +12,9 @@ import requests
 from api_session import APISession, JSONDict
 from urllib3 import Retry
 
-from . import __version__
 from .exceptions import raise_for_response, BBError
 from .rate_limit import RateLimit
+from .version import __version__
 
 __all__ = ['BigBuy']
 
