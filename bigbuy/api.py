@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
-
 """
-Official documentation for Bigbuy API endpoints can be found at: https://api.bigbuy.eu/rest/doc/
+The official documentation for Bigbuy API endpoints can be found at: https://api.bigbuy.eu/rest/doc/
 """
-import base64
-import mimetypes
 from http.cookiejar import DefaultCookiePolicy
 from typing import Optional, Union, Iterable, cast, Any
 
@@ -504,16 +500,20 @@ class BigBuy(APISession):
     def upload_order_invoice_by_path(self, order_id: Id, file_path: str, concept: str, amount: float,
                                      *, mime_type: Optional[str] = None, **params: Any) -> Any:  # TODO: typing
         """
-        Wrapper around `upload_order_invoice` that reads the file from disk instead.
+        Wrapper around `upload_order_invoice` that reads the file from the disk instead.
 
         :param order_id:
         :param file_path:
         :param concept:
         :param amount:
-        :param mime_type: mime type of the file. If not provided it is guessed from the file path and defaults on
+        :param mime_type: mime type of the file. If not provided, it is guessed from the file path and defaults on
           `application/pdf`.
         """
+        import base64
+
         if mime_type is None:
+            import mimetypes
+
             mime_type, _ = mimetypes.guess_type(file_path)
             if mime_type is None:
                 mime_type = "application/pdf"
