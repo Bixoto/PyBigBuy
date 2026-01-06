@@ -3,7 +3,7 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
-## 3.25.0 (unreleased)
+## 3.25.0 (2026/01/06)
 
 * `get_tracking_order`, `get_tracking_orders`, `get_product_variations`, `check_multi_shipping_order`,
   `get_order_by_customer_reference` and `get_order_by_id` now return a typed dict
