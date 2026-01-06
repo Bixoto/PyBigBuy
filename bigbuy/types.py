@@ -1,5 +1,5 @@
 import sys
-from typing import TypedDict, Union, Any, Optional
+from typing import TypedDict, Any, Optional
 
 if sys.version_info >= (3, 11):
     from typing import NotRequired
@@ -40,9 +40,9 @@ class BBProductTaxonomyDict(TypedDict):
 
 class BBLowestShippingCostDict(TypedDict):
     reference: str
-    cost: Union[str, None]
-    carrierId: str
-    carrierName: str
+    cost: NotRequired[Optional[str]]
+    carrierId: NotRequired[str]
+    carrierName: NotRequired[str]
 
 
 class BBAttributeDict(TypedDict):
