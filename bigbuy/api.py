@@ -309,7 +309,7 @@ class BigBuy(APISession):
         return self.get_json_api('shipping/carriers', params=params)
 
     def get_shipping_order(self, order: JSONDict) -> JSONDict:  # TODO: typing
-        """Get the list of available shipping options with the calculated weight and cost in Kg and € respectively,
+        """Get the list of available shipping options with the calculated weight (kg) and cost (€)
         for the given order.
 
         Example order:
@@ -437,7 +437,8 @@ class BigBuy(APISession):
 
         See `create_order` for the input format.
 
-        Example response:
+        Example response::
+
             {"orders":[{"productReferences":["S1"],"id":"123","warehouse":1,"url":"\\/rest\\/order\\/123"},
                        {"productReferences":["S2", "S3"],"id":"124","warehouse":3,"url":"\\/rest\\/order\\/124"}],
              "errors":[]}
@@ -487,7 +488,7 @@ class BigBuy(APISession):
     def upload_order_invoice(self, order_id: Id, file_b64_content: str, mime_type: str, concept: str, amount: float,
                              **params: Any) -> list[bool]:
         """
-        Upload a base64-encoded invoice to an order in PENDING INVOICE status.
+        Upload a base64-encoded invoice to an order in "PENDING INVOICE" status.
         """
         invoice_payload = {
             "id_order": str(order_id),
