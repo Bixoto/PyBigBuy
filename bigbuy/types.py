@@ -163,14 +163,18 @@ class BBCarrierDict(TypedDict):
     shippingServices: list[BBShippingServiceDict]
 
 
-class BBIdDict(TypedDict):
+class BBIntIdDict(TypedDict):
     id: int
+
+
+class BBStrIdDict(TypedDict):
+    id: str
 
 
 class BBVariationDict(TypedDict):
     """Format: {"id":1169758,"attributes":[{"id":24161}]}."""
     id: int
-    attributes: list[BBIdDict]
+    attributes: list[BBIntIdDict]
 
 
 class BBManufacturerDict(TypedDict):
@@ -282,3 +286,17 @@ class BBOrderDeliveryNoteDict(TypedDict):
     carrier: str
     numberOfPackages: int
     products: list[BBReferenceQuantityDict]
+
+
+class BBTrackingDict(TypedDict):
+    trackingNumber: str
+    statusDescription: str
+    statusDate: str
+    carrier: BBStrIdDict
+    descriptionTranslated: str
+
+
+class BBTrackingOrderDict(TypedDict):
+    id: int
+    reference: str
+    trackings: list[BBTrackingDict]

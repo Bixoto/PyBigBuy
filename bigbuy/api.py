@@ -19,7 +19,7 @@ from .types import BBProductImagesDict, BBTaxonomyDict, BBProductTaxonomyDict, B
     BBProductCategoryDict, BBProductInformationDict, BBTrackingCarrierDict, BBOrderStatusDict, BBProductComplianceDict, \
     BBProductPriceDict, BBProductStockByHandlingDaysDict, BBProductTagDict, BBProductVariationDict, BBTagDict, \
     BBCarrierDict, BBVariationDict, BBCheckOrderDict, BBMultiCheckOrderDict, BBSlimOrderDict, BBOrderDict, \
-    BBOrderDeliveryNoteDict
+    BBOrderDeliveryNoteDict, BBTrackingOrderDict
 
 Id = Union[int, str]
 
@@ -268,7 +268,7 @@ class BigBuy(APISession):
         tags: list[BBTagDict] = self.get_json_api(f'catalog/producttags/{product_id}', params=params)
         return tags
 
-    def get_product_variations(self, product_id: Id, **params: Any) -> list[JSONDict]:  # TODO: typing
+    def get_product_variations(self, product_id: Id, **params: Any) -> list[BBProductVariationDict]:
         """Get a single product's variations."""
         return self.get_json_api(f'catalog/productvariations/{product_id}', params=params)
 
@@ -500,7 +500,7 @@ class BigBuy(APISession):
         return self.post_json_api("order/upload_invoice", json={"invoice": invoice_payload}, **params)
 
     def upload_order_invoice_by_path(self, order_id: Id, file_path: str, concept: str, amount: float,
-                                     *, mime_type: Optional[str] = None, **params: Any) -> Any:  # TODO: typing
+                                     *, mime_type: Optional[str] = None, **params: Any) -> list[bool]:
         """
         Wrapper around `upload_order_invoice` that reads the file from the disk instead.
 
@@ -537,12 +537,12 @@ class BigBuy(APISession):
         """Get the list of available carriers."""
         return self.get_json_api('tracking/carriers', **params)
 
-    def get_tracking_order(self, order_id: Id, **params: Any) -> list[JSONDict]:  # TODO: typing
+    def get_tracking_order(self, order_id: Id, **params: Any) -> list[BBTrackingOrderDict]:
         """Get the list of available trackings."""
         return self.get_json_api(f'tracking/order/{order_id}', **params)
 
     def get_tracking_orders(self, order_ids: Iterable[Id], match_ids: bool = True, **params: Any) \
-            -> list[Optional[JSONDict]]:  # TODO: typing
+            -> list[Optional[BBTrackingOrderDict]]:
         """
         Get the list of available trackings for the given orders.
 
@@ -556,13 +556,13 @@ class BigBuy(APISession):
             }
         }
 
-        trackings = cast(list[Optional[dict[str, Any]]],
+        trackings = cast(list[Optional[BBTrackingOrderDict]],
                          self.post_json_api('tracking/orders', json=payload, bypass_read_only=True, **params))
 
         if not match_ids:
             return trackings
 
-        tracking_by_id: dict[str, dict[str, Any]] = {}
+        tracking_by_id: dict[str, BBTrackingOrderDict] = {}
         for tracking in trackings:
             if tracking:
                 tracking_by_id[str(tracking["id"])] = tracking

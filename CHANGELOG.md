@@ -5,7 +5,8 @@ The removal of methods that call deleted endpoints is not considered a breaking 
 
 ## 3.25.0 (unreleased)
 
-* `check_multi_shipping_order`, `get_order_by_customer_reference` and `get_order_by_id` now return a typed dict
+* `get_tracking_order`, `get_tracking_orders`, `get_product_variations`, `check_multi_shipping_order`,
+  `get_order_by_customer_reference` and `get_order_by_id` now return a typed dict
 * `get_order_delivery_notes` now returns a list of typed dicts
 * `base64` and `mimetypes` are now lazily imported
 

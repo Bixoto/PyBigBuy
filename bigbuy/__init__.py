@@ -20,9 +20,10 @@ from .types import (
     BBTaxonomyDict, BBTrackingCarrierDict, BBProductImagesDict, BBProductTaxonomyDict, BBManufacturerDict,
     BBProductDict, BBProductCategoryDict, BBProductInformationDict, BBOrderStatusDict, BBProductComplianceDict,
     BBProductPriceDict, BBStockByHandlingDaysDict, BBProductStockByHandlingDaysDict, BBProductTagDict, BBTagDict,
-    BBPriceLargeQuantitiesDict, BBProductVariationDict, BBShippingServiceDict, BBCarrierDict, BBIdDict, BBVariationDict,
+    BBPriceLargeQuantitiesDict, BBProductVariationDict, BBShippingServiceDict, BBCarrierDict, BBIntIdDict,
+    BBVariationDict,
     BBSplitCheckOrderDict, BBMultiCheckOrderDict, BBOrderCarrierDict, BBOrderProductDict, BBOrderDict, BBSlimOrderDict,
-    BBOrderDeliveryNoteDict, BBReferenceQuantityDict,
+    BBOrderDeliveryNoteDict, BBReferenceQuantityDict, BBStrIdDict, BBTrackingDict, BBTrackingOrderDict,
 )
 from .version import __version__
 
@@ -59,8 +60,8 @@ __all__ = (
     "BBAttributeGroupDict",
     "BBCarrierDict",
     "BBCheckOrderDict",
-    "BBIdDict",
     "BBImageDict",
+    "BBIntIdDict",
     "BBLanguageDict",
     "BBLowestShippingCostDict",
     "BBManufacturerDict",
@@ -86,8 +87,11 @@ __all__ = (
     "BBSlimOrderDict",
     "BBSplitCheckOrderDict",
     "BBStockByHandlingDaysDict",
+    "BBStrIdDict",
     "BBTagDict",
     "BBTaxonomyDict",
     "BBTrackingCarrierDict",
+    "BBTrackingDict",
+    "BBTrackingOrderDict",
     "BBVariationDict",
 )
