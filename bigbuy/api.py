@@ -18,7 +18,8 @@ from .types import BBProductImagesDict, BBTaxonomyDict, BBProductTaxonomyDict, B
     BBAttributeDict, BBAttributeGroupDict, BBLanguageDict, BBManufacturerDict, BBProductDict, \
     BBProductCategoryDict, BBProductInformationDict, BBTrackingCarrierDict, BBOrderStatusDict, BBProductComplianceDict, \
     BBProductPriceDict, BBProductStockByHandlingDaysDict, BBProductTagDict, BBProductVariationDict, BBTagDict, \
-    BBCarrierDict, BBVariationDict, BBCheckOrderDict
+    BBCarrierDict, BBVariationDict, BBCheckOrderDict, BBMultiCheckOrderDict, BBSlimOrderDict, BBOrderDict, \
+    BBOrderDeliveryNoteDict
 
 Id = Union[int, str]
 
@@ -149,7 +150,7 @@ class BigBuy(APISession):
         manufacturers: list[BBManufacturerDict] = self.get_json_api('catalog/manufacturers', params=params)
         return manufacturers
 
-    def get_product(self, product_id: Id, **params: Any) -> BBProductDict:  # TODO: typing
+    def get_product(self, product_id: Id, **params: Any) -> BBProductDict:
         """Get a single product."""
         product: BBProductDict = self.get_json_api(f'catalog/product/{product_id}', params=params)
         return product
@@ -360,12 +361,12 @@ class BigBuy(APISession):
         """
         return self.post_json_api('order/check', json={"order": order}, bypass_read_only=True, **params)
 
-    def check_multi_shipping_order(self, order: JSONDict, **params: Any) -> dict[str, list[JSONDict]]:  # TODO: typing
+    def check_multi_shipping_order(self, order: JSONDict, **params: Any) -> BBMultiCheckOrderDict:
         """
         Check/simulate an order and return the total to pay. This is the multi-shipping version, which is required for
         some references.
 
-        See `check_order` for the input format. The response differs because it splits the order in multiple sub-orders,
+        See `check_order` for the input format. The response differs because it splits the order into multiple sub-orders,
         each one with its check result.
         Example response:
             {
@@ -468,18 +469,18 @@ class BigBuy(APISession):
 
         return [order["id"] for order in creation_response["orders"]]
 
-    def get_order_by_customer_reference(self, reference: str, **params: Any) -> JSONDict:  # TODO: typing
+    def get_order_by_customer_reference(self, reference: str, **params: Any) -> BBSlimOrderDict:
         """
         Get order information by customer reference. Note that this doesn’t support multi-shipping orders and returns
-        only one of the orders matching the customer reference.
+        only one of the order(s) matching the customer reference.
         """
         return self.get_json_api(f'order/reference/{reference}', **params)
 
-    def get_order_by_id(self, order_id: Id, **params: Any) -> JSONDict:
+    def get_order_by_id(self, order_id: Id, **params: Any) -> BBOrderDict:
         """Get order information."""
         return self.get_json_api(f'order/{order_id}', **params)
 
-    def get_order_delivery_notes(self, order_id: Id, **params: Any) -> JSONDict:  # TODO: typing
+    def get_order_delivery_notes(self, order_id: Id, **params: Any) -> list[BBOrderDeliveryNoteDict]:
         """Get delivery notes for an order."""
         return self.get_json_api(f'order/delivery-notes/{order_id}', **params)
 

@@ -16,19 +16,13 @@ from .exceptions import (
 )
 from .rate_limit import RateLimit
 from .types import (
-    BBAttributeDict,
-    BBAttributeGroupDict,
-    BBImageDict, BBCheckOrderDict,
-    BBLanguageDict,
-    BBLowestShippingCostDict,
-    BBTaxonomyDict,
-    BBTrackingCarrierDict,
-
-    BBProductImagesDict,
-    BBProductTaxonomyDict, BBManufacturerDict, BBProductDict, BBProductCategoryDict, BBProductInformationDict,
-    BBOrderStatusDict, BBProductComplianceDict, BBProductPriceDict, BBStockByHandlingDaysDict,
-    BBProductStockByHandlingDaysDict, BBProductTagDict, BBTagDict, BBPriceLargeQuantitiesDict, BBProductVariationDict,
-    BBShippingServiceDict, BBCarrierDict, BBIdDict, BBVariationDict,
+    BBAttributeDict, BBAttributeGroupDict, BBImageDict, BBCheckOrderDict, BBLanguageDict, BBLowestShippingCostDict,
+    BBTaxonomyDict, BBTrackingCarrierDict, BBProductImagesDict, BBProductTaxonomyDict, BBManufacturerDict,
+    BBProductDict, BBProductCategoryDict, BBProductInformationDict, BBOrderStatusDict, BBProductComplianceDict,
+    BBProductPriceDict, BBStockByHandlingDaysDict, BBProductStockByHandlingDaysDict, BBProductTagDict, BBTagDict,
+    BBPriceLargeQuantitiesDict, BBProductVariationDict, BBShippingServiceDict, BBCarrierDict, BBIdDict, BBVariationDict,
+    BBSplitCheckOrderDict, BBMultiCheckOrderDict, BBOrderCarrierDict, BBOrderProductDict, BBOrderDict, BBSlimOrderDict,
+    BBOrderDeliveryNoteDict, BBReferenceQuantityDict,
 )
 from .version import __version__
 
@@ -70,6 +64,11 @@ __all__ = (
     "BBLanguageDict",
     "BBLowestShippingCostDict",
     "BBManufacturerDict",
+    "BBMultiCheckOrderDict",
+    "BBOrderCarrierDict",
+    "BBOrderDeliveryNoteDict",
+    "BBOrderDict",
+    "BBOrderProductDict",
     "BBOrderStatusDict",
     "BBPriceLargeQuantitiesDict",
     "BBProductCategoryDict",
@@ -82,7 +81,10 @@ __all__ = (
     "BBProductTagDict",
     "BBProductTaxonomyDict",
     "BBProductVariationDict",
+    "BBReferenceQuantityDict",
     "BBShippingServiceDict",
+    "BBSlimOrderDict",
+    "BBSplitCheckOrderDict",
     "BBStockByHandlingDaysDict",
     "BBTagDict",
     "BBTaxonomyDict",

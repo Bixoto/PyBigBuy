@@ -3,6 +3,12 @@
 Note: the BigBuy API is not versioned and some endpoints are often added or removed without notice.
 The removal of methods that call deleted endpoints is not considered a breaking change.
 
+## 3.25.0 (unreleased)
+
+* `check_multi_shipping_order`, `get_order_by_customer_reference` and `get_order_by_id` now return a typed dict
+* `get_order_delivery_notes` now returns a list of typed dicts
+* `base64` and `mimetypes` are now lazily imported
+
 ## 3.24.0 (2026/01/05)
 
 * `BBProductDict`, `BBManufacturerDict` and `BBLanguageDict` are now typed dicts

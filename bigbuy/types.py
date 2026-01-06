@@ -226,3 +226,59 @@ class BBProductDict(TypedDict):
     weight: float
     wholesalePrice: float
     width: float
+
+
+class BBSplitCheckOrderDict(BBCheckOrderDict):
+    warehouse: int
+    productReferences: list[str]
+
+
+class BBMultiCheckOrderDict(TypedDict):
+    orders: list[BBSplitCheckOrderDict]
+    errors: list[dict[str, Any]]
+
+
+class BBSlimOrderDict(TypedDict):
+    id: str  # int as str
+    totalPaidTaxIncl: str  # float as str
+
+
+class BBOrderCarrierDict(TypedDict):
+    id: str
+    name: str
+    price: float
+
+
+class BBReferenceQuantityDict(TypedDict):
+    reference: str
+    quantity: int
+
+
+class BBOrderProductDict(BBReferenceQuantityDict):
+    id: str
+    name: str
+    priceTaxIncl: float
+    priceTaxExcl: float
+
+
+class BBOrderDict(TypedDict):
+    id: str
+    internalReference: str
+    dateAdd: str
+    totalPaidTaxIncl: float
+    totalPaidTaxExcl: float
+    totalShippingTaxExcl: float
+    totalShippingTaxIncl: float
+    status: str
+    carriers: list[BBOrderCarrierDict]
+    shippingAddress: dict[str, str]  # TODO: more precise typing
+    products: list[BBOrderProductDict]
+
+
+class BBOrderDeliveryNoteDict(TypedDict):
+    reference: str
+    order: str
+    status: str
+    carrier: str
+    numberOfPackages: int
+    products: list[BBReferenceQuantityDict]
